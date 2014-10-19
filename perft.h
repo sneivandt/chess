@@ -1,14 +1,17 @@
 #ifndef PERFT_H
 #define PERFT_H
 
-#include <iostream>
-#include <fstream>
-
 #include "board.h"
 #include "move.h"
 #include "movelist.h"
 #include "movegen.h"
 #include "makemove.h"
+#include <cassert>
+#include <string>
+#include <iostream>
+#include <fstream>
+
+const std::string TEST_SPECS = "perft.in";
 
 class Perft
 {
@@ -16,6 +19,9 @@ class Perft
 
         // Numebr of nodes
         long long nodes;
+
+        // Total number of positions evaluated
+        long long totalPositions;
 
         // Search depth
         int depth;
@@ -28,7 +34,7 @@ class Perft
 
     public:
 
-        // Test the positions
+        // Test the positions from perft.in
         void test();
 };
 

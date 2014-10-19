@@ -1,4 +1,4 @@
 *.swp
 *.swo
-*.cc
+*.o
 chess

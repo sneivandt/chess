@@ -1,9 +1,8 @@
 #ifndef UNDO_H
 #define UNDO_H
 
-#include <cstdint>
-
 #include "move.h"
+#include <cstdint>
 
 // A previous board
 class Undo
@@ -22,8 +21,8 @@ class Undo
         // Fifty move rule count
         int fiftyMove;
 
-        // The move
-        Move move;
+        // The move value
+        int moveValue;
 
         // Position key
         uint64_t hashKey;
@@ -34,10 +33,10 @@ class Undo
         Undo() {};
 
         // Constructor
-        Undo(const int side, const int castle, const int enPas, const int fiftyMove, const Move move, const uint64_t hash): side(side), castlePerm(castle), enPas(enPas), fiftyMove(fiftyMove), move(move), hashKey(hash) {};
+        Undo(const int side, const int castle, const int enPas, const int fiftyMove, const int moveValue, const uint64_t hash): side(side), castlePerm(castle), enPas(enPas), fiftyMove(fiftyMove), moveValue(moveValue), hashKey(hash) {};
 
-        // Get the move
-        Move getMove() const { return move; };
+        // Get the move value
+        int getMoveValue() const { return moveValue; };
 
         // Get the castle perm
         int getCastlePerm() const { return castlePerm; };

@@ -3,8 +3,8 @@ CXXFLAGS=-std=c++0x -c -Wall
 
 all: chess
 
-chess: main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o undo.o perft.o
-	$(CXX) main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o undo.o perft.o -o chess
+chess: main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o
+	$(CXX) main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o -o chess
 
 main: main.cc
 	$(CXX) $(CXXFLAGS) main.cc
@@ -29,9 +29,6 @@ movegen: movegen.cc
 
 makemove: makemove.cc
 	$(CXX) $(CXXFLAGS) makemove.cc
-
-undo: undo.cc
-	$(CXX) $(CXXFLAGS) undo.cc
 
 perft: perft.cc
 	$(CXX) $(CXXFLAGS) perft.cc
