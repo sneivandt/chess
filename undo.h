@@ -32,7 +32,7 @@ class Undo
         // Default constructor
         Undo() {};
 
-        // Constructor
+        // Create an undo with the given properties
         Undo(const int side, const int castle, const int enPas, const int fiftyMove, const int moveValue, const uint64_t hash): side(side), castlePerm(castle), enPas(enPas), fiftyMove(fiftyMove), moveValue(moveValue), hashKey(hash) {};
 
         // Get the move value

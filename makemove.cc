@@ -7,7 +7,7 @@ inline void clearPiece(const int square, Board& pos)
     int targetPNum = -1;
     pos.hashPiece(piece, square);
     pos.getBoard()[square] = EMPTY;
-    if(piece == WP || piece == BP) {
+    if(PIECE_PAWN[piece]) {
         clearBit(pos.getPawns()[color], SQ64[square]);
         clearBit(pos.getPawns()[BOTH], SQ64[square]);
     }
@@ -26,7 +26,7 @@ inline void addPiece(const int piece, const int square, Board& pos)
     int color = PIECE_COLOR[piece];
     pos.getBoard()[square] = piece;
     pos.hashPiece(piece, square);
-    if(piece == WP || piece == BP) {
+    if(PIECE_PAWN[piece]) {
         setBit(pos.getPawns()[color], SQ64[square]);
         setBit(pos.getPawns()[BOTH], SQ64[square]);
     }
@@ -37,12 +37,12 @@ inline void addPiece(const int piece, const int square, Board& pos)
 inline void movePiece(const int from, const int to, Board& pos)
 {
     int piece = pos.getBoard()[from];
-    int color = PIECE_COLOR[from];
+    int color = PIECE_COLOR[piece];
     pos.hashPiece(piece, to);
     pos.hashPiece(piece, from);
     pos.getBoard()[from] = EMPTY;
     pos.getBoard()[to] = piece;
-    if(piece == WP || piece == BP) {
+    if(PIECE_PAWN[piece]) {
         clearBit(pos.getPawns()[color], SQ64[from]);
         clearBit(pos.getPawns()[BOTH], SQ64[from]);
         setBit(pos.getPawns()[color], SQ64[to]);
@@ -106,7 +106,7 @@ bool makeMove(Move& move, Board& pos)
     }
     pos.incrementPly();
     pos.incrementHistoryPly();
-    if(piece == WP || piece == BP) {
+    if(PIECE_PAWN[piece]) {
         pos.resetFiftyMove();
         if(move.getValue() & MFLAGPS) {
             if(side == WHITE) {

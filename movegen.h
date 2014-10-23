@@ -12,25 +12,25 @@ const int SLIDERS[6] = { WQ, WR, WB , BQ, BR, BB };
 const int NON_SLIDERS[4] = { WN, WK, BN, BK };
 
 // Add a quiet move
-inline void addQuietMove(Board&, const int, MoveList&);
+inline void addQuietMove(const int, MoveList&);
 
 // Add a capture move
-inline void addCaptureMove(Board&, const int, MoveList&);
+inline void addCaptureMove(const int, MoveList&);
 
 // Add an En passant move
-inline void addEnPasMove(Board&, const int, MoveList&);
+inline void addEnPasMove(const int, MoveList&);
 
 // Add white pawn move
-inline void addWhitePawnMove(Board&, const int, const int, MoveList&);
+inline void addWhitePawnMove(const int, const int, MoveList&);
 
 // Add white pawn capture move
-inline void addWhitePawnCaptureMove(Board&, const int, const int, const int, MoveList&);
+inline void addWhitePawnCaptureMove(const int, const int, const int, MoveList&);
 
 // Add black pawn move
-inline void addBlackPawnMove(Board&, const int, const int, MoveList&);
+inline void addBlackPawnMove(const int, const int, MoveList&);
 
 // Add black pawn capture move
-inline void addBlackPawnCaptureMove(Board&, const int, const int, const int, MoveList&);
+inline void addBlackPawnCaptureMove(const int, const int, const int, MoveList&);
 
 // Generate all moves
 MoveList generateAllMoves(Board&);

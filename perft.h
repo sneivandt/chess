@@ -2,40 +2,26 @@
 #define PERFT_H
 
 #include "board.h"
-#include "move.h"
-#include "movelist.h"
-#include "movegen.h"
 #include "makemove.h"
+#include "move.h"
+#include "movegen.h"
+#include "movelist.h"
+#include "undo.h"
 #include <cassert>
-#include <string>
-#include <iostream>
 #include <fstream>
+#include <iostream>
+#include <string>
 
-const std::string TEST_SPECS = "perft.in";
+// Test specs
+const std::string TEST_SPECS = "perft.txt";
 
-class Perft
-{
-    private:
+// Test all the positions
+void perftTest();
 
-        // Numebr of nodes
-        long long nodes;
+// Test a position
+void testPosition(const std::string, Board&);
 
-        // Total number of positions evaluated
-        long long totalPositions;
-
-        // Search depth
-        int depth;
-
-        // Test a position
-        void testPosition(const std::string, Board&);
-
-        // Inner recursive function
-        void testPositionInner(const int, Board);
-
-    public:
-
-        // Test the positions from perft.in
-        void test();
-};
+// Inner recursive function
+int testPositionInner(const int, Board);
 
 #endif

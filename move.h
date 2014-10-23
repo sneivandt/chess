@@ -52,7 +52,7 @@ class Move
         // Default Constructor
         Move() {};
 
-        // Constructor
+        // Create a move with a given value and score
         Move(const int value, const int score): value(value), score(score) {};
 
         // Print a move

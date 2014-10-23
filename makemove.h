@@ -1,13 +1,15 @@
 #ifndef MAKEMOVE_H
 #define MAKEMOVE_H
 
+#include "bitboard.h"
 #include "board.h"
 #include "move.h"
+#include "undo.h"
 
-// Remove a piece from the board
+// Remove a piece from a board
 inline void clearPiece(const int, Board&);
 
-// Add a piece to the board
+// Add a piece to a board
 inline void addPiece(const int, const int, Board&);
 
 // Move a piece

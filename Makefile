@@ -1,10 +1,13 @@
 CXX=g++
-CXXFLAGS=-std=c++0x -c -Wall
+CXXFLAGS=-std=c++0x -Wall -Wextra -Werror -pedantic -O2
 
 all: chess
 
-chess: main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o
-	$(CXX) main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o -o chess
+clean:
+	rm -rf *.o
+
+chess: main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o io.o
+	$(CXX) main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o io.o -o chess
 
 main: main.cc
 	$(CXX) $(CXXFLAGS) main.cc
@@ -30,8 +33,8 @@ movegen: movegen.cc
 makemove: makemove.cc
 	$(CXX) $(CXXFLAGS) makemove.cc
 
+io: io.cc
+	$(CXX) $(CXXFLAGS) io.cc
+
 perft: perft.cc
 	$(CXX) $(CXXFLAGS) perft.cc
-
-clean:
-	rm -rf *.o

@@ -2,8 +2,8 @@
 #define MOVELIST_H
 
 #include "move.h"
-#include <iostream>
 #include <iomanip>
+#include <iostream>
 
 // Maximum moves per position
 const int MAX_POSITION_MOVES = 256;

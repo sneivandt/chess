@@ -1,11 +1,11 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "undo.h"
 #include "bitboard.h"
+#include "undo.h"
 #include <cstdint>
-#include <string>
 #include <iostream>
+#include <string>
 
 // Get the square from a file and rank
 #define FR2SQ(file, rank) ((21 + file) + (rank * 10))
@@ -39,6 +39,21 @@ enum {
 
 // Piece colors
 const int PIECE_COLOR[] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+
+// Piece is pawn
+const bool PIECE_PAWN[] = { false, true, false, false, false, false, false, true, false, false, false, false, false };
+
+// Piece is knight
+const bool PIECE_KNIGHT[] = { false, false, true, false, false, false, false, false, true, false, false, false, false };
+
+// Piece is bishop
+const bool PIECE_BISHOP[] = { false, false, false, true, false, false, false, false, false, true, false, false, false };
+
+// Piece is rook
+const bool PIECE_ROOK[] = { false, false, false, false, true, false, false, false, false, false, true, false, false };
+
+// Piece is queen
+const bool PIECE_QUEEN[] = { false, false, false, false, false, true, false, false, false, false, false, true, false };
 
 // Starting FEN
 const std::string DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -179,10 +194,10 @@ class Board
 
     public:
 
-        // Default constructor
+        // Create a board with the standard starting position
         Board() { parseFen(DEFAULT_FEN); };
 
-        // Constructor
+        // Create a board withe a given position
         Board(const std::string fen) { parseFen(fen); };
 
         // Generate a unique position key
@@ -218,6 +233,12 @@ class Board
         // Update the castle perm
         void updateCastlePerm(const int, const int);
 
+        // Switch side
+        void updateSide() { side ^= 1; };
+
+        // Add to the history
+        void addHistory(Undo&);
+
         // Increment the piece num
         void incrementPieceNum(const int piece) { pNum[piece]++; };
 
@@ -233,29 +254,26 @@ class Board
         // Increment ply
         void incrementPly() { ply++; };
 
-        // Increment history  ply
-        void incrementHistoryPly() { historyPly++; };
-
         // Decrement ply
         void decrementPly() { ply--; };
+
+        // Increment history  ply
+        void incrementHistoryPly() { historyPly++; };
 
         // Decrement history  ply
         void decrementHistoryPly() { historyPly--; };
 
-        // Switch side
-        void updateSide() { side ^= 1; };
-
         // Clear En pasant square
         void clearEnPas() { enPas = NO_SQ; };
-
-        // Add to the history
-        void addHistory(Undo&);
 
         // Get the board array
         int* getBoard() { return board; };
 
         // Get the side to move
         int getSide() const { return side; };
+
+        // Get the ply
+        int getPly() const { return ply; };
 
         // Get fifty move counter
         int getFiftyMove() const { return fiftyMove; };
