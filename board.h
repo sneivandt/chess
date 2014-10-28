@@ -38,22 +38,25 @@ enum {
 };
 
 // Piece colors
-const int PIECE_COLOR[] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+const int PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
 
 // Piece is pawn
-const bool PIECE_PAWN[] = { false, true, false, false, false, false, false, true, false, false, false, false, false };
+const bool PIECE_PAWN[13] = { false, true, false, false, false, false, false, true, false, false, false, false, false };
 
 // Piece is knight
-const bool PIECE_KNIGHT[] = { false, false, true, false, false, false, false, false, true, false, false, false, false };
+const bool PIECE_KNIGHT[13] = { false, false, true, false, false, false, false, false, true, false, false, false, false };
 
 // Piece is bishop
-const bool PIECE_BISHOP[] = { false, false, false, true, false, false, false, false, false, true, false, false, false };
+const bool PIECE_BISHOP[13] = { false, false, false, true, false, false, false, false, false, true, false, false, false };
 
 // Piece is rook
-const bool PIECE_ROOK[] = { false, false, false, false, true, false, false, false, false, false, true, false, false };
+const bool PIECE_ROOK[13] = { false, false, false, false, true, false, false, false, false, false, true, false, false };
 
 // Piece is queen
-const bool PIECE_QUEEN[] = { false, false, false, false, false, true, false, false, false, false, false, true, false };
+const bool PIECE_QUEEN[13] = { false, false, false, false, false, true, false, false, false, false, false, true, false };
+
+// Piece is king
+const bool PIECE_KING[13] = { false, false, false, false, false, false, true, false, false, false, false, false, true };
 
 // Starting FEN
 const std::string DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
@@ -86,7 +89,7 @@ const int FILES[64] = {
 };
 
 // Convert from a 120 to 64 board index
-const int SQ64[] = {
+const int SQ64[120] = {
     99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
     99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
     99,  0,  1,  2,  3,  4,  5,  6,  7, 99,
@@ -102,7 +105,7 @@ const int SQ64[] = {
 };
 
 // Convert from a 64 to 120 board index
-const int SQ120[] = {
+const int SQ120[120] = {
     21, 22, 23, 24, 25, 26, 27, 28,
     31, 32, 33, 34, 35, 36, 37, 38,
     41, 42, 43, 44, 45, 46, 47, 48,
@@ -131,25 +134,29 @@ const int  CASTLE_PERM[120] = {
 
 // Move directions
 const int MOVE_DIR[13][8] = {
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { -8, -19, -21, -12, 8, 19, 21, 12 },
-    { -9, -11, 11, 9, 0, 0, 0, 0 },
-    { -1, -10, 1, 10, 0, 0, 0, 0 },
-    { -9, -11, 11, 9, -1, -10, 1, 10 },
-    { -9, -11, 11, 9, -1, -10, 1, 10 },
-    { 0, 0, 0, 0, 0, 0, 0, 0 },
-    { -8, -19, -21, -12, 8, 19, 21, 12 },
-    { -9, -11, 11, 9, 0, 0, 0, 0 },
-    { -1, -10, 1, 10, 0, 0, 0, 0 },
-    { -9, -11, 11, 9, -1, -10, 1, 10 },
-    { -9, -11, 11, 9, -1, -10, 1, 10 }
+    {  0,   0,   0,   0,  0,   0,  0,  0 },
+    {  0,   0,   0,   0,  0,   0,  0,  0 },
+    { -8, -19, -21, -12,  8,  19, 21, 12 },
+    { -9, -11,  11,   9,  0,   0,  0,  0 },
+    { -1, -10,   1,  10,  0,   0,  0,  0 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 },
+    {  0,   0,   0,   0,  0,   0,  0,  0 },
+    { -8, -19, -21, -12,  8,  19, 21, 12 },
+    { -9, -11,  11,   9,  0,   0,  0,  0 },
+    { -1, -10,   1,  10,  0,   0,  0,  0 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 }
 };
 
-// Zobrist hash keys
+// Zobrist piece hash keys
 extern uint64_t PIECE_KEYS[13][120];
-extern uint64_t SIDE_KEY;
+
+// Zobrist side hash key
 extern uint64_t CASTLE_KEYS[16];
+
+// Zobrist castle hash keys
+extern uint64_t SIDE_KEY;
 
 // Board representation
 class Board
@@ -218,26 +225,26 @@ class Board
         // Check if a square is attacked by a side
         bool sqAttacked(const int, const int) const;
 
-        // Hash a piece key
-        void hashPiece(const int, const int);
-
-        // Hash a castle key
-        void hashCastle();
-
-        // Hash the En Pasant key
-        void hashEnPas();
-
-        // Hash the side key
-        void hashSide();
-
         // Update the castle perm
         void updateCastlePerm(const int, const int);
+
+        // Add to the history
+        void addHistory(Undo&);
 
         // Switch side
         void updateSide() { side ^= 1; };
 
-        // Add to the history
-        void addHistory(Undo&);
+        // Hash a piece key
+        void hashPiece(const int piece, const int square) { hashKey ^= PIECE_KEYS[piece][square]; };
+
+        // Hash a castle key
+        void hashCastle() { hashKey ^= CASTLE_KEYS[castlePerm]; };
+
+        // Hash the En Pasant key
+        void hashEnPas() { hashKey ^= PIECE_KEYS[EMPTY][enPas]; };
+
+        // Hash the side key
+        void hashSide() { hashKey ^= SIDE_KEY; };
 
         // Increment the piece num
         void incrementPieceNum(const int piece) { pNum[piece]++; };
@@ -257,17 +264,17 @@ class Board
         // Decrement ply
         void decrementPly() { ply--; };
 
-        // Increment history  ply
-        void incrementHistoryPly() { historyPly++; };
-
         // Decrement history  ply
         void decrementHistoryPly() { historyPly--; };
 
         // Clear En pasant square
         void clearEnPas() { enPas = NO_SQ; };
 
-        // Get the board array
-        int* getBoard() { return board; };
+        // Get a square
+        int getSquare(const int square) const { return board[square]; };
+
+        // Set a square
+        void setSquare(const int square, const int value) { board[square] = value; };
 
         // Get the side to move
         int getSide() const { return side; };

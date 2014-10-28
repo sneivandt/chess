@@ -14,7 +14,7 @@ void Move::print() const
     int promoted = PROMOTED(value);
     std::cout << squareName(fromSquare) << squareName(toSquare);
     if(promoted) {
-        char promotedChar = "  nbrq  nbrq "[promoted];
+        char promotedChar = PIECE_CHARS[promoted];
         std::cout << promotedChar;
     }
     std::cout << std::endl;

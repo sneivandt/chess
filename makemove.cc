@@ -2,11 +2,11 @@
 
 inline void clearPiece(const int square, Board& pos)
 {
-    int piece = pos.getBoard()[square];
+    int piece = pos.getSquare(square);
     int color = PIECE_COLOR[piece];
     int targetPNum = -1;
     pos.hashPiece(piece, square);
-    pos.getBoard()[square] = EMPTY;
+    pos.setSquare(square, EMPTY);
     if(PIECE_PAWN[piece]) {
         clearBit(pos.getPawns()[color], SQ64[square]);
         clearBit(pos.getPawns()[BOTH], SQ64[square]);
@@ -24,7 +24,7 @@ inline void clearPiece(const int square, Board& pos)
 inline void addPiece(const int piece, const int square, Board& pos)
 {
     int color = PIECE_COLOR[piece];
-    pos.getBoard()[square] = piece;
+    pos.setSquare(square, piece);
     pos.hashPiece(piece, square);
     if(PIECE_PAWN[piece]) {
         setBit(pos.getPawns()[color], SQ64[square]);
@@ -36,12 +36,12 @@ inline void addPiece(const int piece, const int square, Board& pos)
 
 inline void movePiece(const int from, const int to, Board& pos)
 {
-    int piece = pos.getBoard()[from];
+    int piece = pos.getSquare(from);
     int color = PIECE_COLOR[piece];
     pos.hashPiece(piece, to);
     pos.hashPiece(piece, from);
-    pos.getBoard()[from] = EMPTY;
-    pos.getBoard()[to] = piece;
+    pos.setSquare(from, EMPTY);
+    pos.setSquare(to, piece);
     if(PIECE_PAWN[piece]) {
         clearBit(pos.getPawns()[color], SQ64[from]);
         clearBit(pos.getPawns()[BOTH], SQ64[from]);
@@ -63,7 +63,7 @@ bool makeMove(Move& move, Board& pos)
     int captured = CAPTURED(move.getValue());
     int promoted = PROMOTED(move.getValue());
     int side = pos.getSide();
-    int piece = pos.getBoard()[from];
+    int piece = pos.getSquare(from);
     int castle = pos.getCastlePerm();
     int enPas = pos.getEnPas();
     int fiftyMove = pos.getFiftyMove();
@@ -105,7 +105,6 @@ bool makeMove(Move& move, Board& pos)
         pos.resetFiftyMove();
     }
     pos.incrementPly();
-    pos.incrementHistoryPly();
     if(PIECE_PAWN[piece]) {
         pos.resetFiftyMove();
         if(move.getValue() & MFLAGPS) {

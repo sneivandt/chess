@@ -1,8 +1,12 @@
 #include "init.h"
 
-// Zobrist hash keys
+// Zobrist piece hash keys
 uint64_t PIECE_KEYS[13][120];
+
+// Zobrist castle hash keys
 uint64_t CASTLE_KEYS[16];
+
+// Zobrist side hash key
 uint64_t SIDE_KEY;
 
 void initZobristKeys()

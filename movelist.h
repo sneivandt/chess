@@ -5,23 +5,17 @@
 #include <iomanip>
 #include <iostream>
 
-// Maximum moves per position
-const int MAX_POSITION_MOVES = 256;
-
 class MoveList
 {
     private:
 
         // Moves
-        Move moves[MAX_POSITION_MOVES];
+        Move moves[256];
 
         // Number of moves
-        int count;
+        int count = 0;
 
     public:
-
-        // Constructor
-        MoveList() { count = 0; };
 
         // Add a move
         void addMove(const Move);

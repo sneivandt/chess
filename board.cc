@@ -132,7 +132,7 @@ void Board::print() const
 {
     int square;
     int piece;
-    std::cout << std::endl << "     " << (side == WHITE ? "white": "black") << std::endl;
+    std::cout << "     " << (side == WHITE ? "white": "black") << std::endl;
     for(int rank = RANK_8; rank >= RANK_1; rank--) {
         for(int file = FILE_A; file <= FILE_H; file++) {
             square = FR2SQ(file, rank);
@@ -141,7 +141,6 @@ void Board::print() const
         }
         std::cout << std::endl;
     }
-    std::cout << std::endl;
 }
 
 void Board::updateList()
@@ -219,34 +218,11 @@ bool Board::sqAttacked(const int square, const int side) const
     }
     for(int i = 0; i < 8; i++) {
         piece = board[square + MOVE_DIR[WK][i]];
-        if(side == WHITE && piece == WK) {
-            return true;
-        }
-        else if(side == BLACK && piece == BK) {
+        if((side == WHITE && piece == WK) || (side == BLACK && piece == BK)) {
             return true;
         }
     }
     return false;
-}
-
-void Board::hashPiece(const int piece, const int square)
-{
-    hashKey ^= PIECE_KEYS[piece][square];
-}
-
-void Board::hashCastle()
-{
-    hashKey ^= CASTLE_KEYS[castlePerm];
-}
-
-void Board::hashEnPas()
-{
-    hashKey ^= PIECE_KEYS[EMPTY][enPas];
-}
-
-void Board::hashSide()
-{
-    hashKey ^= SIDE_KEY;
 }
 
 void Board::updateCastlePerm(const int to, const int from)
@@ -257,7 +233,7 @@ void Board::updateCastlePerm(const int to, const int from)
 
 void Board::addHistory(Undo& undo)
 {
-    historyPly++;
     history[historyPly] = undo;
+    historyPly++;
 }
 

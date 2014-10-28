@@ -44,8 +44,11 @@ class Undo
         // Get the fifty move count
         int getFiftyMove() const { return fiftyMove; };
 
-        // Get En pasant square
+        // Get the En pasant square
         int getEnPas() const { return enPas; };
+
+        // Get the hash key
+        uint64_t getHashKey() const { return hashKey; };
 };
 
 #endif

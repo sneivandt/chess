@@ -7,7 +7,9 @@
 #include "movegen.h"
 #include "movelist.h"
 #include "undo.h"
+#include "utils.h"
 #include <cassert>
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -22,6 +24,6 @@ void perftTest();
 void testPosition(const std::string, Board&);
 
 // Inner recursive function
-int testPositionInner(const int, Board);
+long long testPositionInner(const int, Board);
 
 #endif
