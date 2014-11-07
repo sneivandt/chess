@@ -3,8 +3,8 @@ CXXFLAGS=-std=c++0x -Wall -Wextra -Werror -pedantic -O3
 
 all: chess
 
-chess: main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o io.o search.o utils.o
-	$(CXX) main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o io.o search.o utils.o -o chess
+chess: main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o io.o search.o utils.o pvtable.o searchinfo.o evaluate.o
+	$(CXX) main.o init.o board.o bitboard.o move.o movelist.o movegen.o makemove.o perft.o io.o search.o utils.o pvtable.o searchinfo.o evaluate.o -o chess
 
 main: main.cc
 	$(CXX) $(CXXFLAGS) main.cc
@@ -41,6 +41,15 @@ search: search.cc
 
 utils: utils.cc
 	$(CXX) $(CXXFLAGS) utils.cc
+
+pvtable: pvtable.cc
+	$(CXX) $(CXXFLAGS) pvtable.cc
+
+searchinfo: searchinfo.cc
+	$(CXX) $(CXXFLAGS) searchinfo.cc
+
+evaluate: evaluate.cc
+	$(CXX) $(CXXFLAGS) evaluate.cc
 
 clean:
 	rm -rf *.o

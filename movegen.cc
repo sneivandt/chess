@@ -27,7 +27,7 @@ inline void addPawnMove(const int from, const int to, const int side, MoveList &
     }
 }
 
-inline void addPawnCaptureMove(const int from, const int to, const int cap, const int side, MoveList &list)
+inline void addPawnMove(const int from, const int to, const int cap, const int side, MoveList &list)
 {
     if(RANKS[SQ64[from]] == PAWN_RANK[side]) {
         for(int i = 0; i < 4; i++) {
@@ -58,10 +58,10 @@ MoveList generateAllMoves(Board &pos)
             }
         }
         if(SQ64[square + offset * 9] != NO_SQ && PIECE_COLOR[pos.getSquare(square + offset * 9)] == (pos.getSide() ^ 1)) {
-            addPawnCaptureMove(square, square + offset * 9, pos.getSquare(square + offset * 9), pos.getSide(), moves);
+            addPawnMove(square, square + offset * 9, pos.getSquare(square + offset * 9), pos.getSide(), moves);
         }
         if(SQ64[square + offset * 11] != NO_SQ && PIECE_COLOR[pos.getSquare(square + offset * 11)] == (pos.getSide() ^ 1)) {
-            addPawnCaptureMove(square, square + offset * 11, pos.getSquare(square + offset * 11), pos.getSide(), moves);
+            addPawnMove(square, square + offset * 11, pos.getSquare(square + offset * 11), pos.getSide(), moves);
         }
         if(square + offset * 9 == pos.getEnPas()) {
             addEnPasMove(MOVE(square, square + offset * 9, EMPTY, EMPTY, MFLAGEP), moves);

@@ -2,15 +2,15 @@
 
 void MoveList::addMove(const Move move)
 {
-    moves[count] = move;
-    count++;
+    moves.push_back(move);
 }
 
 void MoveList::print() const
 {
     std::cout << "Move List" << std::endl;
-    for(int i = 0; i < count; i++) {
-        std::cout << std::setw(3) <<  (i + 1) << " ";
-        moves[i].print();
+    for(std::vector<Move>::size_type i = 0; i != moves.size(); i++) {
+        std::cout << std::setw(3) << (i + 1) << " ";
+        std::cout << moves[i].getString() << " ";
     }
+    std::cout << std::endl;
 }

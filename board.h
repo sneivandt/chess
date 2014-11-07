@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <iostream>
 #include <string>
+#include <vector>
 
 // Get the square from a file and rank
 #define FR2SQ(file, rank) ((21 + file) + (rank * 10))
@@ -39,6 +40,9 @@ enum {
 
 // Piece colors
 const int PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+
+// Piece values
+const int PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
 
 // Piece is pawn
 const bool PIECE_PAWN[13] = { false, true, false, false, false, false, false, true, false, false, false, false, false };
@@ -193,11 +197,17 @@ class Board
         // Piece list counter
         int pNum[13];
 
-        // Game history
-        Undo history[2048];
+        // Material count
+        int material[2];
 
-        // History ply
-        int historyPly;
+        // Game history
+        std::vector<Undo> history;
+
+        // Moves that beat alpha
+        int searchHistory[13][120];
+
+        // Beta cutoffs
+        std::vector<int> searchKillers[2];
 
     public:
 
@@ -219,8 +229,8 @@ class Board
         // Print the board
         void print() const;
 
-        // Update piece list
-        void updateList();
+        // Update piece list and material
+        void updateListMaterial();
 
         // Check if a square is attacked by a side
         bool sqAttacked(const int, const int) const;
@@ -228,8 +238,17 @@ class Board
         // Update the castle perm
         void updateCastlePerm(const int, const int);
 
+        // Clear search history
+        void clearSearchHistory();
+
+        // Clear search killers
+        void clearSearchKillers();
+
         // Add to the history
-        void addHistory(Undo&);
+        void addHistory(Undo& undo);
+
+        // Remove history
+        Undo removeHistory();
 
         // Switch side
         void updateSide() { side ^= 1; };
@@ -264,11 +283,14 @@ class Board
         // Decrement ply
         void decrementPly() { ply--; };
 
-        // Decrement history  ply
-        void decrementHistoryPly() { historyPly--; };
+        // Reset ply
+        void resetPly() { ply =0; };
 
         // Clear En pasant square
         void clearEnPas() { enPas = NO_SQ; };
+
+        // Add to material count
+        void addMaterial(const int side, const int val) { material[side] += val; };
 
         // Get a square
         int getSquare(const int square) const { return board[square]; };
@@ -313,10 +335,10 @@ class Board
         int getPieceNum(const int piece) const { return pNum[piece]; };
 
         // Get the history
-        Undo* getHistory() { return history; };
+        std::vector<Undo> getHistory() { return history; };
 
-        // Get the history ply
-        int getHistoryPly() { return historyPly; };
+        // Get material for a side
+        int getMaterial(const int side) const { return material[side]; }
 };
 
 #endif

@@ -7,4 +7,7 @@
 // Get a timestamp
 std::string getTimestamp();
 
+// Get time milliseconds
+int getTime();
+
 #endif

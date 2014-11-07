@@ -13,9 +13,10 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <vector>
 
 // Test specs
-const std::string TEST_SPECS = "perft.txt";
+const std::string TEST_FILE = "perft.txt";
 
 // Test all the positions
 void perftTest();

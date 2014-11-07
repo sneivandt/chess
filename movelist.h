@@ -4,16 +4,14 @@
 #include "move.h"
 #include <iomanip>
 #include <iostream>
+#include <vector>
 
 class MoveList
 {
     private:
 
         // Moves
-        Move moves[256];
-
-        // Number of moves
-        int count = 0;
+        std::vector<Move> moves;
 
     public:
 
@@ -23,11 +21,8 @@ class MoveList
         // Print the move list
         void print() const;
 
-        // Get the count
-        int getCount() const { return count; };
-
         // Get the moves
-        Move* getMoves() { return moves; };
+        std::vector<Move> getMoves() { return moves; };
 };
 
 #endif

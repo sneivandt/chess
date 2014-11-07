@@ -1,9 +1,13 @@
+#include "evaluate.h"
 #include "init.h"
 #include "io.h"
 #include "makemove.h"
 #include "move.h"
 #include "perft.h"
+#include "pvtable.h"
 #include "search.h"
+#include "searchinfo.h"
+#include <vector>
 
 int main()
 {
@@ -24,24 +28,19 @@ int main()
             pos.parseFen(DEFAULT_FEN);
         }
         else if(input == "undo") {
-            if(pos.getPly() == 0) {
-                std::cout << std::endl;
-                std::cout << "WARNING: At game start" << std::endl;
-            }
-            else {
+            if(pos.getPly() != 0) {
                 takeMove(pos);
             }
         }
-        else if(input == "test") {
+        else if(input == "perft") {
             std::cout << std::endl;
             perftTest();
             break;
         }
-        else if(input == "help" || input == "h") {
+        else if(input == "search") {
             std::cout << std::endl;
-            std::cout << "new  - New game" << std::endl;
-            std::cout << "undo - Undo move" << std::endl;
-            std::cout << "test - Perft test" << std::endl;
+            SearchInfo info(6);
+            searchPosition(pos, info);
         }
         else {
             try {

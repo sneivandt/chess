@@ -9,3 +9,8 @@ std::string getTimestamp()
     strftime(buf, sizeof(buf), "%X", &tstruct);
     return buf;
 }
+
+int getTime()
+{
+    return time(0) * 1000;
+}

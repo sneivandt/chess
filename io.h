@@ -6,6 +6,7 @@
 #include "movegen.h"
 #include "movelist.h"
 #include <string>
+#include <vector>
 
 // Parse an input move and throw if the input is invalid
 Move parseMove(std::string, Board&) throw(int);

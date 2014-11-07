@@ -30,7 +30,7 @@ inline void addEnPasMove(const int, MoveList&);
 inline void addPawnMove(const int, const int, const int, MoveList&);
 
 // Add pawn capture move
-inline void addPawnCaptureMove(const int, const int, const int, const int, MoveList&);
+inline void addPawnMove(const int, const int, const int, const int, MoveList&);
 
 // Generate all moves
 MoveList generateAllMoves(Board&);

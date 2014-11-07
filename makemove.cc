@@ -5,6 +5,7 @@ inline void clearPiece(const int square, Board& pos)
     int piece = pos.getSquare(square);
     int color = PIECE_COLOR[piece];
     int targetPNum = -1;
+    pos.addMaterial(color, -1 * PIECE_VAL[piece]);
     pos.hashPiece(piece, square);
     pos.setSquare(square, EMPTY);
     if(PIECE_PAWN[piece]) {
@@ -24,6 +25,7 @@ inline void clearPiece(const int square, Board& pos)
 inline void addPiece(const int piece, const int square, Board& pos)
 {
     int color = PIECE_COLOR[piece];
+    pos.addMaterial(color, PIECE_VAL[piece]);
     pos.setSquare(square, piece);
     pos.hashPiece(piece, square);
     if(PIECE_PAWN[piece]) {
@@ -138,8 +140,7 @@ bool makeMove(Move& move, Board& pos)
 void takeMove(Board& pos)
 {
     pos.decrementPly();
-    pos.decrementHistoryPly();
-    Undo undo = pos.getHistory()[pos.getHistoryPly()];
+    Undo undo = pos.removeHistory();
     int move = undo.getMoveValue();
     int from = FROMSQ(move);
     int to = TOSQ(move);

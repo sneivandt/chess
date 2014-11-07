@@ -36,12 +36,13 @@ void Board::reset()
             pList[i][j] = 0;
         }
     }
+    material[WHITE] = 0;
+    material[BLACK] = 0;
     side = BOTH;
     ply = 0;
     fiftyMove = 0;
     enPas = NO_SQ;
     castlePerm = 0;
-    historyPly = 0;
     hashKey = 0ULL;
 }
 
@@ -123,7 +124,7 @@ bool Board::parseFen(const std::string fen)
         }
         break;
     }
-    updateList();
+    updateListMaterial();
     generateHash();
     return true;
 }
@@ -143,7 +144,7 @@ void Board::print() const
     }
 }
 
-void Board::updateList()
+void Board::updateListMaterial()
 {
     int piece;
     for(int i = 0; i < 120; i++) {
@@ -151,6 +152,7 @@ void Board::updateList()
         if(piece != NO_SQ && piece != EMPTY) {
             pList[piece][pNum[piece]] = i;
             pNum[piece]++;
+            material[PIECE_COLOR[piece]] += PIECE_VAL[piece];
             if(piece == WP) {
                 setBit(pawns[WHITE], SQ64[i]);
                 setBit(pawns[BOTH], SQ64[i]);
@@ -233,7 +235,27 @@ void Board::updateCastlePerm(const int to, const int from)
 
 void Board::addHistory(Undo& undo)
 {
-    history[historyPly] = undo;
-    historyPly++;
+    history.push_back(undo);
 }
 
+Undo Board::removeHistory()
+{
+    Undo undo = history.back();
+    history.pop_back();
+    return undo;
+}
+
+void Board::clearSearchHistory()
+{
+    for(int i = 0; i < 13; i++) {
+        for(int j = 0; j < 120; j++) {
+            searchHistory[i][j] = 0;
+        }
+    }
+}
+
+void Board::clearSearchKillers()
+{
+    searchKillers[0].clear();
+    searchKillers[1].clear();
+}

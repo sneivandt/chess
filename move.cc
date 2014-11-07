@@ -7,16 +7,16 @@ inline std::string squareName(const int square)
     return name;
 }
 
-void Move::print() const
+std::string Move::getString() const
 {
     int fromSquare = FROMSQ(value);
     int toSquare = TOSQ(value);
     int promoted = PROMOTED(value);
-    std::cout << squareName(fromSquare) << squareName(toSquare);
+    std::string str = squareName(fromSquare) + squareName(toSquare);
     if(promoted) {
         char promotedChar = PIECE_CHARS[promoted];
-        std::cout << promotedChar;
+        str += promotedChar;
     }
-    std::cout << std::endl;
+    return str;
 }
 

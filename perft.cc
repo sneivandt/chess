@@ -3,7 +3,7 @@
 void perftTest()
 {
     Board pos;
-    std::ifstream input(TEST_SPECS);
+    std::ifstream input(TEST_FILE);
     std::string line;
     std::string token;
     std::string delimiter = ";";
@@ -44,9 +44,10 @@ long long testPositionInner(const int depth, Board pos)
         return 1;
     }
     long long nodes = 0;
-    MoveList moves = generateAllMoves(pos);
-    for(int i = 0; i < moves.getCount(); i++) {
-        Move move = moves.getMoves()[i];
+    MoveList movelist = generateAllMoves(pos);
+    std::vector<Move> moves = movelist.getMoves();
+    for(std::vector<Move>::size_type i = 0; i != moves.size(); i++) {
+        Move move = moves[i];
         if(!makeMove(move, pos)) {
             continue;
         }

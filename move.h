@@ -55,8 +55,8 @@ class Move
         // Create a move with a given value and score
         Move(const int value, const int score): value(value), score(score) {};
 
-        // Print a move
-        void print() const;
+        // Get string representation of the move
+        std::string getString() const;
 
         // Get value
         int getValue() const { return value; };
