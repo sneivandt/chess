@@ -8,6 +8,7 @@
 #include "pvtable.h"
 #include "searchinfo.h"
 #include "undo.h"
+#include <algorithm>
 #include <limits>
 #include <vector>
 
@@ -30,12 +31,15 @@ bool isRepetition(Board&);
 void clearForSearch(Board&, SearchInfo&);
 
 // Quiesence
-int quiescence(const int, const int, Board&, SearchInfo&);
+int quiescence(int, int, Board&, SearchInfo&, PVTable&);
 
 // Alpha beta
 int alphaBeta(int, int, const int, Board&, SearchInfo&, PVTable&);
 
 // Iterative deepening
 void searchPosition(Board&, SearchInfo&);
+
+// Print search summary
+void printSearch(SearchInfo&, const int, const int, std::vector<Move>);
 
 #endif

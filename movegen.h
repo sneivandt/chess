@@ -17,22 +17,25 @@ const int PAWN_RANK[2] = { RANK_7, RANK_2 };
 // Promotion pieces
 const int PROMOTION_PIECES[2][4] = {{ WQ, WR, WB, WN }, { BQ, BR, BB, BN }};
 
+// Most valuable victum least valuable attacker scores
+extern int MVVLVA_SCORES[13][13];
+
 // Add a quiet move
-inline void addQuietMove(const int, MoveList&);
+inline void addQuietMove(const int, MoveList&, Board&);
 
 // Add a capture move
-inline void addCaptureMove(const int, MoveList&);
+inline void addCaptureMove(const int, MoveList&, Board&);
 
 // Add an En passant move
 inline void addEnPasMove(const int, MoveList&);
 
 // Add pawn move
-inline void addPawnMove(const int, const int, const int, MoveList&);
+inline void addPawnMove(const int, const int, const int, MoveList&, Board&);
 
 // Add pawn capture move
-inline void addPawnMove(const int, const int, const int, const int, MoveList&);
+inline void addPawnMove(const int, const int, const int, const int, MoveList&, Board&);
 
 // Generate all moves
-MoveList generateAllMoves(Board&);
+MoveList generateAllMoves(Board&, const bool);
 
 #endif

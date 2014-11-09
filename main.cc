@@ -1,13 +1,9 @@
-#include "evaluate.h"
 #include "init.h"
 #include "io.h"
 #include "makemove.h"
 #include "move.h"
 #include "perft.h"
-#include "pvtable.h"
 #include "search.h"
-#include "searchinfo.h"
-#include <vector>
 
 int main()
 {
@@ -19,27 +15,27 @@ int main()
         std::cout << std::endl;
         pos.print();
         std::cout << std::endl;
-        std::cout << ((pos.getPly() / 2) + 1) << ": ";
+        std::cout << ((pos.getHistory().size() / 2) + 1) << ": ";
         std::cin >> input;
-        if(input == "exit") {
+        if(input == "q") {
             break;
         }
-        else if(input == "new") {
+        else if(input == "n") {
             pos.parseFen(DEFAULT_FEN);
         }
-        else if(input == "undo") {
-            if(pos.getPly() != 0) {
+        else if(input == "u") {
+            if(pos.getHistory().size() > 0) {
                 takeMove(pos);
             }
         }
-        else if(input == "perft") {
+        else if(input == "p") {
             std::cout << std::endl;
             perftTest();
             break;
         }
-        else if(input == "search") {
+        else if(input == "s") {
             std::cout << std::endl;
-            SearchInfo info(6);
+            SearchInfo info(7);
             searchPosition(pos, info);
         }
         else {

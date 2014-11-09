@@ -1,6 +1,6 @@
 #include "evaluate.h"
 
-int evaluatePosition(Board& pos)
+int evaluatePosition(Board &pos)
 {
     int square;
     int score = pos.getMaterial(WHITE) - pos.getMaterial(BLACK);
@@ -37,7 +37,7 @@ int evaluatePosition(Board& pos)
         score -= ROOK_TABLE[MIRROR64[SQ64[square]]];
     }
     if(pos.getSide() == BLACK) {
-        score *= -1;
+        score = -score;
     }
     return score;
 }

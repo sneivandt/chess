@@ -62,7 +62,7 @@ const bool PIECE_QUEEN[13] = { false, false, false, false, false, true, false, f
 // Piece is king
 const bool PIECE_KING[13] = { false, false, false, false, false, false, true, false, false, false, false, false, true };
 
-// Starting FEN
+// Default FEN
 const std::string DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 // Piece chars
@@ -173,7 +173,7 @@ class Board
         // Side to move
         int side;
 
-        // Current ply
+        // Search ply
         int ply;
 
         // Fifty move rule count
@@ -206,18 +206,18 @@ class Board
         // Moves that beat alpha
         int searchHistory[13][120];
 
-        // Beta cutoffs
-        std::vector<int> searchKillers[2];
+        // Non capture beta cutoffs
+        int searchKillers[2][64];
 
     public:
 
-        // Create a board with the standard starting position
+        // Default starting board
         Board() { parseFen(DEFAULT_FEN); };
 
-        // Create a board withe a given position
+        // Non standard starting board
         Board(const std::string fen) { parseFen(fen); };
 
-        // Generate a unique position key
+        // Generate position hash key
         void generateHash();
 
         // Reset the board
@@ -229,29 +229,50 @@ class Board
         // Print the board
         void print() const;
 
-        // Update piece list and material
+        // Update piece lists and material
         void updateListMaterial();
 
         // Check if a square is attacked by a side
         bool sqAttacked(const int, const int) const;
 
+
         // Update the castle perm
         void updateCastlePerm(const int, const int);
 
-        // Clear search history
-        void clearSearchHistory();
+
+        // Add to the history
+        void addHistory(Undo &undo) { history.push_back(undo); };
+
+        // Pop from the history
+        Undo popHistory();
+
+
+        // Add a killer
+        void addSearchKiller(const int);
+
+        // Get a killer
+        int getSearchKiller(const int) const;
 
         // Clear search killers
         void clearSearchKillers();
 
-        // Add to the history
-        void addHistory(Undo& undo);
 
-        // Remove history
-        Undo removeHistory();
+        // Increment search history
+        void incrementSearchHistory(const int, const int);
+
+        // Clear search history
+        void clearSearchHistory();
+
+        // Get search history
+        int getSearchHistory(const int piece, const int square) const { return searchHistory[piece][square]; };
+
 
         // Switch side
         void updateSide() { side ^= 1; };
+
+
+        // Get hash key
+        uint64_t getHashKey() const { return hashKey; };
 
         // Hash a piece key
         void hashPiece(const int piece, const int square) { hashKey ^= PIECE_KEYS[piece][square]; };
@@ -265,17 +286,29 @@ class Board
         // Hash the side key
         void hashSide() { hashKey ^= SIDE_KEY; };
 
+
         // Increment the piece num
         void incrementPieceNum(const int piece) { pNum[piece]++; };
 
         // Decrement the piece num
         void decrementPieceNum(const int piece) { pNum[piece]--; };
 
+
         // Increment fifty move counter
         void incrementFiftyMove() { fiftyMove++; };
 
         // Reset fifty move counter
         void resetFiftyMove() { fiftyMove = 0; };
+
+        // Get fifty move counter
+        int getFiftyMove() const { return fiftyMove; };
+
+        // Set the fifty move count
+        void setFiftyMove(const int count) { fiftyMove = count; };
+
+
+        // Get the ply
+        int getPly() const { return ply; };
 
         // Increment ply
         void incrementPly() { ply++; };
@@ -284,13 +317,25 @@ class Board
         void decrementPly() { ply--; };
 
         // Reset ply
-        void resetPly() { ply =0; };
+        void resetPly() { ply = 0; };
+
 
         // Clear En pasant square
         void clearEnPas() { enPas = NO_SQ; };
 
+        // Get En pasant square
+        int getEnPas() const { return enPas; };
+
+        // Set En passant square
+        void setEnPas(const int square) { enPas = square; };
+
+
         // Add to material count
         void addMaterial(const int side, const int val) { material[side] += val; };
+
+        // Get material for a side
+        int getMaterial(const int side) const { return material[side]; }
+
 
         // Get a square
         int getSquare(const int square) const { return board[square]; };
@@ -300,24 +345,6 @@ class Board
 
         // Get the side to move
         int getSide() const { return side; };
-
-        // Get the ply
-        int getPly() const { return ply; };
-
-        // Get fifty move counter
-        int getFiftyMove() const { return fiftyMove; };
-
-        // Set the fifty move count
-        void setFiftyMove(const int count) { fiftyMove = count; };
-
-        // Get En pasant square
-        int getEnPas() const { return enPas; };
-
-        // Set En passant square
-        void setEnPas(const int square) { enPas = square; };
-
-        // Get hash key
-        uint64_t getHashKey() const { return hashKey; };
 
         // Get castle perm
         int getCastlePerm() const { return castlePerm; };
@@ -336,9 +363,6 @@ class Board
 
         // Get the history
         std::vector<Undo> getHistory() { return history; };
-
-        // Get material for a side
-        int getMaterial(const int side) const { return material[side]; }
 };
 
 #endif

@@ -1,12 +1,12 @@
 #include "pvtable.h"
 
-void PVTable::addMove(Board& pos, Move& move)
+void PVTable::addMove(Board &pos, Move &move)
 {
     uint64_t hash = pos.getHashKey();
     map[hash] = move;
 }
 
-Move PVTable::getMove(Board& pos) const
+Move PVTable::getMove(Board &pos) const
 {
     uint64_t hash = pos.getHashKey();
     std::unordered_map<uint64_t, Move>::const_iterator element = map.find(hash);
@@ -17,7 +17,7 @@ Move PVTable::getMove(Board& pos) const
     return move;
 }
 
-std::vector<Move> PVTable::getPV(Board& pos)
+std::vector<Move> PVTable::getPV(Board &pos)
 {
     int originalPly = pos.getPly();
     std::vector<Move> pv;

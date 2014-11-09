@@ -1,6 +1,6 @@
 #include "makemove.h"
 
-inline void clearPiece(const int square, Board& pos)
+inline void clearPiece(const int square, Board &pos)
 {
     int piece = pos.getSquare(square);
     int color = PIECE_COLOR[piece];
@@ -22,7 +22,7 @@ inline void clearPiece(const int square, Board& pos)
     pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];
 }
 
-inline void addPiece(const int piece, const int square, Board& pos)
+inline void addPiece(const int piece, const int square, Board &pos)
 {
     int color = PIECE_COLOR[piece];
     pos.addMaterial(color, PIECE_VAL[piece]);
@@ -36,7 +36,7 @@ inline void addPiece(const int piece, const int square, Board& pos)
     pos.incrementPieceNum(piece);
 }
 
-inline void movePiece(const int from, const int to, Board& pos)
+inline void movePiece(const int from, const int to, Board &pos)
 {
     int piece = pos.getSquare(from);
     int color = PIECE_COLOR[piece];
@@ -58,7 +58,7 @@ inline void movePiece(const int from, const int to, Board& pos)
     }
 }
 
-bool makeMove(Move& move, Board& pos)
+bool makeMove(Move &move, Board &pos)
 {
     int from = FROMSQ(move.getValue());
     int to = TOSQ(move.getValue());
@@ -137,10 +137,10 @@ bool makeMove(Move& move, Board& pos)
     return true;
 }
 
-void takeMove(Board& pos)
+void takeMove(Board &pos)
 {
     pos.decrementPly();
-    Undo undo = pos.removeHistory();
+    Undo undo = pos.popHistory();
     int move = undo.getMoveValue();
     int from = FROMSQ(move);
     int to = TOSQ(move);

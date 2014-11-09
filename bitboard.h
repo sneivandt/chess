@@ -15,16 +15,16 @@ const int BITTABLE[64] = {
     38, 28, 58, 20, 37, 17, 36,  8
 };
 
-// Pop a piece on a bit board and return the index that was popped
+// Pop a piece
 int popBit(uint64_t&);
 
-// Count pieces in the bitboard
+// Count pieces
 int countBits(uint64_t);
 
-// Clear a bit on a bit board
+// Clear
 void clearBit(uint64_t&, int);
 
-// Set a bit on a bit board
+// Set a bit
 void setBit(uint64_t&, int);
 
 #endif

@@ -55,11 +55,20 @@ class Move
         // Create a move with a given value and score
         Move(const int value, const int score): value(value), score(score) {};
 
+        // Less than operator
+        bool operator< (Move &other) const { return score < other.getScore(); };
+
         // Get string representation of the move
         std::string getString() const;
 
+        // Add to the score
+        void addScore(const int value) { score += value; };
+
         // Get value
         int getValue() const { return value; };
+
+        // Get score
+        int getScore() const { return score; };
 };
 
 #endif

@@ -44,6 +44,9 @@ void Board::reset()
     enPas = NO_SQ;
     castlePerm = 0;
     hashKey = 0ULL;
+    history.clear();
+    clearSearchKillers();
+    clearSearchHistory();
 }
 
 bool Board::parseFen(const std::string fen)
@@ -104,7 +107,7 @@ bool Board::parseFen(const std::string fen)
         side = fen[index] == 'w' ? WHITE: BLACK;
         index += 2;
         for(int i = 0; i < 4; i++) {
-            if(fen[index] == ' ') {
+            if(fen.size() < index || fen[index] == ' ') {
                 break;
             }
             switch(fen[index]) {
@@ -116,7 +119,7 @@ bool Board::parseFen(const std::string fen)
             index++;
         }
         index++;
-        if(fen[index] != '-') {
+        if(fen.size() > index + 1 && fen[index] != '-') {
             file = fen[index] - 'a';
             rank = fen[index + 1] - '1';
             enPas = FR2SQ(file, rank);
@@ -233,16 +236,42 @@ void Board::updateCastlePerm(const int to, const int from)
     castlePerm &= CASTLE_PERM[from];
 }
 
-void Board::addHistory(Undo& undo)
-{
-    history.push_back(undo);
-}
-
-Undo Board::removeHistory()
+Undo Board::popHistory()
 {
     Undo undo = history.back();
     history.pop_back();
     return undo;
+}
+
+void Board::addSearchKiller(const int move)
+{
+    if(ply < 64) {
+        searchKillers[1][ply] = searchKillers[0][ply];
+        searchKillers[0][ply] = move;
+    }
+}
+
+int Board::getSearchKiller(const int num) const
+{
+    if(ply < 64) {
+        return searchKillers[num][ply];
+    }
+    return 0;
+}
+
+void Board::incrementSearchHistory(const int move, const int depth)
+{
+    int piece = getSquare(FROMSQ(move));
+    int square = TOSQ(move);
+    searchHistory[piece][square] += depth;
+}
+
+void Board::clearSearchKillers()
+{
+    for(int i = 0; i < 64; i++) {
+        searchKillers[0][i] = 0;
+        searchKillers[1][i] = 0;
+    }
 }
 
 void Board::clearSearchHistory()
@@ -254,8 +283,3 @@ void Board::clearSearchHistory()
     }
 }
 
-void Board::clearSearchKillers()
-{
-    searchKillers[0].clear();
-    searchKillers[1].clear();
-}

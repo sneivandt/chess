@@ -1,5 +1,8 @@
 #include "init.h"
 
+// MVVLVA victum scores
+const int VICTUM_SCORES[13] = {0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
+
 // Zobrist piece hash keys
 uint64_t PIECE_KEYS[13][120];
 
@@ -8,6 +11,9 @@ uint64_t CASTLE_KEYS[16];
 
 // Zobrist side hash key
 uint64_t SIDE_KEY;
+
+// Most valuable victum least valuable attacker scores
+int MVVLVA_SCORES[13][13];
 
 void initZobristKeys()
 {
@@ -25,7 +31,17 @@ void initZobristKeys()
     SIDE_KEY = dist(e2);
 }
 
+void initMVVLVA()
+{
+    for(int attacker = WP; attacker <= BK; attacker++) {
+        for(int victim = WP; victim < BK; victim++) {
+            MVVLVA_SCORES[victim][attacker] = VICTUM_SCORES[victim] + 6 - (VICTUM_SCORES[attacker] / 100);
+        }
+    }
+}
+
 void init()
 {
     initZobristKeys();
+    initMVVLVA();
 }

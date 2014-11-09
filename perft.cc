@@ -29,7 +29,7 @@ void perftTest()
     std::cout << "RUNTIME " << ((std::clock() - start)/(float)CLOCKS_PER_SEC) << "s" << std::endl;
 }
 
-void testPosition(const std::string token, Board& pos)
+void testPosition(const std::string token, Board &pos)
 {
     int depth = token[1] - '0';
     std::string target = token.substr(token.find(" ") + 1, token.length());
@@ -38,13 +38,13 @@ void testPosition(const std::string token, Board& pos)
     assert(target.compare(std::to_string(nodes)) == 0);
 }
 
-long long testPositionInner(const int depth, Board pos)
+long long testPositionInner(const int depth, Board &pos)
 {
     if(depth == 0) {
         return 1;
     }
     long long nodes = 0;
-    MoveList movelist = generateAllMoves(pos);
+    MoveList movelist = generateAllMoves(pos, false);
     std::vector<Move> moves = movelist.getMoves();
     for(std::vector<Move>::size_type i = 0; i != moves.size(); i++) {
         Move move = moves[i];

@@ -2,6 +2,7 @@
 #define SEARCHINFO_H
 
 #include "utils.h"
+#include <iostream>
 
 class SearchInfo
 {
@@ -37,6 +38,12 @@ class SearchInfo
         // Stop flag
         bool stopped;
 
+        // Fail high
+        long long failHigh;
+
+        // Fail high first
+        long long failHighFirst;
+
     public:
 
         // Constructor
@@ -45,8 +52,17 @@ class SearchInfo
         // Reset info
         void reset();
 
+        // Get ordering efficiency
+        float getOrdering() const { return failHigh == 0 ? 0 : (float)failHighFirst/failHigh; };
+
         // Increment nodes
         void incrementNodes() { nodes++; };
+
+        // Increment fail high
+        void incrementFailHigh() { failHigh++; };
+
+        // Increment fail high first
+        void incrementFailHighFirst() { failHighFirst++; };
 
         // Get depth
         int getDepth() const { return depth; };

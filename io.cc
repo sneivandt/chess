@@ -1,12 +1,12 @@
 #include "io.h"
 
-Move parseMove(const std::string input, Board& pos) throw(int)
+Move parseMove(const std::string input, Board &pos) throw(int)
 {
     if(input.length() > 3) {
         int from = FR2SQ((int)(input.at(0) - 'a'), (int)(input.at(1) - '1'));
         int to = FR2SQ((int)(input[2] - 'a'), (int)(input[3] - '1'));
         int promoted = 0;
-        MoveList movelist = generateAllMoves(pos);
+        MoveList movelist = generateAllMoves(pos,false);
         std::vector<Move> moves = movelist.getMoves();
         Move move;
         for(std::vector<Move>::size_type i = 0; i != moves.size(); i++) {
