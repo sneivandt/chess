@@ -92,7 +92,6 @@ bool Board::parseFen(const std::string fen)
                     count = 0;
                     break;
                 default:
-                    std::cout << "FEN Error " << std::endl;
                     return false;
             }
             for(int i = 0; i < count; i++) {
@@ -232,8 +231,8 @@ bool Board::sqAttacked(const int square, const int side) const
 
 void Board::updateCastlePerm(const int to, const int from)
 {
-    castlePerm &= CASTLE_PERM[to];
-    castlePerm &= CASTLE_PERM[from];
+    castlePerm &= CASTLE_PERM_MASK[to];
+    castlePerm &= CASTLE_PERM_MASK[from];
 }
 
 Undo Board::popHistory()

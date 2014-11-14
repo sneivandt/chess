@@ -21,7 +21,7 @@ class Undo
         // Fifty move rule count
         int fiftyMove;
 
-        // The move value
+        // Move value
         int moveValue;
 
         // Position key

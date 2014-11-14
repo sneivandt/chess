@@ -9,7 +9,7 @@ Move parseMove(const std::string input, Board &pos) throw(int)
         MoveList movelist = generateAllMoves(pos,false);
         std::vector<Move> moves = movelist.getMoves();
         Move move;
-        for(std::vector<Move>::size_type i = 0; i != moves.size(); i++) {
+        for(unsigned int i = 0; i < moves.size(); i++) {
             move = moves[i];
             if(FROMSQ(move.getValue()) == from && TOSQ(move.getValue()) == to) {
                 promoted = PROMOTED(move.getValue());

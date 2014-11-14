@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-// Bit table
+// Magic bit table
 const int BITTABLE[64] = {
     63, 30,  3, 32, 25, 41, 22, 33,
     15, 50, 42, 13, 11, 53, 19, 34,
@@ -15,16 +15,16 @@ const int BITTABLE[64] = {
     38, 28, 58, 20, 37, 17, 36,  8
 };
 
-// Pop a piece
+// Pop a piece from a bitboard
 int popBit(uint64_t&);
 
-// Count pieces
+// Count pieces on a bitboard
 int countBits(uint64_t);
 
-// Clear
+// Clear a bitboard
 void clearBit(uint64_t&, int);
 
-// Set a bit
+// Set a bit on a bitboard
 void setBit(uint64_t&, int);
 
 #endif

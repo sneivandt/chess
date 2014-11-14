@@ -46,13 +46,13 @@ class SearchInfo
 
     public:
 
-        // Constructor
+        // Searchinfo with a given depth limit
         SearchInfo(const int depth): depth(depth) {};
 
-        // Reset info
+        // Reset the search info
         void reset();
 
-        // Get ordering efficiency
+        // Get the ordering efficiency
         float getOrdering() const { return failHigh == 0 ? 0 : (float)failHighFirst/failHigh; };
 
         // Increment nodes
@@ -64,10 +64,10 @@ class SearchInfo
         // Increment fail high first
         void incrementFailHighFirst() { failHighFirst++; };
 
-        // Get depth
+        // Get the depth
         int getDepth() const { return depth; };
 
-        // Get nodes
+        // Get the nodes
         long long getNodes() const { return nodes; };
 };
 

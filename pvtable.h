@@ -17,13 +17,13 @@ class PVTable
 
     public:
 
-        // Constructor
+        // Default Constructor
         PVTable() {};
 
-        // Add a move to the map
+        // Add a move to the hash table
         void addMove(Board&, Move&);
 
-        // Get a move from the map
+        // Get a move from the hash table
         Move getMove(Board&) const;
 
         // Get the principal variation

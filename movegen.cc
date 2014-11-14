@@ -24,18 +24,6 @@ inline void addEnPasMove(const int move, MoveList &list)
     list.addMove(Move(move, MVVLVA_SCORES[WP][WP] + 1000000));
 }
 
-inline void addPawnMove(const int from, const int to, const int side, MoveList &list, Board &pos)
-{
-    if(RANKS[SQ64[from]] == PAWN_RANK[side]) {
-        for(int i = 0; i < 4; i++) {
-            addQuietMove(MOVE(from, to, 0, PROMOTION_PIECES[side][i], 0), list, pos);
-        }
-    }
-    else {
-        addQuietMove(MOVE(from, to, 0, EMPTY, 0), list, pos);
-    }
-}
-
 inline void addPawnMove(const int from, const int to, const int cap, const int side, MoveList &list, Board &pos)
 {
     if(RANKS[SQ64[from]] == PAWN_RANK[side]) {
@@ -62,7 +50,7 @@ MoveList generateAllMoves(Board &pos, const bool onlyCaps)
         square = pos.getPieceList(piece)[pceNum];
         if(!onlyCaps) {
             if(pos.getSquare(square + offset * 10) == EMPTY) {
-                addPawnMove(square, square + offset * 10, pos.getSide(), moves, pos);
+                addPawnMove(square, square + offset * 10, EMPTY, pos.getSide(), moves, pos);
                 if(RANKS[SQ64[square]] == PAWN_RANK[(pos.getSide() ^ 1)] && pos.getSquare(square + offset * 20) == EMPTY) {
                     addQuietMove(MOVE(square, square + offset * 20, EMPTY, EMPTY, MFLAGPS), moves, pos);
                 }

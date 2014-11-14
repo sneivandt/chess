@@ -13,7 +13,7 @@
 #include <string>
 #include <vector>
 
-// Test specs
+// Test specs file
 const std::string TEST_FILE = "perft.txt";
 
 // Test all the positions
@@ -22,7 +22,7 @@ void perftTest();
 // Test a position
 void testPosition(const std::string, Board&);
 
-// Inner recursive function
-long long testPositionInner(const int, Board&);
+// Count the moves in position
+long long countMoves(const int, Board&);
 
 #endif

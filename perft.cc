@@ -33,12 +33,12 @@ void testPosition(const std::string token, Board &pos)
 {
     int depth = token[1] - '0';
     std::string target = token.substr(token.find(" ") + 1, token.length());
-    long long nodes = testPositionInner(depth, pos);
+    long long nodes = countMoves(depth, pos);
     std::cout << getTimestamp() << " D" << depth << " " << nodes << std::endl;
     assert(target.compare(std::to_string(nodes)) == 0);
 }
 
-long long testPositionInner(const int depth, Board &pos)
+long long countMoves(const int depth, Board &pos)
 {
     if(depth == 0) {
         return 1;
@@ -46,12 +46,12 @@ long long testPositionInner(const int depth, Board &pos)
     long long nodes = 0;
     MoveList movelist = generateAllMoves(pos, false);
     std::vector<Move> moves = movelist.getMoves();
-    for(std::vector<Move>::size_type i = 0; i != moves.size(); i++) {
+    for(unsigned int i = 0; i < moves.size(); i++) {
         Move move = moves[i];
         if(!makeMove(move, pos)) {
             continue;
         }
-        nodes += testPositionInner(depth - 1, pos);
+        nodes += countMoves(depth - 1, pos);
         takeMove(pos);
     }
     return nodes;

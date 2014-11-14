@@ -30,16 +30,13 @@ bool isRepetition(Board&);
 // Clear search data
 void clearForSearch(Board&, SearchInfo&);
 
-// Quiesence
-int quiescence(int, int, Board&, SearchInfo&, PVTable&);
-
-// Alpha beta
-int alphaBeta(int, int, const int, Board&, SearchInfo&, PVTable&);
+// Negamax
+int negamax(int, int, const int, Board&, SearchInfo&, PVTable&);
 
 // Iterative deepening
 void searchPosition(Board&, SearchInfo&);
 
-// Print search summary
+// Print the search summary
 void printSearch(SearchInfo&, const int, const int, std::vector<Move>);
 
 #endif

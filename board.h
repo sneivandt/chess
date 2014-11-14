@@ -11,7 +11,7 @@
 // Get the square from a file and rank
 #define FR2SQ(file, rank) ((21 + file) + (rank * 10))
 
-// Colors
+// Piece colors
 enum { WHITE, BLACK, BOTH };
 
 // Pieces
@@ -40,6 +40,9 @@ enum {
 
 // Piece colors
 const int PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+
+// Piece without team
+const int PIECE_NO_TEAM[13] = { EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, WQ, WK };
 
 // Piece values
 const int PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
@@ -120,8 +123,8 @@ const int SQ120[120] = {
     91, 92, 93, 94, 95, 96, 97, 98
 };
 
-// Castle perm
-const int  CASTLE_PERM[120] = {
+// Castle perm mask
+const int  CASTLE_PERM_MASK[120] = {
     15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
     15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
     15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
@@ -232,20 +235,20 @@ class Board
         // Update piece lists and material
         void updateListMaterial();
 
-        // Check if a square is attacked by a side
+        // Check if a square is attacked
         bool sqAttacked(const int, const int) const;
-
 
         // Update the castle perm
         void updateCastlePerm(const int, const int);
 
-
-        // Add to the history
+        // Add to the game history
         void addHistory(Undo &undo) { history.push_back(undo); };
 
-        // Pop from the history
+        // Pop from the game history
         Undo popHistory();
 
+        // Get the game history
+        std::vector<Undo> getHistory() { return history; };
 
         // Add a killer
         void addSearchKiller(const int);
@@ -256,7 +259,6 @@ class Board
         // Clear search killers
         void clearSearchKillers();
 
-
         // Increment search history
         void incrementSearchHistory(const int, const int);
 
@@ -266,12 +268,10 @@ class Board
         // Get search history
         int getSearchHistory(const int piece, const int square) const { return searchHistory[piece][square]; };
 
-
-        // Switch side
+        // Switch the side to move
         void updateSide() { side ^= 1; };
 
-
-        // Get hash key
+        // Get the position hash key
         uint64_t getHashKey() const { return hashKey; };
 
         // Hash a piece key
@@ -286,13 +286,11 @@ class Board
         // Hash the side key
         void hashSide() { hashKey ^= SIDE_KEY; };
 
-
         // Increment the piece num
         void incrementPieceNum(const int piece) { pNum[piece]++; };
 
         // Decrement the piece num
         void decrementPieceNum(const int piece) { pNum[piece]--; };
-
 
         // Increment fifty move counter
         void incrementFiftyMove() { fiftyMove++; };
@@ -303,9 +301,8 @@ class Board
         // Get fifty move counter
         int getFiftyMove() const { return fiftyMove; };
 
-        // Set the fifty move count
+        // Set the fifty move counter
         void setFiftyMove(const int count) { fiftyMove = count; };
-
 
         // Get the ply
         int getPly() const { return ply; };
@@ -319,7 +316,6 @@ class Board
         // Reset ply
         void resetPly() { ply = 0; };
 
-
         // Clear En pasant square
         void clearEnPas() { enPas = NO_SQ; };
 
@@ -329,30 +325,28 @@ class Board
         // Set En passant square
         void setEnPas(const int square) { enPas = square; };
 
-
-        // Add to material count
+        // Add to the material count
         void addMaterial(const int side, const int val) { material[side] += val; };
 
-        // Get material for a side
+        // Get the material for a side
         int getMaterial(const int side) const { return material[side]; }
 
-
-        // Get a square
+        // Get the piece on a square
         int getSquare(const int square) const { return board[square]; };
 
-        // Set a square
+        // Set the piece on a square
         void setSquare(const int square, const int value) { board[square] = value; };
 
         // Get the side to move
         int getSide() const { return side; };
 
-        // Get castle perm
+        // Get the castle perm
         int getCastlePerm() const { return castlePerm; };
 
-        // Set castle perm
+        // Set the castle perm
         void setCastlePerm(const int perm) { castlePerm = perm; };
 
-        // Get pawn bitboard
+        // Get the pawn bitboard
         uint64_t* getPawns() { return pawns; };
 
         // Get the piece list
@@ -360,9 +354,6 @@ class Board
 
         // Get the piece list counter
         int getPieceNum(const int piece) const { return pNum[piece]; };
-
-        // Get the history
-        std::vector<Undo> getHistory() { return history; };
 };
 
 #endif

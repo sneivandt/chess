@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-// Parse an input move and throw if the input is invalid
+// Parse an input move
 Move parseMove(std::string, Board&) throw(int);
 
 #endif

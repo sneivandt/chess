@@ -4,19 +4,19 @@
 #include "board.h"
 #include <iostream>
 
-// Construct a move
+// Construct a move value
 #define MOVE(from, to, capture, promoted, flag) (((from) | ((to) << 7)) | ((capture) << 14) | ((promoted) << 20) | (flag))
 
-// Get from square
+// Get the from square
 #define FROMSQ(m) (m & 0x7f)
 
-// Get to square
+// Get the to square
 #define TOSQ(m) ((m >> 7) & 0x7f)
 
-// Get captured piece
+// Get the captured piece
 #define CAPTURED(m) ((m >> 14) & 0xf)
 
-// Get promoted piece
+// Get the promoted piece
 #define PROMOTED(m) ((m >> 20) & 0xf)
 
 // En passant flag
@@ -64,10 +64,10 @@ class Move
         // Add to the score
         void addScore(const int value) { score += value; };
 
-        // Get value
+        // Get the value
         int getValue() const { return value; };
 
-        // Get score
+        // Get the score
         int getScore() const { return score; };
 };
 
