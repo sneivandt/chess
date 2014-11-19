@@ -50,7 +50,7 @@ class Move
     public:
 
         // Default Constructor
-        Move() {};
+        Move(): value(0), score(0) {};
 
         // Create a move with a given value and score
         Move(const int value, const int score): value(value), score(score) {};

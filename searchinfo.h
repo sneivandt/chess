@@ -37,8 +37,8 @@ class SearchInfo
         // Default constructor
         SearchInfo() { reset(); };
 
-        // Preset search info
-        SearchInfo(const int depth): depth(depth) {};
+        // Search to a given depth
+        SearchInfo(const int depth): depth(depth), stopTime(-1) {};
 
         // Reset the search info
         void reset();

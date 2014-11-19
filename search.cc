@@ -5,14 +5,14 @@ void search::checkup(SearchInfo &info)
     if(info.getStopTime() > -1 && utils::getTime() > info.getStopTime()) {
         info.setStopped(true);
     }
-    // else if(std::cin.peek() != -1) {
-    //     info.setStopped(true);
-    //     std::string input;
-    //     std::getline(std::cin, input);
-    //     if(input == "quit") {
-    //         info.setQuit(true);
-    //     }
-    // }
+    if(utils::inputWaiting()) {
+        info.setStopped(true);
+        std::string input;
+        std::getline(std::cin, input);
+        if(input == "quit") {
+            info.setQuit(true);
+        }
+    }
 }
 
 bool search::isRepetition(Board& pos)
@@ -33,7 +33,7 @@ void search::reset(Board &pos, SearchInfo &info)
     info.reset();
 }
 
-int search::negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo &info, PVTable &pvtable)
+int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info, PVTable &pvtable)
 {
     if((info.getNodes() & 2047) == 0) {
         checkup(info);
@@ -41,6 +41,10 @@ int search::negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo
     info.incrementNodes();
     if((isRepetition(pos) || pos.getFiftyMove() >= 100) && pos.getPly() > 0) {
         return 0;
+    }
+    bool inCheck = pos.sqAttacked(pos.getPieceList(pos.getSide() == WHITE ? WK : BK)[0], pos.getSide() ^ 1);
+    if(inCheck) {
+        depth++;
     }
     if(depth == 0) {
         int score = evaluate::evaluatePosition(pos);
@@ -99,8 +103,8 @@ int search::negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo
         }
     }
     if(depth > 0 && legal == 0) {
-        if(pos.sqAttacked(pos.getPieceList(pos.getSide() == WHITE ? WK : BK)[0], pos.getSide() ^ 1)) {
-            return -MATE + pos.getPly();
+        if(inCheck) {
+            return -POS_INFINITY + pos.getPly();
         }
         return 0;
     }

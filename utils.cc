@@ -12,5 +12,47 @@ std::string utils::getTimestamp()
 
 long utils::getTime()
 {
+#ifdef WIN32
+    SYSTEMTIME time;
+    GetSystemTime(&time);
+    return time.wMilliseconds;
+#else
     return std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1);
+#endif
+}
+
+bool utils::inputWaiting()
+{
+#ifdef WIN32
+    static int init = 0, pipe;
+    static HANDLE inh;
+    DWORD dw;
+    if (!init) {
+        init = 1;
+        inh = GetStdHandle(STD_INPUT_HANDLE);
+        pipe = !GetConsoleMode(inh, &dw);
+        if (!pipe) {
+            SetConsoleMode(inh, dw & ~(ENABLE_MOUSE_INPUT|ENABLE_WINDOW_INPUT));
+            FlushConsoleInputBuffer(inh);
+        }
+    }
+    if (pipe) {
+        if (!PeekNamedPipe(inh, NULL, 0, NULL, &dw, NULL)) {
+            return 1;
+        }
+        return dw;
+    }
+    else {
+        GetNumberOfConsoleInputEvents(inh, &dw);
+        return dw <= 1 ? 0 : dw;
+    }
+#else
+    fd_set fds;
+    struct timeval tv;
+    tv.tv_sec = 0;
+    tv.tv_usec = 1;
+    FD_ZERO(&fds);
+    FD_SET(fileno(stdin), &fds);
+    return select(sizeof(fds)*8, &fds, NULL, NULL, &tv);
+#endif
 }

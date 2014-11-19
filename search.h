@@ -21,9 +21,6 @@ const int POS_INFINITY = std::numeric_limits<int>::max() - 1;
 // Negative infinity
 const int NEG_INFINITY = std::numeric_limits<int>::min() + 1;
 
-// Mate score
-const int MATE = 100000;
-
 // Check stopping conditions
 void checkup(SearchInfo&);
 
@@ -34,7 +31,7 @@ bool isRepetition(Board&);
 void reset(Board&, SearchInfo&);
 
 // Negamax
-int negamax(int, int, const int, Board&, SearchInfo&, PVTable&);
+int negamax(int, int, int, Board&, SearchInfo&, PVTable&);
 
 // Iterative deepening
 void searchPosition(Board&, SearchInfo&);
