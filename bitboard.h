@@ -3,6 +3,8 @@
 
 #include <cstdint>
 
+namespace bitboard {
+
 // Magic bit table
 const int BITTABLE[64] = {
     63, 30,  3, 32, 25, 41, 22, 33,
@@ -26,5 +28,7 @@ void clearBit(uint64_t&, int);
 
 // Set a bit on a bitboard
 void setBit(uint64_t&, int);
+
+}
 
 #endif

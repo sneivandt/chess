@@ -8,26 +8,14 @@ class SearchInfo
 {
     private:
 
-        // Search start time
-        int startTime;
-
-        // Search stop time
-        int stopTime;
-
         // Depth of the search
         int depth;
 
-        // Maximum depth to search
-        int depthSet;
+        // Search start time
+        long startTime;
 
-        // Maximum time to search
-        int timeSet;
-
-        // Moves to go
-        int movesToGo;
-
-        // Infinate search flag
-        bool infinate;
+        // Search stop time
+        long stopTime;
 
         // Nodes searched
         long long nodes;
@@ -46,11 +34,17 @@ class SearchInfo
 
     public:
 
-        // Searchinfo with a given depth limit
+        // Default constructor
+        SearchInfo() { reset(); };
+
+        // Preset search info
         SearchInfo(const int depth): depth(depth) {};
 
         // Reset the search info
         void reset();
+
+        // Calclate the stop time
+        void calculateStopTime(const int, const int);
 
         // Get the ordering efficiency
         float getOrdering() const { return failHigh == 0 ? 0 : (float)failHighFirst/failHigh; };
@@ -64,11 +58,35 @@ class SearchInfo
         // Increment fail high first
         void incrementFailHighFirst() { failHighFirst++; };
 
+        // Get the nodes
+        long long getNodes() const { return nodes; };
+
+        // Get the stoptime
+        long getStopTime() const { return stopTime; };
+
+        // Get the start time
+        long getStartTime() const { return startTime; };
+
+        // Set the start time
+        void setStartTime() { startTime = utils::getTime(); };
+
         // Get the depth
         int getDepth() const { return depth; };
 
-        // Get the nodes
-        long long getNodes() const { return nodes; };
+        // Set depth
+        void setDepth(const int dep) { depth = dep; };
+
+        // Set stopped
+        void setStopped(const bool stop) { stopped = stop; };
+
+        // Get stopped
+        bool getStopped() const { return stopped; };
+
+        // Set quit
+        void setQuit(const bool val) { quit = val; };
+
+        // Get quit
+        bool getQuit() const { return quit; };
 };
 
 #endif

@@ -1,6 +1,21 @@
 #include "search.h"
 
-bool isRepetition(Board& pos)
+void search::checkup(SearchInfo &info)
+{
+    if(info.getStopTime() > -1 && utils::getTime() > info.getStopTime()) {
+        info.setStopped(true);
+    }
+    // else if(std::cin.peek() != -1) {
+    //     info.setStopped(true);
+    //     std::string input;
+    //     std::getline(std::cin, input);
+    //     if(input == "quit") {
+    //         info.setQuit(true);
+    //     }
+    // }
+}
+
+bool search::isRepetition(Board& pos)
 {
     for(unsigned int i = pos.getHistory().size() - pos.getFiftyMove(); i < pos.getHistory().size(); i++) {
         if(pos.getHashKey() == pos.getHistory()[i].getHashKey()) {
@@ -10,7 +25,7 @@ bool isRepetition(Board& pos)
     return false;
 }
 
-void clearForSearch(Board &pos, SearchInfo &info)
+void search::reset(Board &pos, SearchInfo &info)
 {
     pos.clearSearchHistory();
     pos.clearSearchKillers();
@@ -18,14 +33,17 @@ void clearForSearch(Board &pos, SearchInfo &info)
     info.reset();
 }
 
-int negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo &info, PVTable &pvtable)
+int search::negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo &info, PVTable &pvtable)
 {
+    if((info.getNodes() & 2047) == 0) {
+        checkup(info);
+    }
     info.incrementNodes();
-    if(isRepetition(pos) || pos.getFiftyMove() >= 100) {
+    if((isRepetition(pos) || pos.getFiftyMove() >= 100) && pos.getPly() > 0) {
         return 0;
     }
     if(depth == 0) {
-        int score = evaluatePosition(pos);
+        int score = evaluate::evaluatePosition(pos);
         if(score >= beta) {
             return beta;
         }
@@ -55,6 +73,9 @@ int negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo &info, 
         legal++;
         score = -negamax(-beta, -alpha, depth > 0 ? depth - 1 : 0, pos, info, pvtable);
         takeMove(pos);
+        if(info.getStopped()) {
+            return 0;
+        }
         if(score > alpha) {
             if(score >= beta) {
                 if(legal == 1) {
@@ -89,34 +110,25 @@ int negamax(int alpha, int beta, const int depth, Board &pos, SearchInfo &info, 
     return alpha;
 }
 
-void searchPosition(Board &pos, SearchInfo &info)
+void search::searchPosition(Board &pos, SearchInfo &info)
 {
-    int bestScore = NEG_INFINITY;
+    int score = NEG_INFINITY;
     PVTable pvtable;
     std::vector<Move> pv;
-    clearForSearch(pos, info);
-    for(int currentDepth = 1; currentDepth <= info.getDepth(); currentDepth++) {
-        bestScore = negamax(NEG_INFINITY, POS_INFINITY, currentDepth, pos, info, pvtable);
-        if(pos.getSide() == BLACK) {
-            bestScore = -bestScore;
+    reset(pos, info);
+    for(int depth = 1; info.getDepth() == -1 || depth <= info.getDepth(); depth++) {
+        score = negamax(NEG_INFINITY, POS_INFINITY, depth, pos, info, pvtable);
+        if(info.getStopped()) {
+            break;
         }
         pv = pvtable.getPV(pos);
-        printSearch(info, currentDepth, bestScore, pv);
+        std::cout << "info score cp " << score << " depth " << depth << " nodes " << info.getNodes() << " time " << (utils::getTime() - info.getStartTime()) << " pv";
+        for(unsigned int i = 0; i < pv.size(); i++) {
+            std::cout << " " << pv[i].getString();
+        }
+        std::cout << std::endl;
     }
-}
-
-void printSearch(SearchInfo &info, const int depth, const int score, std::vector<Move> pv)
-{
-    std::cout.width(2);
-    std::cout << depth << " ";
-    std::cout << std::fixed << std::setprecision(2) << info.getOrdering() << " ";
-    std::cout.width(11);
-    std::cout << info.getNodes() << " ";
-    std::cout.width(6);
-    std::cout << score << " ";
-    for(unsigned int i = 0; i < pv.size(); i++) {
-        std::cout.width(5);
-        std::cout << std::left << pv[i].getString() << std::right << " ";
+    if(pv.size() > 0) {
+        std::cout << "bestmove " << pv[0].getString() << std::endl;
     }
-    std::cout << std::endl;
 }

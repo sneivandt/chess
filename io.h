@@ -8,7 +8,12 @@
 #include <string>
 #include <vector>
 
+namespace io
+{
+
 // Parse an input move
-Move parseMove(std::string, Board&) throw(int);
+Move parseMove(std::string, Board&);
+
+}
 
 #endif

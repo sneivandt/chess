@@ -47,24 +47,6 @@ const int PIECE_NO_TEAM[13] = { EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, W
 // Piece values
 const int PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
 
-// Piece is pawn
-const bool PIECE_PAWN[13] = { false, true, false, false, false, false, false, true, false, false, false, false, false };
-
-// Piece is knight
-const bool PIECE_KNIGHT[13] = { false, false, true, false, false, false, false, false, true, false, false, false, false };
-
-// Piece is bishop
-const bool PIECE_BISHOP[13] = { false, false, false, true, false, false, false, false, false, true, false, false, false };
-
-// Piece is rook
-const bool PIECE_ROOK[13] = { false, false, false, false, true, false, false, false, false, false, true, false, false };
-
-// Piece is queen
-const bool PIECE_QUEEN[13] = { false, false, false, false, false, true, false, false, false, false, false, true, false };
-
-// Piece is king
-const bool PIECE_KING[13] = { false, false, false, false, false, false, true, false, false, false, false, false, true };
-
 // Default FEN
 const std::string DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 

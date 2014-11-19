@@ -1,9 +1,10 @@
+#include "board.h"
 #include "init.h"
-#include "io.h"
-#include "makemove.h"
-#include "move.h"
 #include "perft.h"
 #include "search.h"
+#include "searchinfo.h"
+#include "uci.h"
+#include <string>
 
 int main()
 {
@@ -17,7 +18,11 @@ int main()
         std::cout << std::endl;
         std::cout << ((pos.getHistory().size() / 2) + 1) << ": ";
         std::getline(std::cin, input);
-        if(input == "q") {
+        if(input == "uci") {
+            uci::loop();
+            break;
+        }
+        else if(input == "q") {
             break;
         }
         else if(input == "n") {
@@ -42,16 +47,16 @@ int main()
         else if(input == "s") {
             std::cout << std::endl;
             SearchInfo info(7);
-            searchPosition(pos, info);
+            search::searchPosition(pos, info);
         }
         else if(input == "p") {
             std::cout << std::endl;
-            perftTest();
+            perft::test();
             break;
         }
         else {
             try {
-                move = parseMove(input, pos);
+                move = io::parseMove(input, pos);
                 if(!makeMove(move, pos)) {
                     throw 0;
                 }

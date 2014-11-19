@@ -8,9 +8,9 @@ inline void clearPiece(const int square, Board &pos)
     pos.addMaterial(color, -1 * PIECE_VAL[piece]);
     pos.hashPiece(piece, square);
     pos.setSquare(square, EMPTY);
-    if(PIECE_PAWN[piece]) {
-        clearBit(pos.getPawns()[color], SQ64[square]);
-        clearBit(pos.getPawns()[BOTH], SQ64[square]);
+    if(PIECE_NO_TEAM[piece] == WP) {
+        bitboard::clearBit(pos.getPawns()[color], SQ64[square]);
+        bitboard::clearBit(pos.getPawns()[BOTH], SQ64[square]);
     }
     for(int i = 0; i < pos.getPieceNum(piece); i++) {
         if(pos.getPieceList(piece)[i] == square) {
@@ -28,9 +28,9 @@ inline void addPiece(const int piece, const int square, Board &pos)
     pos.addMaterial(color, PIECE_VAL[piece]);
     pos.setSquare(square, piece);
     pos.hashPiece(piece, square);
-    if(PIECE_PAWN[piece]) {
-        setBit(pos.getPawns()[color], SQ64[square]);
-        setBit(pos.getPawns()[BOTH], SQ64[square]);
+    if(PIECE_NO_TEAM[piece] == WP) {
+        bitboard::setBit(pos.getPawns()[color], SQ64[square]);
+        bitboard::setBit(pos.getPawns()[BOTH], SQ64[square]);
     }
     pos.getPieceList(piece)[pos.getPieceNum(piece)] = square;
     pos.incrementPieceNum(piece);
@@ -44,11 +44,11 @@ inline void movePiece(const int from, const int to, Board &pos)
     pos.hashPiece(piece, from);
     pos.setSquare(from, EMPTY);
     pos.setSquare(to, piece);
-    if(PIECE_PAWN[piece]) {
-        clearBit(pos.getPawns()[color], SQ64[from]);
-        clearBit(pos.getPawns()[BOTH], SQ64[from]);
-        setBit(pos.getPawns()[color], SQ64[to]);
-        setBit(pos.getPawns()[BOTH], SQ64[to]);
+    if(PIECE_NO_TEAM[piece] == WP) {
+        bitboard::clearBit(pos.getPawns()[color], SQ64[from]);
+        bitboard::clearBit(pos.getPawns()[BOTH], SQ64[from]);
+        bitboard::setBit(pos.getPawns()[color], SQ64[to]);
+        bitboard::setBit(pos.getPawns()[BOTH], SQ64[to]);
     }
     for(int i = 0; i < pos.getPieceNum(piece); i++) {
         if(pos.getPieceList(piece)[i] == from) {
@@ -70,7 +70,7 @@ bool makeMove(Move &move, Board &pos)
     int enPas = pos.getEnPas();
     int fiftyMove = pos.getFiftyMove();
     uint64_t hash = pos.getHashKey();
-    Undo current = Undo(side, castle, enPas, fiftyMove, move.getValue(), hash);
+    Undo current = Undo(castle, enPas, fiftyMove, move.getValue(), hash);
     if(move.getValue() & MFLAGEP) {
         if(side == WHITE) {
             clearPiece(to - 10, pos);
@@ -107,7 +107,7 @@ bool makeMove(Move &move, Board &pos)
         pos.resetFiftyMove();
     }
     pos.incrementPly();
-    if(PIECE_PAWN[piece]) {
+    if(PIECE_NO_TEAM[piece] == WP) {
         pos.resetFiftyMove();
         if(move.getValue() & MFLAGPS) {
             if(side == WHITE) {

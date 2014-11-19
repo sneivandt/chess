@@ -12,6 +12,9 @@
 #include <limits>
 #include <vector>
 
+namespace search
+{
+
 // Positive infinity
 const int POS_INFINITY = std::numeric_limits<int>::max() - 1;
 
@@ -22,13 +25,13 @@ const int NEG_INFINITY = std::numeric_limits<int>::min() + 1;
 const int MATE = 100000;
 
 // Check stopping conditions
-void checkUp();
+void checkup(SearchInfo&);
 
 // Check if a board is a repetition
 bool isRepetition(Board&);
 
-// Clear search data
-void clearForSearch(Board&, SearchInfo&);
+// Reset search data
+void reset(Board&, SearchInfo&);
 
 // Negamax
 int negamax(int, int, const int, Board&, SearchInfo&, PVTable&);
@@ -36,7 +39,6 @@ int negamax(int, int, const int, Board&, SearchInfo&, PVTable&);
 // Iterative deepening
 void searchPosition(Board&, SearchInfo&);
 
-// Print the search summary
-void printSearch(SearchInfo&, const int, const int, std::vector<Move>);
+}
 
 #endif

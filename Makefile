@@ -1,6 +1,6 @@
 CXX=g++
 CXXFLAGS=-std=c++0x -Wall -Wextra -Werror -pedantic -O3
-NAME=chess
+NAME=ace
 OBJS=$(patsubst %.cc, %.o, $(wildcard *.cc))
 
 all: $(OBJS)

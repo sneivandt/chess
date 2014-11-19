@@ -1,6 +1,6 @@
 #include "utils.h"
 
-std::string getTimestamp()
+std::string utils::getTimestamp()
 {
     time_t now = time(0);
     struct tm tstruct;
@@ -10,7 +10,7 @@ std::string getTimestamp()
     return buf;
 }
 
-int getTime()
+long utils::getTime()
 {
-    return time(0) * 1000;
+    return std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1);
 }

@@ -156,12 +156,12 @@ void Board::updateListMaterial()
             pNum[piece]++;
             material[PIECE_COLOR[piece]] += PIECE_VAL[piece];
             if(piece == WP) {
-                setBit(pawns[WHITE], SQ64[i]);
-                setBit(pawns[BOTH], SQ64[i]);
+                bitboard::setBit(pawns[WHITE], SQ64[i]);
+                bitboard::setBit(pawns[BOTH], SQ64[i]);
             }
             else if(piece == BP) {
-                setBit(pawns[BLACK], SQ64[i]);
-                setBit(pawns[BOTH], SQ64[i]);
+                bitboard::setBit(pawns[BLACK], SQ64[i]);
+                bitboard::setBit(pawns[BOTH], SQ64[i]);
             }
         }
     }

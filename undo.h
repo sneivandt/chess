@@ -9,9 +9,6 @@ class Undo
 {
     private:
 
-        // Side to move
-        bool side;
-
         // Castling permutation
         int castlePerm;
 
@@ -33,7 +30,7 @@ class Undo
         Undo() {};
 
         // Create an undo with the given properties
-        Undo(const int side, const int castle, const int enPas, const int fiftyMove, const int moveValue, const uint64_t hash): side(side), castlePerm(castle), enPas(enPas), fiftyMove(fiftyMove), moveValue(moveValue), hashKey(hash) {};
+        Undo(const int castle, const int enPas, const int fiftyMove, const int moveValue, const uint64_t hash): castlePerm(castle), enPas(enPas), fiftyMove(fiftyMove), moveValue(moveValue), hashKey(hash) {};
 
         // Get the move value
         int getMoveValue() const { return moveValue; };

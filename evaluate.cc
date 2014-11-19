@@ -1,6 +1,6 @@
 #include "evaluate.h"
 
-int evaluatePosition(Board &pos)
+int evaluate::evaluatePosition(Board &pos)
 {
     int square;
     int score = pos.getMaterial(WHITE) - pos.getMaterial(BLACK);
@@ -11,7 +11,7 @@ int evaluatePosition(Board &pos)
                 score += PIECE_SQUARE_TABLE[PIECE_NO_TEAM[piece]][SQ64[square]];
             }
             else {
-                score -= PIECE_SQUARE_TABLE[PIECE_NO_TEAM[piece]][MIRROR64[SQ64[square]]];
+                score -= PIECE_SQUARE_TABLE[PIECE_NO_TEAM[piece]][MIRROR_PIECE_SQUARE_TABLE[SQ64[square]]];
             }
         }
     }

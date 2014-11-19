@@ -13,16 +13,21 @@
 #include <string>
 #include <vector>
 
+namespace perft
+{
+
 // Test specs file
 const std::string TEST_FILE = "perft.txt";
 
 // Test all the positions
-void perftTest();
+void test();
 
 // Test a position
 void testPosition(const std::string, Board&);
 
 // Count the moves in position
 long long countMoves(const int, Board&);
+
+}
 
 #endif

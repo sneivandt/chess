@@ -1,6 +1,6 @@
 #include "perft.h"
 
-void perftTest()
+void perft::test()
 {
     Board pos;
     std::ifstream input(TEST_FILE);
@@ -15,7 +15,7 @@ void perftTest()
             p = line.find(delimiter);
             token = line.substr(0, p);
             if(first) {
-                std::cout << getTimestamp() << " P" << (i + 1) << " " << token << std::endl;
+                std::cout << utils::getTimestamp() << " P" << (i + 1) << " " << token << std::endl;
                 pos.parseFen(token);
             }
             else {
@@ -29,16 +29,16 @@ void perftTest()
     std::cout << "RUNTIME " << ((std::clock() - start)/(float)CLOCKS_PER_SEC) << "s" << std::endl;
 }
 
-void testPosition(const std::string token, Board &pos)
+void perft::testPosition(const std::string token, Board &pos)
 {
     int depth = token[1] - '0';
     std::string target = token.substr(token.find(" ") + 1, token.length());
     long long nodes = countMoves(depth, pos);
-    std::cout << getTimestamp() << " D" << depth << " " << nodes << std::endl;
+    std::cout << utils::getTimestamp() << " D" << depth << " " << nodes << std::endl;
     assert(target.compare(std::to_string(nodes)) == 0);
 }
 
-long long countMoves(const int depth, Board &pos)
+long long perft::countMoves(const int depth, Board &pos)
 {
     if(depth == 0) {
         return 1;
