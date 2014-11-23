@@ -6,7 +6,7 @@ Move io::parseMove(const std::string input, Board &pos)
         int from = FR2SQ((int)(input.at(0) - 'a'), (int)(input.at(1) - '1'));
         int to = FR2SQ((int)(input[2] - 'a'), (int)(input[3] - '1'));
         int promoted = 0;
-        MoveList movelist = generateAllMoves(pos,false);
+        MoveList movelist = movegen::generateAll(pos,false);
         std::vector<Move> moves = movelist.getMoves();
         Move move;
         for(unsigned int i = 0; i < moves.size(); i++) {

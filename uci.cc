@@ -50,7 +50,7 @@ void uci::parseGo(const std::string input, SearchInfo &info, Board &pos)
         time /= movestogo;
     }
     info.calculateStopTime(time, inc);
-    search::searchPosition(pos, info);
+    search::go(pos, info);
 }
 
 void uci::parsePosition(const std::string input, Board &pos)
@@ -75,7 +75,7 @@ void uci::parsePosition(const std::string input, Board &pos)
         std::string moveString;
         while(ss >> moveString) {
             move = io::parseMove(moveString, pos);
-            makeMove(move, pos);
+            makemove::move(move, pos);
         }
         pos.resetPly();
     }
@@ -84,6 +84,7 @@ void uci::parsePosition(const std::string input, Board &pos)
 
 void uci::loop()
 {
+    std::cout << std::endl;
     std::cout << "id name ACE" << std::endl;
     std::cout << "id author Stuart Neivandt" << std::endl;
     std::cout << "uciok" << std::endl;

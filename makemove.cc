@@ -1,6 +1,6 @@
 #include "makemove.h"
 
-inline void clearPiece(const int square, Board &pos)
+inline void makemove::clearPiece(const int square, Board &pos)
 {
     int piece = pos.getSquare(square);
     int color = PIECE_COLOR[piece];
@@ -22,7 +22,7 @@ inline void clearPiece(const int square, Board &pos)
     pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];
 }
 
-inline void addPiece(const int piece, const int square, Board &pos)
+inline void makemove::addPiece(const int piece, const int square, Board &pos)
 {
     int color = PIECE_COLOR[piece];
     pos.addMaterial(color, PIECE_VAL[piece]);
@@ -36,7 +36,7 @@ inline void addPiece(const int piece, const int square, Board &pos)
     pos.incrementPieceNum(piece);
 }
 
-inline void movePiece(const int from, const int to, Board &pos)
+inline void makemove::movePiece(const int from, const int to, Board &pos)
 {
     int piece = pos.getSquare(from);
     int color = PIECE_COLOR[piece];
@@ -58,7 +58,7 @@ inline void movePiece(const int from, const int to, Board &pos)
     }
 }
 
-bool makeMove(Move &move, Board &pos)
+bool makemove::move(Move &move, Board &pos)
 {
     int from = FROMSQ(move.getValue());
     int to = TOSQ(move.getValue());
@@ -127,17 +127,17 @@ bool makeMove(Move &move, Board &pos)
     pos.updateSide();
     pos.hashSide();
     if(pos.getSide() == BLACK && pos.sqAttacked(pos.getPieceList(WK)[0], BLACK)) {
-        takeMove(pos);
+        undo(pos);
         return false;
     }
     else if(pos.getSide() == WHITE && pos.sqAttacked(pos.getPieceList(BK)[0], WHITE)) {
-        takeMove(pos);
+        undo(pos);
         return false;
     }
     return true;
 }
 
-void takeMove(Board &pos)
+void makemove::undo(Board &pos)
 {
     pos.decrementPly();
     Undo undo = pos.popHistory();

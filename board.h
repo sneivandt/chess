@@ -147,6 +147,18 @@ extern uint64_t CASTLE_KEYS[16];
 // Zobrist castle hash keys
 extern uint64_t SIDE_KEY;
 
+// Rank bitmasks
+extern uint64_t RANK_MASK[8];
+
+// File bitmasks
+extern uint64_t FILE_MASK[8];
+
+// Passed pawn mask
+extern uint64_t PASSED_PAWN_MASK[2][64];
+
+// Isolated pawn mask
+extern uint64_t ISOLATED_PAWN_MASK[64];
+
 // Board representation
 class Board
 {

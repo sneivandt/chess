@@ -1,6 +1,8 @@
 #include "movegen.h"
 
-inline void addQuietMove(const int move, MoveList &list, Board &pos)
+int movegen::MVVLVA_SCORES[13][13];
+
+inline void movegen::addQuietMove(const int move, MoveList &list, Board &pos)
 {
     int score = 0;
     if(pos.getSearchKiller(0) == move) {
@@ -14,17 +16,17 @@ inline void addQuietMove(const int move, MoveList &list, Board &pos)
     list.addMove(Move(move, score));
 }
 
-inline void addCaptureMove(const int move, MoveList &list, Board &pos)
+inline void movegen::addCaptureMove(const int move, MoveList &list, Board &pos)
 {
     list.addMove(Move(move, MVVLVA_SCORES[CAPTURED(move)][pos.getSquare(FROMSQ(move))] + 1000000));
 }
 
-inline void addEnPasMove(const int move, MoveList &list)
+inline void movegen::addEnPasMove(const int move, MoveList &list)
 {
     list.addMove(Move(move, MVVLVA_SCORES[WP][WP] + 1000000));
 }
 
-inline void addPawnMove(const int from, const int to, const int cap, const int side, MoveList &list, Board &pos)
+inline void movegen::addPawnMove(const int from, const int to, const int cap, const int side, MoveList &list, Board &pos)
 {
     if(RANKS[SQ64[from]] == PAWN_RANK[side]) {
         for(int i = 0; i < 4; i++) {
@@ -36,7 +38,7 @@ inline void addPawnMove(const int from, const int to, const int cap, const int s
     }
 }
 
-MoveList generateAllMoves(Board &pos, const bool onlyCaps)
+MoveList movegen::generateAll(Board &pos, const bool onlyCaps)
 {
     MoveList moves;
     int square;

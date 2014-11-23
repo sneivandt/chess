@@ -6,6 +6,9 @@
 #include "move.h"
 #include "undo.h"
 
+namespace makemove
+{
+
 // Remove a piece from a board
 inline void clearPiece(const int, Board&);
 
@@ -16,9 +19,11 @@ inline void addPiece(const int, const int, Board&);
 inline void movePiece(const int, const int, Board&);
 
 // Make a move
-bool makeMove(Move&, Board&);
+bool move(Move&, Board&);
 
 // Take back a move
-void takeMove(Board&);
+void undo(Board&);
+
+}
 
 #endif

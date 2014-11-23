@@ -34,9 +34,6 @@ const int MFLAGCAP = 0x7c000;
 // Promotion flag
 const int MFLAGPROM = 0xf00000;
 
-// Get the algebraic name of a square
-inline std::string squareName(const int);
-
 class Move
 {
     private:

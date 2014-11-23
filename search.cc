@@ -47,7 +47,7 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
         depth++;
     }
     if(depth == 0) {
-        int score = evaluate::evaluatePosition(pos);
+        int score = evaluate::score(pos);
         if(score >= beta) {
             return beta;
         }
@@ -55,7 +55,7 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
             alpha = score;
         }
     }
-    std::vector<Move> moves = generateAllMoves(pos, depth == 0).getMoves();
+    std::vector<Move> moves = movegen::generateAll(pos, depth == 0).getMoves();
     Move pvMove = pvtable.getMove(pos);
     if(pvMove.getValue() != 0) {
         for(unsigned int i = 0; i < moves.size(); i++) {
@@ -71,12 +71,12 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
     int score = NEG_INFINITY;
     std::sort(moves.rbegin(), moves.rend());
     for(unsigned int i = 0; i < moves.size(); i++) {
-        if(!makeMove(moves[i], pos)) {
+        if(!makemove::move(moves[i], pos)) {
             continue;
         }
         legal++;
         score = -negamax(-beta, -alpha, depth > 0 ? depth - 1 : 0, pos, info, pvtable);
-        takeMove(pos);
+        makemove::undo(pos);
         if(info.getStopped()) {
             return 0;
         }
@@ -114,7 +114,7 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
     return alpha;
 }
 
-void search::searchPosition(Board &pos, SearchInfo &info)
+void search::go(Board &pos, SearchInfo &info)
 {
     int score = NEG_INFINITY;
     PVTable pvtable;
@@ -126,7 +126,11 @@ void search::searchPosition(Board &pos, SearchInfo &info)
             break;
         }
         pv = pvtable.getPV(pos);
-        std::cout << "info score cp " << score << " depth " << depth << " nodes " << info.getNodes() << " time " << (utils::getTime() - info.getStartTime()) << " pv";
+        std::cout << "info score cp " << score;
+        std::cout << " depth " << depth;
+        std::cout << " nodes " << info.getNodes();
+        std::cout << " time " << (utils::getTime() - info.getStartTime());
+        std::cout << " pv";
         for(unsigned int i = 0; i < pv.size(); i++) {
             std::cout << " " << pv[i].getString();
         }

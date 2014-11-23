@@ -44,15 +44,15 @@ long long perft::countMoves(const int depth, Board &pos)
         return 1;
     }
     long long nodes = 0;
-    MoveList movelist = generateAllMoves(pos, false);
+    MoveList movelist = movegen::generateAll(pos, false);
     std::vector<Move> moves = movelist.getMoves();
     for(unsigned int i = 0; i < moves.size(); i++) {
         Move move = moves[i];
-        if(!makeMove(move, pos)) {
+        if(!makemove::move(move, pos)) {
             continue;
         }
         nodes += countMoves(depth - 1, pos);
-        takeMove(pos);
+        makemove::undo(pos);
     }
     return nodes;
 }

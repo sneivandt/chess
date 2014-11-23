@@ -34,7 +34,7 @@ void reset(Board&, SearchInfo&);
 int negamax(int, int, int, Board&, SearchInfo&, PVTable&);
 
 // Iterative deepening
-void searchPosition(Board&, SearchInfo&);
+void go(Board&, SearchInfo&);
 
 }
 

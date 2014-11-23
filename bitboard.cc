@@ -24,3 +24,20 @@ void bitboard::setBit(uint64_t &bb, int sq)
 {
     bb |= (1ULL << sq);
 }
+
+void bitboard::print(uint64_t bb)
+{
+    for(int i = 0; i < 64; i++) {
+        if(i % 8 == 0) {
+            std::cout << std::endl;
+        }
+        if(bb & 1ULL) {
+            std::cout << "X";
+        }
+        else {
+            std::cout << "-";
+        }
+        bb = bb >> 1;
+    }
+    std::cout << std::endl;
+}

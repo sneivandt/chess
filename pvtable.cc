@@ -23,7 +23,7 @@ std::vector<Move> PVTable::getPV(Board &pos)
     std::vector<Move> pv;
     for(int i = 0; i < 64; i++) {
         Move move = getMove(pos);
-        if(move.getValue() != 0 && makeMove(move, pos)) {
+        if(move.getValue() != 0 && makemove::move(move, pos)) {
             pv.push_back(move);
         }
         else {
@@ -31,7 +31,7 @@ std::vector<Move> PVTable::getPV(Board &pos)
         }
     }
     while(pos.getPly() > originalPly) {
-        takeMove(pos);
+        makemove::undo(pos);
     }
     return pv;
 }

@@ -2,6 +2,7 @@
 #define BITBOARD_H
 
 #include <cstdint>
+#include <iostream>
 
 namespace bitboard {
 
@@ -28,6 +29,9 @@ void clearBit(uint64_t&, int);
 
 // Set a bit on a bitboard
 void setBit(uint64_t&, int);
+
+// Print
+void print(uint64_t);
 
 }
 

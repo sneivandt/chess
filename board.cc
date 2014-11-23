@@ -1,5 +1,19 @@
 #include "board.h"
 
+uint64_t PIECE_KEYS[13][120];
+
+uint64_t CASTLE_KEYS[16];
+
+uint64_t SIDE_KEY;
+
+uint64_t FILE_MASK[8];
+
+uint64_t RANK_MASK[8];
+
+uint64_t PASSED_PAWN_MASK[2][64];
+
+uint64_t ISOLATED_PAWN_MASK[64];
+
 void Board::generateHash()
 {
     uint64_t key = 0;
@@ -281,4 +295,3 @@ void Board::clearSearchHistory()
         }
     }
 }
-

@@ -7,8 +7,35 @@
 namespace evaluate
 {
 
+// Endgame material threshold
+const int ENDGAME_MATERIAL = 1100;
+
+// Isolated pawn score
+const int PAWN_ISOLATED = -10;
+
+// Passed pawn score
+const int PASSED_PAWN[8] = { 0, 5, 10, 20, 35, 60, 100, 200 };
+
+// Piece on open file score
+const int PIECE_OPEN_FILE = 5;
+
+// Rook open file score
+const int ROOK_OPEN_FILE = 10;
+
+// Rook semi-open file score
+const int ROOK_SEMI_OPEN_FILE = 5;
+
+// Queen open file score
+const int QUEEN_OPEN_FILE = 5;
+
+// Queen semi-open file score
+const int QUEEN_SEMI_OPEN_FILE = 3;
+
+// Bishop pair score
+const int BISHOP_PAIR = 30;
+
 // Piece square tables
-const int PIECE_SQUARE_TABLE[][64] {
+const int PIECE_SQUARE_TABLE[][64] = {
     {},
     {   // Pawn
          0,  0,  0,   0,   0,  0,  0,  0,
@@ -54,6 +81,30 @@ const int PIECE_SQUARE_TABLE[][64] {
     {}
 };
 
+// Piece square table king opening
+const int PIECE_SQUARE_TABLE_KING_OPENING[64] = {
+      0,   5,   5, -10, -10,   0,  10,   5,
+    -10, -10, -10, -10, -10, -10, -10, -10,
+    -30, -30, -30, -30, -30, -30, -30, -30,
+    -70, -70, -70, -70, -70, -70, -70, -70,
+    -70, -70, -70, -70, -70, -70, -70, -70,
+    -70, -70, -70, -70, -70, -70, -70, -70,
+    -70, -70, -70, -70, -70, -70, -70, -70,
+    -70, -70, -70, -70, -70, -70, -70, -70
+};
+
+// Piece square table king opening
+const int PIECE_SQUARE_TABLE_KING_END[64] = {
+    -50, -10,  0,  0,  0,  0, -10, -50,
+    -10,   0, 10, 10, 10, 10,   0, -10,
+      0,  10, 15, 15, 15, 15,  10,   0,
+      0,  10, 15, 20, 20, 15,  10,   0,
+      0,  10, 15, 20, 20, 15,  10,   0,
+      0,  10, 15, 15, 15, 15,  10,   0,
+    -10,   0, 10, 10, 10, 10,   0, -10,
+    -50, -10,  0,  0,  0,  0, -10, -50
+};
+
 // Mirror a piece square table index
 const int MIRROR_PIECE_SQUARE_TABLE[64] = {
     56, 57, 58, 59, 60, 61, 62, 63,
@@ -67,7 +118,13 @@ const int MIRROR_PIECE_SQUARE_TABLE[64] = {
 };
 
 // Evaluate a board
-int evaluatePosition(Board&);
+int score(Board&);
+
+// Material draw
+bool materialDraw(Board&);
+
+// Is endgame
+bool isEndGame(Board&, const int);
 
 }
 

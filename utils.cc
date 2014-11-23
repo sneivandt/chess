@@ -4,8 +4,12 @@ std::string utils::getTimestamp()
 {
     time_t now = time(0);
     struct tm tstruct;
+#ifdef WIN32
+    localtime_s(&tstruct, &now);
+#else
+    localtime_r(&now, &tstruct);
+#endif
     char buf[80];
-    tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%X", &tstruct);
     return buf;
 }
@@ -27,24 +31,24 @@ bool utils::inputWaiting()
     static int init = 0, pipe;
     static HANDLE inh;
     DWORD dw;
-    if (!init) {
+    if(!init) {
         init = 1;
         inh = GetStdHandle(STD_INPUT_HANDLE);
         pipe = !GetConsoleMode(inh, &dw);
-        if (!pipe) {
+        if(!pipe) {
             SetConsoleMode(inh, dw & ~(ENABLE_MOUSE_INPUT|ENABLE_WINDOW_INPUT));
             FlushConsoleInputBuffer(inh);
         }
     }
-    if (pipe) {
-        if (!PeekNamedPipe(inh, NULL, 0, NULL, &dw, NULL)) {
+    if(pipe) {
+        if(!PeekNamedPipe(inh, NULL, 0, NULL, &dw, NULL)) {
             return 1;
         }
-        return dw;
+        return dw > 0;
     }
     else {
         GetNumberOfConsoleInputEvents(inh, &dw);
-        return dw <= 1 ? 0 : dw;
+        return dw <= 1 ? false : dw > 0;
     }
 #else
     fd_set fds;

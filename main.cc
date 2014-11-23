@@ -8,7 +8,7 @@
 
 int main()
 {
-    init();
+    init::all();
     Board pos;
     Move move;
     std::string input;
@@ -37,7 +37,7 @@ int main()
         }
         else if(input == "u") {
             if(pos.getHistory().size() > 0) {
-                takeMove(pos);
+                makemove::undo(pos);
             }
             else {
                 std::cout << std::endl;
@@ -47,7 +47,11 @@ int main()
         else if(input == "s") {
             std::cout << std::endl;
             SearchInfo info(-1);
-            search::searchPosition(pos, info);
+            search::go(pos, info);
+        }
+        else if(input == "e") {
+            std::cout << std::endl;
+            std::cout << "Evaluation: " << evaluate::score(pos) << std::endl;
         }
         else if(input == "p") {
             std::cout << std::endl;
@@ -57,7 +61,7 @@ int main()
         else {
             try {
                 move = io::parseMove(input, pos);
-                if(!makeMove(move, pos)) {
+                if(!makemove::move(move, pos)) {
                     throw 0;
                 }
             }

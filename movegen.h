@@ -5,6 +5,9 @@
 #include "move.h"
 #include "movelist.h"
 
+namespace movegen
+{
+
 // Sliding pieces
 const int SLIDERS[6] = { WQ, WR, WB , BQ, BR, BB };
 
@@ -33,6 +36,8 @@ inline void addEnPasMove(const int, MoveList&);
 inline void addPawnMove(const int, const int, const int, const int, MoveList&, Board&);
 
 // Generate all moves
-MoveList generateAllMoves(Board&, const bool);
+MoveList generateAll(Board&, const bool);
+
+}
 
 #endif
