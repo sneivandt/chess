@@ -17,9 +17,7 @@ std::string utils::getTimestamp()
 long utils::getTime()
 {
 #ifdef WIN32
-    SYSTEMTIME time;
-    GetSystemTime(&time);
-    return time.wMilliseconds;
+    return GetTickCount();
 #else
     return std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1);
 #endif
@@ -57,6 +55,6 @@ bool utils::inputWaiting()
     tv.tv_usec = 1;
     FD_ZERO(&fds);
     FD_SET(fileno(stdin), &fds);
-    return select(sizeof(fds)*8, &fds, NULL, NULL, &tv);
+    return select(sizeof(fds) * 8, &fds, NULL, NULL, &tv);
 #endif
 }

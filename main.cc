@@ -39,10 +39,6 @@ int main()
             if(pos.getHistory().size() > 0) {
                 makemove::undo(pos);
             }
-            else {
-                std::cout << std::endl;
-                std::cout << "ERROR No move history" << std::endl;
-            }
         }
         else if(input == "s") {
             std::cout << std::endl;
@@ -62,7 +58,7 @@ int main()
             try {
                 move = io::parseMove(input, pos);
                 if(!makemove::move(move, pos)) {
-                    throw 0;
+                    throw;
                 }
             }
             catch(int) {
