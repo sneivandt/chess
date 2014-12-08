@@ -15,14 +15,22 @@ class MoveList
 
     public:
 
-        // Add a move
-        void addMove(const Move);
-
         // Print the move list
         void print() const;
 
-        // Get the moves
-        std::vector<Move> getMoves() { return moves; };
+        // Moves
+        std::vector<Move> getMoves();
+        void addMove(const Move);
 };
+
+inline std::vector<Move> MoveList::getMoves()
+{
+    return moves;
+}
+
+inline void MoveList::addMove(const Move move)
+{
+    moves.push_back(move);
+}
 
 #endif

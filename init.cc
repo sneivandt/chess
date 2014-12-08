@@ -56,8 +56,8 @@ void init::bitmasks()
             PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
             tSquare -= 8;
         }
-        if(FILES[square] > FILE_A) {
-            ISOLATED_PAWN_MASK[square] |= FILE_MASK[FILES[square] - 1];
+        if(Board::FILES[square] > FILE_A) {
+            ISOLATED_PAWN_MASK[square] |= FILE_MASK[Board::FILES[square] - 1];
             tSquare = square + 7;
             while(tSquare < 64) {
                 PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
@@ -69,8 +69,8 @@ void init::bitmasks()
                 tSquare -= 8;
             }
         }
-        if(FILES[square] < FILE_H) {
-            ISOLATED_PAWN_MASK[square] |= FILE_MASK[FILES[square] + 1];
+        if(Board::FILES[square] < FILE_H) {
+            ISOLATED_PAWN_MASK[square] |= FILE_MASK[Board::FILES[square] + 1];
             tSquare = square + 9;
             while(tSquare < 64) {
                 PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);

@@ -1,37 +1,24 @@
 #include "board.h"
 
 uint64_t PIECE_KEYS[13][120];
-
 uint64_t CASTLE_KEYS[16];
-
 uint64_t SIDE_KEY;
-
 uint64_t FILE_MASK[8];
-
 uint64_t RANK_MASK[8];
-
 uint64_t PASSED_PAWN_MASK[2][64];
-
 uint64_t ISOLATED_PAWN_MASK[64];
 
-void Board::generateHash()
-{
-    uint64_t key = 0;
-    int piece;
-    for(int square = 0; square < 120; square++) {
-        piece = board[square];
-        if(piece != NO_SQ && piece != EMPTY) {
-            key ^= PIECE_KEYS[piece][square];
-        }
-    }
-    if(enPas != NO_SQ) {
-        key ^= PIECE_KEYS[EMPTY][enPas];
-    }
-    if(side == WHITE) {
-        key ^= SIDE_KEY;
-    }
-    hashKey = key;
-}
+constexpr char Board::DEFAULT_FEN[];
+constexpr char Board::PIECE_CHARS[];
+constexpr int Board::PIECE_COLOR[];
+constexpr int Board::PIECE_NO_TEAM[];
+constexpr int Board::PIECE_VAL[];
+constexpr int Board::RANKS[];
+constexpr int Board::FILES[];
+constexpr int Board::SQ64[];
+constexpr int Board::SQ120[];
+constexpr int Board::CASTLE_PERM_MASK[];
+constexpr int Board::MOVE_DIR[13][8];
 
 void Board::reset()
 {
@@ -160,27 +147,6 @@ void Board::print() const
     }
 }
 
-void Board::updateListMaterial()
-{
-    int piece;
-    for(int i = 0; i < 120; i++) {
-        piece = board[i];
-        if(piece != NO_SQ && piece != EMPTY) {
-            pList[piece][pNum[piece]] = i;
-            pNum[piece]++;
-            material[PIECE_COLOR[piece]] += PIECE_VAL[piece];
-            if(piece == WP) {
-                bitboard::setBit(pawns[WHITE], SQ64[i]);
-                bitboard::setBit(pawns[BOTH], SQ64[i]);
-            }
-            else if(piece == BP) {
-                bitboard::setBit(pawns[BLACK], SQ64[i]);
-                bitboard::setBit(pawns[BOTH], SQ64[i]);
-            }
-        }
-    }
-}
-
 bool Board::sqAttacked(const int square, const int side) const
 {
     int targetSquare;
@@ -243,55 +209,42 @@ bool Board::sqAttacked(const int square, const int side) const
     return false;
 }
 
-void Board::updateCastlePerm(const int to, const int from)
+void Board::updateListMaterial()
 {
-    castlePerm &= CASTLE_PERM_MASK[to];
-    castlePerm &= CASTLE_PERM_MASK[from];
-}
-
-Undo Board::popHistory()
-{
-    Undo undo = history.back();
-    history.pop_back();
-    return undo;
-}
-
-void Board::addSearchKiller(const int move)
-{
-    if(ply < 64) {
-        searchKillers[1][ply] = searchKillers[0][ply];
-        searchKillers[0][ply] = move;
-    }
-}
-
-int Board::getSearchKiller(const int num) const
-{
-    if(ply < 64) {
-        return searchKillers[num][ply];
-    }
-    return 0;
-}
-
-void Board::incrementSearchHistory(const int move, const int depth)
-{
-    int piece = getSquare(FROMSQ(move));
-    int square = TOSQ(move);
-    searchHistory[piece][square] += depth;
-}
-
-void Board::clearSearchKillers()
-{
-    for(int i = 0; i < 64; i++) {
-        searchKillers[0][i] = 0;
-        searchKillers[1][i] = 0;
-    }
-}
-
-void Board::clearSearchHistory()
-{
-    for(int i = 0; i < 13; i++) {
-        for(int j = 0; j < 120; j++) {
-            searchHistory[i][j] = 0;
+    int piece;
+    for(int i = 0; i < 120; i++) {
+        piece = board[i];
+        if(piece != NO_SQ && piece != EMPTY) {
+            pList[piece][pNum[piece]] = i;
+            pNum[piece]++;
+            material[PIECE_COLOR[piece]] += PIECE_VAL[piece];
+            if(piece == WP) {
+                bitboard::setBit(pawns[WHITE], SQ64[i]);
+                bitboard::setBit(pawns[BOTH], SQ64[i]);
+            }
+            else if(piece == BP) {
+                bitboard::setBit(pawns[BLACK], SQ64[i]);
+                bitboard::setBit(pawns[BOTH], SQ64[i]);
+            }
         }
     }
+}
+
+void Board::generateHash()
+{
+    uint64_t key = 0;
+    int piece;
+    for(int square = 0; square < 120; square++) {
+        piece = board[square];
+        if(piece != NO_SQ && piece != EMPTY) {
+            key ^= PIECE_KEYS[piece][square];
+        }
+    }
+    if(enPas != NO_SQ) {
+        key ^= PIECE_KEYS[EMPTY][enPas];
+    }
+    if(side == WHITE) {
+        key ^= SIDE_KEY;
+    }
+    hashKey = key;
 }

@@ -34,10 +34,8 @@ class SearchInfo
 
     public:
 
-        // Default constructor
+        // Constructors
         SearchInfo() { reset(); };
-
-        // Search to a given depth
         SearchInfo(const int depth): depth(depth), stopTime(-1) {};
 
         // Reset the search info
@@ -47,46 +45,104 @@ class SearchInfo
         void calculateStopTime(const int, const int);
 
         // Get the ordering efficiency
-        float getOrdering() const { return failHigh == 0 ? 0 : (float)failHighFirst/failHigh; };
+        float getOrdering() const;
 
-        // Increment nodes
-        void incrementNodes() { nodes++; };
+        // Nodes
+        long long getNodes() const;
+        void incrementNodes();
 
-        // Increment fail high
-        void incrementFailHigh() { failHigh++; };
+        // Start time
+        long getStartTime() const;
+        void setStartTime();
 
-        // Increment fail high first
-        void incrementFailHighFirst() { failHighFirst++; };
+        // Stop time
+        long getStopTime() const;
 
-        // Get the nodes
-        long long getNodes() const { return nodes; };
+        // Depth
+        int getDepth() const;
+        void setDepth(const int);
 
-        // Get the stoptime
-        long getStopTime() const { return stopTime; };
+        // Stopped
+        bool getStopped() const;
+        void setStopped(const bool);
 
-        // Get the start time
-        long getStartTime() const { return startTime; };
+        // Quit
+        bool getQuit() const;
+        void setQuit(const bool);
 
-        // Set the start time
-        void setStartTime() { startTime = utils::getTime(); };
-
-        // Get the depth
-        int getDepth() const { return depth; };
-
-        // Set depth
-        void setDepth(const int dep) { depth = dep; };
-
-        // Set stopped
-        void setStopped(const bool stop) { stopped = stop; };
-
-        // Get stopped
-        bool getStopped() const { return stopped; };
-
-        // Set quit
-        void setQuit(const bool val) { quit = val; };
-
-        // Get quit
-        bool getQuit() const { return quit; };
+        // Fail high
+        void incrementFailHigh();
+        void incrementFailHighFirst();
 };
+
+inline float SearchInfo::getOrdering() const
+{
+    return failHigh == 0 ? 0 : (float)failHighFirst/failHigh;
+}
+
+inline long long SearchInfo::getNodes() const
+{
+    return nodes;
+}
+
+inline void SearchInfo::incrementNodes()
+{
+    nodes++;
+}
+
+inline long SearchInfo::getStartTime() const
+{
+    return startTime;
+}
+
+inline void SearchInfo::setStartTime()
+{
+    startTime = utils::getTime();
+}
+
+inline long SearchInfo::getStopTime() const
+{
+    return stopTime;
+}
+
+inline int SearchInfo::getDepth() const
+{
+    return depth;
+}
+
+inline void SearchInfo::setDepth(const int d)
+{
+    depth = d;
+}
+
+inline bool SearchInfo::getStopped() const
+{
+    return stopped;
+}
+
+inline void SearchInfo::setStopped(const bool s)
+{
+    stopped = s;
+}
+
+inline bool SearchInfo::getQuit() const
+{
+    return quit;
+}
+
+inline void SearchInfo::setQuit(const bool q)
+{
+    quit = q;
+}
+
+inline void SearchInfo::incrementFailHigh()
+{
+    failHigh++;
+}
+
+inline void SearchInfo::incrementFailHighFirst()
+{
+    failHighFirst++;
+}
 
 #endif

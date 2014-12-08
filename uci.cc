@@ -59,7 +59,7 @@ void uci::parsePosition(const std::string input, Board &pos)
     int indexFen = input.find("fen ");
     int indexMoves = input.find("moves ");
     if(indexStartpos == 0) {
-        pos.parseFen(DEFAULT_FEN);
+        pos.parseFen(Board::DEFAULT_FEN);
     }
     else if(indexFen > -1) {
         if(indexMoves == -1) {

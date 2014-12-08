@@ -4,11 +4,7 @@ std::string utils::getTimestamp()
 {
     time_t now = time(0);
     struct tm tstruct;
-#ifdef WIN32
-    localtime_s(&tstruct, &now);
-#else
-    localtime_r(&now, &tstruct);
-#endif
+    tstruct = *localtime(&now);
     char buf[80];
     strftime(buf, sizeof(buf), "%X", &tstruct);
     return buf;
@@ -16,11 +12,7 @@ std::string utils::getTimestamp()
 
 long utils::getTime()
 {
-#ifdef WIN32
-    return GetTickCount();
-#else
-    return std::chrono::system_clock::now().time_since_epoch()/std::chrono::milliseconds(1);
-#endif
+    return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 }
 
 bool utils::inputWaiting()

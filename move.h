@@ -4,36 +4,6 @@
 #include "board.h"
 #include <iostream>
 
-// Construct a move value
-#define MOVE(from, to, capture, promoted, flag) (((from) | ((to) << 7)) | ((capture) << 14) | ((promoted) << 20) | (flag))
-
-// Get the from square
-#define FROMSQ(m) (m & 0x7f)
-
-// Get the to square
-#define TOSQ(m) ((m >> 7) & 0x7f)
-
-// Get the captured piece
-#define CAPTURED(m) ((m >> 14) & 0xf)
-
-// Get the promoted piece
-#define PROMOTED(m) ((m >> 20) & 0xf)
-
-// En passant flag
-const int MFLAGEP = 0x40000;
-
-// Pawn start flag
-const int MFLAGPS = 0x80000;
-
-// Castle flag
-const int MFLAGCA = 0x1000000;
-
-// Capture flag
-const int MFLAGCAP = 0x7c000;
-
-// Promotion flag
-const int MFLAGPROM = 0xf00000;
-
 class Move
 {
     private:
@@ -46,26 +16,96 @@ class Move
 
     public:
 
-        // Default Constructor
         Move(): value(0), score(0) {};
-
-        // Create a move with a given value and score
         Move(const int value, const int score): value(value), score(score) {};
 
+        // From square
+        static int FROMSQ(const int);
+
+        // Get the to square
+        static int TOSQ(const int);
+
+        // Get the captured piece
+        static int CAPTURED(const int);
+
+        // Get the promoted piece
+        static int PROMOTED(const int);
+
+        // En passant flag
+        const static int MFLAGEP = 0x40000;
+
+        // Pawn start flag
+        const static int MFLAGPS = 0x80000;
+
+        // Castle flag
+        const static int MFLAGCA = 0x1000000;
+
+        // Capture flag
+        const static int MFLAGCAP = 0x7c000;
+
+        // Promotion flag
+        const static int MFLAGPROM = 0xf00000;
+
         // Less than operator
-        bool operator< (Move &other) const { return score < other.getScore(); };
+        bool operator<(Move&) const;
 
         // Get string representation of the move
         std::string getString() const;
 
-        // Add to the score
-        void addScore(const int value) { score += value; };
+        // Score
+        int getScore() const;
+        void addScore(const int);
 
-        // Get the value
-        int getValue() const { return value; };
+        // Value
+        int getValue() const;
 
-        // Get the score
-        int getScore() const { return score; };
+        // Construct a move value
+        static int MOVE(const int, const int, const int, const int, const int);
 };
+
+inline int Move::MOVE(const int from, const int to, const int capture, const int promoted, const int flag)
+{
+    return from | (to << 7) | (capture << 14) | (promoted << 20) | flag;
+}
+
+inline int Move::FROMSQ(const int move)
+{
+    return move & 0x7f;
+}
+
+inline int Move::TOSQ(const int move)
+{
+    return (move >> 7) & 0x7f;
+}
+
+inline int Move::CAPTURED(const int move)
+{
+    return (move >> 14) & 0xf;
+}
+
+inline int Move::PROMOTED(const int move)
+{
+    return (move >> 20) & 0xf;
+}
+
+inline bool Move::operator<(Move &other) const
+{
+    return score < other.getScore();
+}
+
+inline int Move::getScore() const
+{
+    return score;
+}
+
+inline void Move::addScore(const int value)
+{
+    score += value;
+}
+
+inline int Move::getValue() const
+{
+    return value;
+}
 
 #endif

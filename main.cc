@@ -26,13 +26,13 @@ int main()
             break;
         }
         else if(input == "n") {
-            pos.parseFen(DEFAULT_FEN);
+            pos.parseFen(Board::DEFAULT_FEN);
         }
         else if(input.length() > 2 && input.substr(0, 2) == "n ") {
             if(!pos.parseFen(input.substr(2))) {
                 std::cout << std::endl;
                 std::cout << "ERROR Invalid FEN" << std::endl;
-                pos.parseFen(DEFAULT_FEN);
+                pos.parseFen(Board::DEFAULT_FEN);
             }
         }
         else if(input == "u") {

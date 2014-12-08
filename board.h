@@ -8,9 +8,6 @@
 #include <string>
 #include <vector>
 
-// Get the square from a file and rank
-#define FR2SQ(file, rank) ((21 + file) + (rank * 10))
-
 // Piece colors
 enum { WHITE, BLACK, BOTH };
 
@@ -38,125 +35,15 @@ enum {
     A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
 };
 
-// Piece colors
-const int PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
-
-// Piece without team
-const int PIECE_NO_TEAM[13] = { EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, WQ, WK };
-
-// Piece values
-const int PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
-
-// Default FEN
-const std::string DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
-
-// Piece chars
-const std::string PIECE_CHARS = ".PNBRQKpnbrqk";
-
-// Ranks
-const int RANKS[64] = {
-    RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1,
-    RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2,
-    RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3,
-    RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4,
-    RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5,
-    RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6,
-    RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7,
-    RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8
-};
-
-// Files
-const int FILES[64] = {
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
-};
-
-// Convert from a 120 to 64 board index
-const int SQ64[120] = {
-    99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-    99,  0,  1,  2,  3,  4,  5,  6,  7, 99,
-    99,  8,  9, 10, 11, 12, 13, 14, 15, 99,
-    99, 16, 17, 18, 19, 20, 21, 22, 23, 99,
-    99, 24, 25, 26, 27, 28, 29, 30, 31, 99,
-    99, 32, 33, 34, 35, 36, 37, 38, 39, 99,
-    99, 40, 41, 42, 43, 44, 45, 46, 47, 99,
-    99, 48, 49, 50, 51, 52, 53, 54, 55, 99,
-    99, 56, 57, 58, 59, 60, 61, 62, 63, 99,
-    99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-    99, 99, 99, 99, 99, 99, 99, 99, 99, 99
-};
-
-// Convert from a 64 to 120 board index
-const int SQ120[120] = {
-    21, 22, 23, 24, 25, 26, 27, 28,
-    31, 32, 33, 34, 35, 36, 37, 38,
-    41, 42, 43, 44, 45, 46, 47, 48,
-    51, 52, 53, 54, 55, 56, 57, 58,
-    61, 62, 63, 64, 65, 66, 67, 68,
-    71, 72, 73, 74, 75, 76, 77, 78,
-    81, 82, 83, 84, 85, 86, 87, 88,
-    91, 92, 93, 94, 95, 96, 97, 98
-};
-
-// Castle perm mask
-const int  CASTLE_PERM_MASK[120] = {
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15,  7, 15, 15, 15,  3, 15, 15, 11, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-    15, 15, 15, 15, 15, 15, 15, 15, 15, 15
-};
-
-// Move directions
-const int MOVE_DIR[13][8] = {
-    {  0,   0,   0,   0,  0,   0,  0,  0 },
-    {  0,   0,   0,   0,  0,   0,  0,  0 },
-    { -8, -19, -21, -12,  8,  19, 21, 12 },
-    { -9, -11,  11,   9,  0,   0,  0,  0 },
-    { -1, -10,   1,  10,  0,   0,  0,  0 },
-    { -9, -11,  11,   9, -1, -10,  1, 10 },
-    { -9, -11,  11,   9, -1, -10,  1, 10 },
-    {  0,   0,   0,   0,  0,   0,  0,  0 },
-    { -8, -19, -21, -12,  8,  19, 21, 12 },
-    { -9, -11,  11,   9,  0,   0,  0,  0 },
-    { -1, -10,   1,  10,  0,   0,  0,  0 },
-    { -9, -11,  11,   9, -1, -10,  1, 10 },
-    { -9, -11,  11,   9, -1, -10,  1, 10 }
-};
-
-// Zobrist piece hash keys
+// Zobrist hash keys
 extern uint64_t PIECE_KEYS[13][120];
-
-// Zobrist side hash key
 extern uint64_t CASTLE_KEYS[16];
-
-// Zobrist castle hash keys
 extern uint64_t SIDE_KEY;
 
-// Rank bitmasks
+// Bitmasks
 extern uint64_t RANK_MASK[8];
-
-// File bitmasks
 extern uint64_t FILE_MASK[8];
-
-// Passed pawn mask
 extern uint64_t PASSED_PAWN_MASK[2][64];
-
-// Isolated pawn mask
 extern uint64_t ISOLATED_PAWN_MASK[64];
 
 // Board representation
@@ -208,14 +95,111 @@ class Board
 
     public:
 
-        // Default starting board
         Board() { parseFen(DEFAULT_FEN); };
-
-        // Non standard starting board
         Board(const std::string fen) { parseFen(fen); };
 
-        // Generate position hash key
-        void generateHash();
+        // Get the square from a file and rank
+        static int FR2SQ(const int, const int);
+
+        // Default position FEN
+        constexpr static char DEFAULT_FEN[] = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+        // Piece chars
+        constexpr static char PIECE_CHARS[] = ".PNBRQKpnbrqk";
+
+        // Piece colors
+        constexpr static int PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+
+        // Piece without team
+        constexpr static int PIECE_NO_TEAM[13] = { EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, WQ, WK };
+
+        // Piece values
+        constexpr static int PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
+
+        // Ranks
+        constexpr static int RANKS[64] = {
+            RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1,
+            RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2,
+            RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3,
+            RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4,
+            RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5,
+            RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6,
+            RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7,
+            RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8
+        };
+
+        // Files
+        constexpr static int FILES[64] = {
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+        };
+
+        // Convert from a 120 to 64 board index
+        constexpr static int SQ64[120] = {
+            99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+            99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+            99,  0,  1,  2,  3,  4,  5,  6,  7, 99,
+            99,  8,  9, 10, 11, 12, 13, 14, 15, 99,
+            99, 16, 17, 18, 19, 20, 21, 22, 23, 99,
+            99, 24, 25, 26, 27, 28, 29, 30, 31, 99,
+            99, 32, 33, 34, 35, 36, 37, 38, 39, 99,
+            99, 40, 41, 42, 43, 44, 45, 46, 47, 99,
+            99, 48, 49, 50, 51, 52, 53, 54, 55, 99,
+            99, 56, 57, 58, 59, 60, 61, 62, 63, 99,
+            99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+            99, 99, 99, 99, 99, 99, 99, 99, 99, 99
+        };
+
+        // Convert from a 64 to 120 board index
+        constexpr static int SQ120[120] = {
+            21, 22, 23, 24, 25, 26, 27, 28,
+            31, 32, 33, 34, 35, 36, 37, 38,
+            41, 42, 43, 44, 45, 46, 47, 48,
+            51, 52, 53, 54, 55, 56, 57, 58,
+            61, 62, 63, 64, 65, 66, 67, 68,
+            71, 72, 73, 74, 75, 76, 77, 78,
+            81, 82, 83, 84, 85, 86, 87, 88,
+            91, 92, 93, 94, 95, 96, 97, 98
+        };
+
+        // Castle perm mask
+        constexpr static int CASTLE_PERM_MASK[120] = {
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15,  7, 15, 15, 15,  3, 15, 15, 11, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+            15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+        };
+
+        // Move directions
+        constexpr static int MOVE_DIR[13][8] = {
+            {  0,   0,   0,   0,  0,   0,  0,  0 },
+            {  0,   0,   0,   0,  0,   0,  0,  0 },
+            { -8, -19, -21, -12,  8,  19, 21, 12 },
+            { -9, -11,  11,   9,  0,   0,  0,  0 },
+            { -1, -10,   1,  10,  0,   0,  0,  0 },
+            { -9, -11,  11,   9, -1, -10,  1, 10 },
+            { -9, -11,  11,   9, -1, -10,  1, 10 },
+            {  0,   0,   0,   0,  0,   0,  0,  0 },
+            { -8, -19, -21, -12,  8,  19, 21, 12 },
+            { -9, -11,  11,   9,  0,   0,  0,  0 },
+            { -1, -10,   1,  10,  0,   0,  0,  0 },
+            { -9, -11,  11,   9, -1, -10,  1, 10 },
+            { -9, -11,  11,   9, -1, -10,  1, 10 }
+        };
 
         // Reset the board
         void reset();
@@ -226,128 +210,285 @@ class Board
         // Print the board
         void print() const;
 
-        // Update piece lists and material
-        void updateListMaterial();
-
         // Check if a square is attacked
         bool sqAttacked(const int, const int) const;
 
-        // Update the castle perm
+        // Update lists and material
+        void updateListMaterial();
+
+        // Board square
+        int getSquare(const int) const;
+        void setSquare(const int, const int);
+
+        // Bitboards
+        uint64_t* getPawns();
+
+        // Piece lists
+        void incrementPieceNum(const int);
+        void decrementPieceNum(const int);
+        int getPieceNum(const int) const;
+        int* getPieceList(const int);
+
+        // Side to move
+        void updateSide();
+        int getSide() const;
+
+        // En pasant
+        int getEnPas() const;
+        void setEnPas(const int);
+        void clearEnPas();
+
+        // Castle perm
+        int getCastlePerm() const;
+        void setCastlePerm(const int);
         void updateCastlePerm(const int, const int);
 
-        // Add to the game history
-        void addHistory(Undo &undo) { history.push_back(undo); };
+        // Fifty move counter
+        int getFiftyMove() const;
+        void setFiftyMove(const int);
+        void incrementFiftyMove();
+        void resetFiftyMove();
 
-        // Pop from the game history
+        // Hash key
+        void generateHash();
+        uint64_t getHashKey() const;
+        void hashSide();
+        void hashPiece(const int, const int);
+        void hashCastle();
+        void hashEnPas();
+
+        // Material count
+        int getMaterial(const int) const;
+        void addMaterial(const int, const int);
+
+        // Game history
+        std::vector<Undo> getHistory();
+        void addHistory(Undo&);
         Undo popHistory();
 
-        // Get the game history
-        std::vector<Undo> getHistory() { return history; };
+        // Search ply
+        int getPly() const;
+        void incrementPly();
+        void decrementPly();
+        void resetPly();
 
-        // Add a killer
-        void addSearchKiller(const int);
-
-        // Get a killer
+        // Search history
         int getSearchKiller(const int) const;
-
-        // Clear search killers
+        void addSearchKiller(const int);
         void clearSearchKillers();
-
-        // Increment search history
-        void incrementSearchHistory(const int, const int);
-
-        // Clear search history
+        int getSearchHistory(const int, const int) const;
+        void incrementSearchHistory(const int, const int, const int);
         void clearSearchHistory();
-
-        // Get search history
-        int getSearchHistory(const int piece, const int square) const { return searchHistory[piece][square]; };
-
-        // Switch the side to move
-        void updateSide() { side ^= 1; };
-
-        // Get the position hash key
-        uint64_t getHashKey() const { return hashKey; };
-
-        // Hash a piece key
-        void hashPiece(const int piece, const int square) { hashKey ^= PIECE_KEYS[piece][square]; };
-
-        // Hash a castle key
-        void hashCastle() { hashKey ^= CASTLE_KEYS[castlePerm]; };
-
-        // Hash the En Pasant key
-        void hashEnPas() { hashKey ^= PIECE_KEYS[EMPTY][enPas]; };
-
-        // Hash the side key
-        void hashSide() { hashKey ^= SIDE_KEY; };
-
-        // Increment the piece num
-        void incrementPieceNum(const int piece) { pNum[piece]++; };
-
-        // Decrement the piece num
-        void decrementPieceNum(const int piece) { pNum[piece]--; };
-
-        // Increment fifty move counter
-        void incrementFiftyMove() { fiftyMove++; };
-
-        // Reset fifty move counter
-        void resetFiftyMove() { fiftyMove = 0; };
-
-        // Get fifty move counter
-        int getFiftyMove() const { return fiftyMove; };
-
-        // Set the fifty move counter
-        void setFiftyMove(const int count) { fiftyMove = count; };
-
-        // Get the ply
-        int getPly() const { return ply; };
-
-        // Increment ply
-        void incrementPly() { ply++; };
-
-        // Decrement ply
-        void decrementPly() { ply--; };
-
-        // Reset ply
-        void resetPly() { ply = 0; };
-
-        // Clear En pasant square
-        void clearEnPas() { enPas = NO_SQ; };
-
-        // Get En pasant square
-        int getEnPas() const { return enPas; };
-
-        // Set En passant square
-        void setEnPas(const int square) { enPas = square; };
-
-        // Add to the material count
-        void addMaterial(const int side, const int val) { material[side] += val; };
-
-        // Get the material for a side
-        int getMaterial(const int side) const { return material[side]; }
-
-        // Get the piece on a square
-        int getSquare(const int square) const { return board[square]; };
-
-        // Set the piece on a square
-        void setSquare(const int square, const int value) { board[square] = value; };
-
-        // Get the side to move
-        int getSide() const { return side; };
-
-        // Get the castle perm
-        int getCastlePerm() const { return castlePerm; };
-
-        // Set the castle perm
-        void setCastlePerm(const int perm) { castlePerm = perm; };
-
-        // Get the pawn bitboard
-        uint64_t* getPawns() { return pawns; };
-
-        // Get the piece list
-        int* getPieceList(const int piece) { return pList[piece]; };
-
-        // Get the piece list counter
-        int getPieceNum(const int piece) const { return pNum[piece]; };
 };
+
+inline int Board::FR2SQ(const int file, const int rank)
+{
+    return (21 + file) + (rank * 10);
+}
+
+inline int Board::getSquare(const int square) const
+{
+    return board[square];
+}
+
+inline void Board::setSquare(const int square, const int value)
+{
+    board[square] = value;
+}
+
+inline uint64_t* Board::getPawns()
+{
+    return pawns;
+}
+
+inline void Board::incrementPieceNum(const int piece)
+{
+    pNum[piece]++;
+}
+
+inline void Board::decrementPieceNum(const int piece)
+{
+    pNum[piece]--;
+}
+
+inline int Board::getPieceNum(const int piece) const
+{
+    return pNum[piece];
+}
+
+inline int* Board::getPieceList(const int piece)
+{
+    return pList[piece];
+}
+
+inline void Board::updateSide()
+{
+    side ^= 1;
+}
+
+inline int Board::getSide() const
+{
+    return side;
+}
+
+inline int Board::getEnPas() const
+{
+    return enPas;
+}
+
+inline void Board::setEnPas(const int s)
+{
+    enPas = s;
+}
+
+inline void Board::clearEnPas()
+{
+    enPas = NO_SQ;
+}
+
+inline int Board::getCastlePerm() const
+{
+    return castlePerm;
+}
+
+inline void Board::setCastlePerm(const int p)
+{
+    castlePerm = p;
+}
+
+inline void Board::updateCastlePerm(const int to, const int from)
+{
+    castlePerm &= CASTLE_PERM_MASK[to] & CASTLE_PERM_MASK[from];
+}
+
+inline int Board::getFiftyMove() const
+{
+    return fiftyMove;
+}
+
+inline void Board::setFiftyMove(const int fm)
+{
+    fiftyMove = fm;
+}
+
+inline void Board::incrementFiftyMove()
+{
+    fiftyMove++;
+}
+
+inline void Board::resetFiftyMove()
+{
+    fiftyMove = 0;
+}
+
+inline uint64_t Board::getHashKey() const
+{
+    return hashKey;
+}
+
+inline void Board::hashSide()
+{
+    hashKey ^= SIDE_KEY;
+}
+
+inline void Board::hashPiece(const int piece, const int square)
+{
+    hashKey ^= PIECE_KEYS[piece][square];
+}
+
+inline void Board::hashCastle()
+{
+    hashKey ^= CASTLE_KEYS[castlePerm];
+}
+
+inline void Board::hashEnPas()
+{
+    hashKey ^= PIECE_KEYS[EMPTY][enPas];
+}
+
+inline int Board::getMaterial(const int side) const
+{
+    return material[side];
+}
+
+inline void Board::addMaterial(const int side, const int value)
+{
+    material[side] += value;
+}
+
+inline std::vector<Undo> Board::getHistory()
+{
+    return history;
+}
+
+inline void Board::addHistory(Undo &undo)
+{
+    history.push_back(undo);
+}
+
+inline Undo Board::popHistory()
+{
+    Undo undo = history.back();
+    history.pop_back();
+    return undo;
+}
+
+inline int Board::getPly() const
+{
+    return ply;
+}
+
+inline void Board::incrementPly()
+{
+    ply++;
+}
+
+inline void Board::decrementPly()
+{
+    ply--;
+}
+
+inline void Board::resetPly()
+{
+    ply = 0;
+}
+
+inline int Board::getSearchKiller(const int num) const
+{
+    return searchKillers[num][ply];
+}
+
+inline void Board::addSearchKiller(const int move)
+{
+    searchKillers[1][ply] = searchKillers[0][ply];
+    searchKillers[0][ply] = move;
+}
+
+inline void Board::clearSearchKillers()
+{
+    for(int i = 0; i < 64; i++) {
+        searchKillers[0][i] = 0;
+        searchKillers[1][i] = 0;
+    }
+}
+
+inline int Board::getSearchHistory(const int piece, const int square) const
+{
+    return searchHistory[piece][square];
+}
+
+inline void Board::incrementSearchHistory(const int to, const int from, const int depth)
+{
+    searchHistory[getSquare(from)][to] += depth;
+}
+
+inline void Board::clearSearchHistory()
+{
+    for(int i = 0; i < 13; i++) {
+        for(int j = 0; j < 120; j++) {
+            searchHistory[i][j] = 0;
+        }
+    }
+}
 
 #endif

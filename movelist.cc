@@ -1,10 +1,5 @@
 #include "movegen.h"
 
-void MoveList::addMove(const Move move)
-{
-    moves.push_back(move);
-}
-
 void MoveList::print() const
 {
     std::cout << "Move List" << std::endl;

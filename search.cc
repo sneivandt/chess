@@ -58,9 +58,9 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
     std::vector<Move> moves = movegen::generateAll(pos, depth == 0).getMoves();
     Move pvMove = pvtable.getMove(pos);
     if(pvMove.getValue() != 0) {
-        for(unsigned int i = 0; i < moves.size(); i++) {
-            if(pvMove.getValue() == moves[i].getValue()) {
-                moves[i].addScore(2000000);
+        for(Move move : moves) {
+            if(pvMove.getValue() == move.getValue()) {
+                move.addScore(2000000);
                 break;
             }
         }
@@ -70,8 +70,8 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
     int oldAlpha = alpha;
     int score = NEG_INFINITY;
     std::sort(moves.rbegin(), moves.rend());
-    for(unsigned int i = 0; i < moves.size(); i++) {
-        if(!makemove::move(moves[i], pos)) {
+    for(Move move : moves) {
+        if(!makemove::move(move, pos)) {
             continue;
         }
         legal++;
@@ -87,17 +87,17 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
                 }
                 info.incrementFailHigh();
                 if(depth > 0) {
-                    if(!(moves[i].getValue() & MFLAGCAP)) {
-                        pos.addSearchKiller(moves[i].getValue());
+                    if(!(move.getValue() & Move::MFLAGCAP)) {
+                        pos.addSearchKiller(move.getValue());
                     }
                 }
                 return beta;
             }
             alpha = score;
-            bestMove = moves[i];
+            bestMove = move;
             if(depth > 0) {
-                if(!(moves[i].getValue() & MFLAGCAP)) {
-                    pos.incrementSearchHistory(moves[i].getValue(), depth);
+                if(!(move.getValue() & Move::MFLAGCAP)) {
+                    pos.incrementSearchHistory(Move::TOSQ(move.getValue()), Move::FROMSQ(move.getValue()), depth);
                 }
             }
         }
@@ -131,8 +131,8 @@ void search::go(Board &pos, SearchInfo &info)
         std::cout << " nodes " << info.getNodes();
         std::cout << " time " << (utils::getTime() - info.getStartTime());
         std::cout << " pv";
-        for(unsigned int i = 0; i < pv.size(); i++) {
-            std::cout << " " << pv[i].getString();
+        for(Move move : pv) {
+            std::cout << " " << move.getString();
         }
         std::cout << std::endl;
     }

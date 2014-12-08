@@ -117,14 +117,14 @@ const int MIRROR_PIECE_SQUARE_TABLE[64] = {
      0,  1,  2,  3,  4,  5,  6,  7
 };
 
-// Evaluate a board
-int score(Board&);
-
 // Material draw
-bool materialDraw(Board&);
+inline bool materialDraw(Board&);
 
 // Is endgame
-bool isEndGame(Board&, const int);
+inline bool isEndGame(Board&, const int);
+
+// Evaluate a board
+int score(Board&);
 
 }
 
