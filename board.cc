@@ -8,17 +8,94 @@ uint64_t RANK_MASK[8];
 uint64_t PASSED_PAWN_MASK[2][64];
 uint64_t ISOLATED_PAWN_MASK[64];
 
-constexpr char Board::DEFAULT_FEN[];
-constexpr char Board::PIECE_CHARS[];
-constexpr int Board::PIECE_COLOR[];
-constexpr int Board::PIECE_NO_TEAM[];
-constexpr int Board::PIECE_VAL[];
-constexpr int Board::RANKS[];
-constexpr int Board::FILES[];
-constexpr int Board::SQ64[];
-constexpr int Board::SQ120[];
-constexpr int Board::CASTLE_PERM_MASK[];
-constexpr int Board::MOVE_DIR[13][8];
+const std::string Board::DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
+const std::string Board::PIECE_CHARS = ".PNBRQKpnbrqk";
+
+const int Board::PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+
+const int Board::PIECE_NO_TEAM[13] = { EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, WQ, WK };
+
+const int Board::PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
+
+const int Board::RANKS[64] = {
+    RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1,
+    RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2,
+    RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3,
+    RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4,
+    RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5,
+    RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6,
+    RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7,
+    RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8
+};
+
+const int Board::FILES[64] = {
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
+    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
+};
+
+const int Board::SQ64[120] = {
+    99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+    99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+    99,  0,  1,  2,  3,  4,  5,  6,  7, 99,
+    99,  8,  9, 10, 11, 12, 13, 14, 15, 99,
+    99, 16, 17, 18, 19, 20, 21, 22, 23, 99,
+    99, 24, 25, 26, 27, 28, 29, 30, 31, 99,
+    99, 32, 33, 34, 35, 36, 37, 38, 39, 99,
+    99, 40, 41, 42, 43, 44, 45, 46, 47, 99,
+    99, 48, 49, 50, 51, 52, 53, 54, 55, 99,
+    99, 56, 57, 58, 59, 60, 61, 62, 63, 99,
+    99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
+    99, 99, 99, 99, 99, 99, 99, 99, 99, 99
+};
+
+const int Board::SQ120[64] = {
+    21, 22, 23, 24, 25, 26, 27, 28,
+    31, 32, 33, 34, 35, 36, 37, 38,
+    41, 42, 43, 44, 45, 46, 47, 48,
+    51, 52, 53, 54, 55, 56, 57, 58,
+    61, 62, 63, 64, 65, 66, 67, 68,
+    71, 72, 73, 74, 75, 76, 77, 78,
+    81, 82, 83, 84, 85, 86, 87, 88,
+    91, 92, 93, 94, 95, 96, 97, 98
+};
+
+const int Board::CASTLE_PERM_MASK[120] = {
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15,  7, 15, 15, 15,  3, 15, 15, 11, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+    15, 15, 15, 15, 15, 15, 15, 15, 15, 15
+};
+
+const int Board::MOVE_DIR[13][8] = {
+    {  0,   0,   0,   0,  0,   0,  0,  0 },
+    {  0,   0,   0,   0,  0,   0,  0,  0 },
+    { -8, -19, -21, -12,  8,  19, 21, 12 },
+    { -9, -11,  11,   9,  0,   0,  0,  0 },
+    { -1, -10,   1,  10,  0,   0,  0,  0 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 },
+    {  0,   0,   0,   0,  0,   0,  0,  0 },
+    { -8, -19, -21, -12,  8,  19, 21, 12 },
+    { -9, -11,  11,   9,  0,   0,  0,  0 },
+    { -1, -10,   1,  10,  0,   0,  0,  0 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 },
+    { -9, -11,  11,   9, -1, -10,  1, 10 }
+};
 
 void Board::reset()
 {

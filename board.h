@@ -102,104 +102,37 @@ class Board
         static int FR2SQ(const int, const int);
 
         // Default position FEN
-        constexpr static char DEFAULT_FEN[] = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+        const static std::string DEFAULT_FEN;
 
         // Piece chars
-        constexpr static char PIECE_CHARS[] = ".PNBRQKpnbrqk";
+        const static std::string PIECE_CHARS;
 
         // Piece colors
-        constexpr static int PIECE_COLOR[13] = { BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK };
+        const static int PIECE_COLOR[13];
 
         // Piece without team
-        constexpr static int PIECE_NO_TEAM[13] = { EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, WQ, WK };
+        const static int PIECE_NO_TEAM[13];
 
         // Piece values
-        constexpr static int PIECE_VAL[13] = { 0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0 };
+        const static int PIECE_VAL[13];
 
         // Ranks
-        constexpr static int RANKS[64] = {
-            RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1,
-            RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2,
-            RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3,
-            RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4,
-            RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5,
-            RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6,
-            RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7, RANK_7,
-            RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8
-        };
+        const static int RANKS[64];
 
         // Files
-        constexpr static int FILES[64] = {
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H,
-            FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H
-        };
+        const static int FILES[64];
 
         // Convert from a 120 to 64 board index
-        constexpr static int SQ64[120] = {
-            99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-            99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-            99,  0,  1,  2,  3,  4,  5,  6,  7, 99,
-            99,  8,  9, 10, 11, 12, 13, 14, 15, 99,
-            99, 16, 17, 18, 19, 20, 21, 22, 23, 99,
-            99, 24, 25, 26, 27, 28, 29, 30, 31, 99,
-            99, 32, 33, 34, 35, 36, 37, 38, 39, 99,
-            99, 40, 41, 42, 43, 44, 45, 46, 47, 99,
-            99, 48, 49, 50, 51, 52, 53, 54, 55, 99,
-            99, 56, 57, 58, 59, 60, 61, 62, 63, 99,
-            99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-            99, 99, 99, 99, 99, 99, 99, 99, 99, 99
-        };
+        const static int SQ64[120];
 
         // Convert from a 64 to 120 board index
-        constexpr static int SQ120[120] = {
-            21, 22, 23, 24, 25, 26, 27, 28,
-            31, 32, 33, 34, 35, 36, 37, 38,
-            41, 42, 43, 44, 45, 46, 47, 48,
-            51, 52, 53, 54, 55, 56, 57, 58,
-            61, 62, 63, 64, 65, 66, 67, 68,
-            71, 72, 73, 74, 75, 76, 77, 78,
-            81, 82, 83, 84, 85, 86, 87, 88,
-            91, 92, 93, 94, 95, 96, 97, 98
-        };
+        const static int SQ120[64];
 
         // Castle perm mask
-        constexpr static int CASTLE_PERM_MASK[120] = {
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15,  7, 15, 15, 15,  3, 15, 15, 11, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
-            15, 15, 15, 15, 15, 15, 15, 15, 15, 15
-        };
+        const static int CASTLE_PERM_MASK[120];
 
         // Move directions
-        constexpr static int MOVE_DIR[13][8] = {
-            {  0,   0,   0,   0,  0,   0,  0,  0 },
-            {  0,   0,   0,   0,  0,   0,  0,  0 },
-            { -8, -19, -21, -12,  8,  19, 21, 12 },
-            { -9, -11,  11,   9,  0,   0,  0,  0 },
-            { -1, -10,   1,  10,  0,   0,  0,  0 },
-            { -9, -11,  11,   9, -1, -10,  1, 10 },
-            { -9, -11,  11,   9, -1, -10,  1, 10 },
-            {  0,   0,   0,   0,  0,   0,  0,  0 },
-            { -8, -19, -21, -12,  8,  19, 21, 12 },
-            { -9, -11,  11,   9,  0,   0,  0,  0 },
-            { -1, -10,   1,  10,  0,   0,  0,  0 },
-            { -9, -11,  11,   9, -1, -10,  1, 10 },
-            { -9, -11,  11,   9, -1, -10,  1, 10 }
-        };
+        const static int MOVE_DIR[13][8];
 
         // Reset the board
         void reset();
