@@ -17,7 +17,7 @@ namespace utils
 std::string getTimestamp();
 
 // Get time in milliseconds
-long getTime();
+long long getTime();
 
 // Check if input is waiting in stdin
 bool inputWaiting();

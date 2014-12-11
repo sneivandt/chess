@@ -12,10 +12,10 @@ class SearchInfo
         int depth;
 
         // Search start time
-        long startTime;
+        long long startTime;
 
         // Search stop time
-        long stopTime;
+        long long stopTime;
 
         // Nodes searched
         long long nodes;
@@ -25,12 +25,6 @@ class SearchInfo
 
         // Stop flag
         bool stopped;
-
-        // Fail high
-        long long failHigh;
-
-        // Fail high first
-        long long failHighFirst;
 
     public:
 
@@ -44,19 +38,16 @@ class SearchInfo
         // Calclate the stop time
         void calculateStopTime(const int, const int);
 
-        // Get the ordering efficiency
-        float getOrdering() const;
-
         // Nodes
         long long getNodes() const;
         void incrementNodes();
 
         // Start time
-        long getStartTime() const;
+        long long getStartTime() const;
         void setStartTime();
 
         // Stop time
-        long getStopTime() const;
+        long long getStopTime() const;
 
         // Depth
         int getDepth() const;
@@ -69,16 +60,7 @@ class SearchInfo
         // Quit
         bool getQuit() const;
         void setQuit(const bool);
-
-        // Fail high
-        void incrementFailHigh();
-        void incrementFailHighFirst();
 };
-
-inline float SearchInfo::getOrdering() const
-{
-    return failHigh == 0 ? 0 : (float)failHighFirst/failHigh;
-}
 
 inline long long SearchInfo::getNodes() const
 {
@@ -90,7 +72,7 @@ inline void SearchInfo::incrementNodes()
     nodes++;
 }
 
-inline long SearchInfo::getStartTime() const
+inline long long SearchInfo::getStartTime() const
 {
     return startTime;
 }
@@ -100,7 +82,7 @@ inline void SearchInfo::setStartTime()
     startTime = utils::getTime();
 }
 
-inline long SearchInfo::getStopTime() const
+inline long long SearchInfo::getStopTime() const
 {
     return stopTime;
 }
@@ -133,16 +115,6 @@ inline bool SearchInfo::getQuit() const
 inline void SearchInfo::setQuit(const bool q)
 {
     quit = q;
-}
-
-inline void SearchInfo::incrementFailHigh()
-{
-    failHigh++;
-}
-
-inline void SearchInfo::incrementFailHighFirst()
-{
-    failHighFirst++;
 }
 
 #endif

@@ -4,6 +4,8 @@
 #include "board.h"
 #include "move.h"
 #include "movelist.h"
+#include <cmath>
+#include <random>
 
 namespace movegen
 {
@@ -20,8 +22,14 @@ const int PAWN_RANK[2] = { RANK_7, RANK_2 };
 // Promotion pieces
 const int PROMOTION_PIECES[2][4] = {{ WQ, WR, WB, WN }, { BQ, BR, BB, BN }};
 
+// MVVLVA victum scores
+const int VICTUM_SCORES[13] = { 0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
+
 // Most valuable victum least valuable attacker scores
 extern int MVVLVA_SCORES[13][13];
+
+// Init
+void INIT();
 
 // Add a quiet move
 inline void addQuietMove(const int, MoveList&, Board&);

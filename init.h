@@ -3,27 +3,19 @@
 
 #include "board.h"
 #include "movegen.h"
-#include <cmath>
-#include <random>
 
 namespace init
 {
 
-// MVVLVA victum scores
-const int VICTUM_SCORES[13] = { 0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600 };
-
-// Generate Zobrist hashing keys
-void zobristKeys();
-
-// Generate most valuable victum least valuable attacker score table
-void mvvlva();
-
-// Generate bitmasks
-void bitmasks();
-
 // Initialize all
 void all();
 
+}
+
+inline void init::all()
+{
+    Board::INIT();
+    movegen::INIT();
 }
 
 #endif

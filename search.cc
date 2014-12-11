@@ -82,10 +82,6 @@ int search::negamax(int alpha, int beta, int depth, Board &pos, SearchInfo &info
         }
         if(score > alpha) {
             if(score >= beta) {
-                if(legal == 1) {
-                    info.incrementFailHighFirst();
-                }
-                info.incrementFailHigh();
                 if(depth > 0) {
                     if(!(move.getValue() & Move::MFLAGCAP)) {
                         pos.addSearchKiller(move.getValue());

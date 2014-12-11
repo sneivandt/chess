@@ -3,8 +3,10 @@
 
 #include "bitboard.h"
 #include "undo.h"
+#include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <random>
 #include <string>
 #include <vector>
 
@@ -34,17 +36,6 @@ enum {
     A7 = 81, B7, C7, D7, E7, F7, G7, H7,
     A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ
 };
-
-// Zobrist hash keys
-extern uint64_t PIECE_KEYS[13][120];
-extern uint64_t CASTLE_KEYS[16];
-extern uint64_t SIDE_KEY;
-
-// Bitmasks
-extern uint64_t RANK_MASK[8];
-extern uint64_t FILE_MASK[8];
-extern uint64_t PASSED_PAWN_MASK[2][64];
-extern uint64_t ISOLATED_PAWN_MASK[64];
 
 // Board representation
 class Board
@@ -98,41 +89,55 @@ class Board
         Board() { parseFen(DEFAULT_FEN); };
         Board(const std::string fen) { parseFen(fen); };
 
-        // Get the square from a file and rank
-        static int FR2SQ(const int, const int);
-
         // Default position FEN
-        const static std::string DEFAULT_FEN;
+        static const std::string DEFAULT_FEN;
 
         // Piece chars
-        const static std::string PIECE_CHARS;
+        static const std::string PIECE_CHARS;
 
         // Piece colors
-        const static int PIECE_COLOR[13];
+        static const int PIECE_COLOR[13];
 
         // Piece without team
-        const static int PIECE_NO_TEAM[13];
+        static const int PIECE_NO_TEAM[13];
 
         // Piece values
-        const static int PIECE_VAL[13];
+        static const int PIECE_VAL[13];
 
         // Ranks
-        const static int RANKS[64];
+        static const int RANKS[64];
 
         // Files
-        const static int FILES[64];
+        static const int FILES[64];
 
         // Convert from a 120 to 64 board index
-        const static int SQ64[120];
+        static const int SQ64[120];
 
         // Convert from a 64 to 120 board index
-        const static int SQ120[64];
+        static const int SQ120[64];
 
         // Castle perm mask
-        const static int CASTLE_PERM_MASK[120];
+        static const int CASTLE_PERM_MASK[120];
 
         // Move directions
-        const static int MOVE_DIR[13][8];
+        static const int MOVE_DIR[13][8];
+
+        // Zobrist hash keys
+        static uint64_t PIECE_KEYS[13][120];
+        static uint64_t CASTLE_KEYS[16];
+        static uint64_t SIDE_KEY;
+
+        // Bitmasks
+        static uint64_t RANK_MASK[8];
+        static uint64_t FILE_MASK[8];
+        static uint64_t PASSED_PAWN_MASK[2][64];
+        static uint64_t ISOLATED_PAWN_MASK[64];
+
+        // Init
+        static void INIT();
+
+        // Get the square from a file and rank
+        static int FR2SQ(const int, const int);
 
         // Reset the board
         void reset();

@@ -1,13 +1,5 @@
 #include "board.h"
 
-uint64_t PIECE_KEYS[13][120];
-uint64_t CASTLE_KEYS[16];
-uint64_t SIDE_KEY;
-uint64_t FILE_MASK[8];
-uint64_t RANK_MASK[8];
-uint64_t PASSED_PAWN_MASK[2][64];
-uint64_t ISOLATED_PAWN_MASK[64];
-
 const std::string Board::DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const std::string Board::PIECE_CHARS = ".PNBRQKpnbrqk";
@@ -96,6 +88,94 @@ const int Board::MOVE_DIR[13][8] = {
     { -9, -11,  11,   9, -1, -10,  1, 10 },
     { -9, -11,  11,   9, -1, -10,  1, 10 }
 };
+
+uint64_t Board::PIECE_KEYS[13][120];
+
+uint64_t Board::CASTLE_KEYS[16];
+
+uint64_t Board::SIDE_KEY;
+
+uint64_t Board::FILE_MASK[8];
+
+uint64_t Board::RANK_MASK[8];
+
+uint64_t Board::PASSED_PAWN_MASK[2][64];
+
+uint64_t Board::ISOLATED_PAWN_MASK[64];
+
+void Board::INIT()
+{
+    // Zobrist hash keys
+    std::random_device rd;
+    std::mt19937_64 e2(rd());
+    std::uniform_int_distribution<long long int> dist(std::llround(std::pow(2,61)), std::llround(std::pow(2,62)));
+    for(int i = 0; i < 13; i++) {
+        for(int j = 0; j < 120; j++) {
+            PIECE_KEYS[i][j] = dist(e2);
+        }
+    }
+    for(int i = 0; i < 16; i++) {
+        CASTLE_KEYS[i] = dist(e2);
+    }
+    SIDE_KEY = dist(e2);
+    // Bitmasks
+    int square;
+    int tSquare;
+    for(int i = 0; i < 8; i++) {
+        FILE_MASK[i] = 0ULL;
+        RANK_MASK[i] = 0ULL;
+    }
+    for(int i = 0; i < 64; i++) {
+        PASSED_PAWN_MASK[0][i] = 0ULL;
+        PASSED_PAWN_MASK[1][i] = 0ULL;
+        ISOLATED_PAWN_MASK[i] = 0ULL;
+    }
+    for(int rank = RANK_1; rank <= RANK_8; rank++) {
+        for(int file = FILE_A; file <= FILE_H; file++) {
+            square = rank * 8 + file;
+            FILE_MASK[file] |= (1ULL << square);
+            RANK_MASK[rank] |= (1ULL << square);
+        }
+    }
+    for(square = 0; square < 64; square++) {
+        tSquare = square + 8;
+        while(tSquare < 64) {
+            PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
+            tSquare += 8;
+        }
+        tSquare = square - 8;
+        while(tSquare >= 0) {
+            PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
+            tSquare -= 8;
+        }
+        if(Board::FILES[square] > FILE_A) {
+            ISOLATED_PAWN_MASK[square] |= FILE_MASK[Board::FILES[square] - 1];
+            tSquare = square + 7;
+            while(tSquare < 64) {
+                PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
+                tSquare += 8;
+            }
+            tSquare = square - 9;
+            while(tSquare >= 0) {
+                PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
+                tSquare -= 8;
+            }
+        }
+        if(Board::FILES[square] < FILE_H) {
+            ISOLATED_PAWN_MASK[square] |= FILE_MASK[Board::FILES[square] + 1];
+            tSquare = square + 9;
+            while(tSquare < 64) {
+                PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
+                tSquare += 8;
+            }
+            tSquare = square - 9;
+            while(tSquare >= 0) {
+                PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
+                tSquare -= 8;
+            }
+        }
+    }
+}
 
 void Board::reset()
 {

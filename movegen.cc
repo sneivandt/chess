@@ -2,6 +2,15 @@
 
 int movegen::MVVLVA_SCORES[13][13];
 
+void movegen::INIT()
+{
+    for(int attacker = WP; attacker <= BK; attacker++) {
+        for(int victim = WP; victim < BK; victim++) {
+            MVVLVA_SCORES[victim][attacker] = VICTUM_SCORES[victim] + 6 - (VICTUM_SCORES[attacker] / 100);
+        }
+    }
+}
+
 inline void movegen::addQuietMove(const int move, MoveList &list, Board &pos)
 {
     int score = 0;

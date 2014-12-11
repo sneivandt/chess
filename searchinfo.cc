@@ -3,8 +3,6 @@
 void SearchInfo::reset()
 {
     nodes = 0;
-    failHigh = 0;
-    failHighFirst = 0;
     stopped = false;
     quit = false;
 }

@@ -1,4 +1,4 @@
-#include "movegen.h"
+#include "movelist.h"
 
 void MoveList::print() const
 {
