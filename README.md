@@ -1,20 +1,22 @@
 # ACE - A Chess Engine
 
-A UCI chess engine for Linux and Windows.
+A UCI chess engine.
 
 ## Build
 
     make
 
-## Run
+## XBoard
 
-On Linux, start a game in xboard as white playing against the engine as black.
+Start a game using XBoard and the PolyGlot UCI adapter.
 
-    ./xboard.sh
+    xboard -fcp ./ace -fUCI
 
 ## CLI Mode
 
-Enter moves in algebraic notation or some action key for special actions.
+Enter moves in algebraic notation or an action key for special actions.
+
+    ./ace
 
 Key | Action
 ----|-------
