@@ -1,8 +1,27 @@
-*.o
-ace
+##### Cmake
+##### https://raw.githubusercontent.com/github/gitignore/master/CMake.gitignore
+
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+
+##### Visual Studio Code
+##### https://raw.githubusercontent.com/github/gitignore/master/Global/VisualStudioCode.gitignore
 
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
-!.vscode/extensions.
+!.vscode/extensions.json
+
+##### Chess
+
+build/*
+!build/.gitkeep

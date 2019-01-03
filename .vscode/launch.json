@@ -2,27 +2,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch",
+            "name": "Launch (Linux)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/ace",
-            "args": [],
+            "program": "${workspaceFolder}/build/bin/ace",
             "stopAtEntry": false,
-            "cwd": "${workspaceFolder}",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Make",
-            "linux": {
-                "miDebuggerPath": "/usr/bin/gdb",
-            }
+            "cwd": "${workspaceRoot}",
+            "externalConsole": false
+        },
+        {
+            "name": "Launch (Windows)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/bin/Debug/ace.exe",
+            "stopAtEntry": false,
+            "cwd": "${workspaceRoot}",
+            "externalConsole": true
         }
     ]
 }

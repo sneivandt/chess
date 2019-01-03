@@ -1,22 +1,51 @@
 # ACE - A Chess Engine
 
-A UCI chess engine.
-
 ## Build
 
-    make
+```
+cd build
+cmake ..
+cmake --build .
+```
 
-## XBoard
+## Test
+
+```
+cd build
+cmake ..
+cmake --build . --target perft
+ctest perft --verbose
+```
+
+## Install
+
+```
+cd build
+cmake ..
+sudo cmake --build . --target install
+```
+
+## Play
 
 Start a game using XBoard and the PolyGlot UCI adapter.
 
-    xboard -fcp ./ace -fUCI
+```
+cd build
+cmake ..
+cmake --build .
+xboard -fcp ./bin/ace -fUCI
+```
 
-## CLI Mode
+Start a game using the CLI.
+
+```
+cd build
+cmake ..
+cmake --build .
+./bin/ace
+```
 
 Enter moves in algebraic notation or an action key for special actions.
-
-    ./ace
 
 Key | Action
 ----|-------
@@ -25,4 +54,3 @@ q   | Quit
 u   | Undo
 s   | Search
 e   | Evaluate
-p   | Perft Test
