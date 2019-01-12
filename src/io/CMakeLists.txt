@@ -12,6 +12,7 @@ target_include_directories(io
         $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(io
-    PRIVATE ace::board
-    PRIVATE ace::search
-    PRIVATE ace::utils)
+    PRIVATE 
+        ace::board
+        ace::search
+        ace::utils)

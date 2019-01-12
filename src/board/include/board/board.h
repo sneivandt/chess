@@ -16,22 +16,22 @@
 namespace board {
 
 // Piece colors
-enum { WHITE, BLACK, BOTH };
+enum Color { WHITE, BLACK, BOTH };
 
 // Pieces
-enum { EMPTY, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK };
+enum Piece { EMPTY, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK };
 
 // Ranks
-enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
+enum Rank { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 
 // Files
-enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
+enum File { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
 
 // Castling permissions
-enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
+enum CastlePerm { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 
 // Squares
-enum {
+enum Square {
     A1 = 21,
     B1,
     C1,

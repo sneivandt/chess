@@ -8,11 +8,10 @@
 #include "search/movelist.h"
 #include "utils/utils.h"
 
-#include <cassert>
+#include "gtest/gtest.h"
+
 #include <fstream>
 #include <iostream>
-#include <string>
-#include <vector>
 
 namespace test {
 namespace perft {

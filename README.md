@@ -10,11 +10,22 @@ cmake --build .
 
 ## Test
 
+Run unit tests.
+
 ```
 cd build
 cmake ..
-cmake --build . --target perft
-ctest perft --verbose
+cmake --build . --target unittest
+ctest -R unittest --output-on-failure
+```
+
+Run perft test.
+
+```
+cd build
+cmake ..
+cmake --build . --target perfttest
+ctest -R perfttest --verbose
 ```
 
 ## Install
@@ -33,7 +44,7 @@ Start a game using XBoard and the PolyGlot UCI adapter.
 cd build
 cmake ..
 cmake --build .
-xboard -fcp ./bin/ace -fUCI
+xboard -fcp ./src/main/ace -fUCI
 ```
 
 Start a game using the CLI.
@@ -42,7 +53,7 @@ Start a game using the CLI.
 cd build
 cmake ..
 cmake --build .
-./bin/ace
+./src/main/ace
 ```
 
 Enter moves in algebraic notation or an action key for special actions.

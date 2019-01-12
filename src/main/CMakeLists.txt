@@ -2,10 +2,11 @@ add_executable(ace
     main.cc)
 
 target_link_libraries(ace
-    PRIVATE ace::board
-    PRIVATE ace::io
-    PRIVATE ace::search
-    PRIVATE ace::utils)
+    PRIVATE 
+        ace::board
+        ace::io
+        ace::search
+        ace::utils)
 
 install(TARGETS ace EXPORT ace-targets
     LIBRARY DESTINATION lib

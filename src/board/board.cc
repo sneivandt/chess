@@ -264,12 +264,24 @@ bool board::Board::parseFen(const std::string& fen)
             index++;
         }
         index++;
-        if (fen.size() > index + 1 && fen[index] != '-') {
+        if (fen.size() > index && fen[index] != '-') {
             file = fen[index] - 'a';
             rank = fen[index + 1] - '1';
             enPas = FR2SQ(file, rank);
             index++;
         }
+        index += 2;
+        while (fen.size() > index && fen[index] != ' ') {
+            fiftyMove *= 10;
+            fiftyMove += fen[index] - '0';
+            index++;
+        }
+        /* index++;
+        while (fen.size() > index && fen[index] != ' ') {
+            fiftyMove *= 10;
+            fiftyMove += fen[index] - '0';
+            index++;
+        }*/
         break;
     }
     updateListMaterial();
