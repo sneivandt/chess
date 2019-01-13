@@ -1,5 +1,19 @@
 #include "utils/utils.h"
 
+#ifdef WIN32
+#define NOMINMAX
+#include "Windows.h"
+#else
+#include <bits/types/struct_timeval.h>
+#include <bits/types/struct_tm.h>
+#include <bits/types/time_t.h>
+#include <sys/select.h>
+#endif
+
+#include <chrono>
+#include <cstdio>
+#include <ctime>
+
 std::string utils::getTimestamp()
 {
     time_t now = time(nullptr);

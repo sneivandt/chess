@@ -1,13 +1,27 @@
-#include "perfttest/perfttest.h"
+#include "perfttest.h"
 
-using namespace test;
+#include "board/board.h"
+#include "board/makemove.h"
+#include "board/move.h"
+#include "search/movegen.h"
+#include "search/movelist.h"
+#include "utils/utils.h"
+
+#include <ctime>
+#include <fstream>
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
+#include <gtest/gtest.h>
+#include <iostream>
+#include <sys/time.h>
+#include <vector>
 
 TEST(PerftTest, perft)
 {
-    perft::test();
+    test::perft::test();
 }
 
-void perft::test()
+void test::perft::test()
 {
     board::Board pos;
     std::ifstream input("perft.txt");
@@ -33,19 +47,19 @@ void perft::test()
             first = false;
         } while (p != std::string::npos);
     }
-    std::cout << "RUNTIME " << ((std::clock() - start) / (float) CLOCKS_PER_SEC) << "s" << std::endl;
+    std::cout << "RUNTIME " << ((std::clock() - start) / static_cast<float>(CLOCKS_PER_SEC)) << "s" << std::endl;
 }
 
-void perft::testPosition(const std::string token, board::Board& pos)
+void test::perft::testPosition(const std::string& token, board::Board& pos)
 {
     int depth = token[1] - '0';
-    std::string target = token.substr(token.find(" ") + 1, token.length());
+    std::string target = token.substr(token.find(' ') + 1, token.length());
     int64_t nodes = countMoves(depth, pos);
     std::cout << utils::getTimestamp() << " D" << depth << " " << nodes << std::endl;
     ASSERT_TRUE(target.compare(std::to_string(nodes)) == 0);
 }
 
-int64_t perft::countMoves(const int depth, board::Board& pos)
+int64_t test::perft::countMoves(const int depth, board::Board& pos)
 {
     if (depth == 0) {
         return 1;

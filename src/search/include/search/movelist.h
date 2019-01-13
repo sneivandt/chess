@@ -3,8 +3,7 @@
 
 #include "board/move.h"
 
-#include <iomanip>
-#include <iostream>
+#include <algorithm>
 #include <vector>
 
 namespace search {

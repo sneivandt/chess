@@ -1,15 +1,9 @@
 #ifndef BOARD_H
 #define BOARD_H
 
-#include "board/bitboard.h"
 #include "board/undo.h"
 
-#include <algorithm>
-#include <cmath>
 #include <cstdint>
-#include <iostream>
-#include <iterator>
-#include <random>
 #include <string>
 #include <vector>
 

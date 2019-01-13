@@ -1,9 +1,7 @@
 #ifndef UCITEST_H
 #define UCITEST_H
 
-#include "unittest/boardtest.h"
-
-#include "io/uci.h"
+#include "boardtest.h"
 
 namespace test {
 

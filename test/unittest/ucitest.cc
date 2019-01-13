@@ -1,4 +1,11 @@
-#include "unittest/ucitest.h"
+#include "ucitest.h"
+
+#include "board/board.h"
+#include "io/uci.h"
+
+#include "gtest/gtest_pred_impl.h"
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
 
 using namespace test;
 

@@ -1,11 +1,13 @@
 add_executable(perfttest
     perfttest.cc
-    include/perfttest/perfttest.h)
+    perfttest.h)
 
 target_include_directories(perfttest
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(perfttest
     PRIVATE 

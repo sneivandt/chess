@@ -1,5 +1,14 @@
 #include "board/board.h"
 
+#include "bitboard.h"
+
+#include <algorithm>
+#include <cmath>
+#include <cstdint>
+#include <iostream>
+#include <iterator>
+#include <random>
+
 const char* board::Board::DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 const char* board::Board::PIECE_CHARS = ".PNBRQKpnbrqk";

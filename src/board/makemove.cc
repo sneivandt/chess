@@ -1,5 +1,12 @@
 #include "board/makemove.h"
 
+#include "bitboard.h"
+#include "board/board.h"
+#include "board/move.h"
+#include "board/undo.h"
+
+#include <cstdint>
+
 inline void board::makemove::clearPiece(const int square, Board& pos)
 {
     int piece = pos.getSquare(square);

@@ -1,4 +1,10 @@
-#include "search/pvtable.h"
+#include "pvtable.h"
+
+#include "board/board.h"
+#include "board/makemove.h"
+
+#include <cstdint>
+#include <utility>
 
 void search::PVTable::addMove(board::Board& pos, board::Move& move)
 {

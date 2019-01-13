@@ -1,12 +1,11 @@
 #ifndef MAKEMOVE_H
 #define MAKEMOVE_H
 
-#include "board/bitboard.h"
-#include "board/board.h"
-#include "board/move.h"
-#include "board/undo.h"
-
 namespace board {
+
+class Board;
+class Move;
+
 namespace makemove {
 
 // Remove a piece from a board

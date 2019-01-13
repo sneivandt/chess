@@ -1,14 +1,16 @@
 add_executable(unittest
     boardtest.cc
+    boardtest.h
     ucitest.cc
-    include/unittest/boardtest.h
-    include/unittest/ucitest.h
-    include/unittest/unittest.h)
+    ucitest.h
+    unittest.h)
 
 target_include_directories(unittest
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
+        $<INSTALL_INTERFACE:include>
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 target_link_libraries(unittest
     PRIVATE

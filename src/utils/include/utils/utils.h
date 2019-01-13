@@ -1,13 +1,7 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-#ifdef WIN32
-#define NOMINMAX
-#include "Windows.h"
-#endif
-
-#include <chrono>
-#include <ctime>
+#include <cstdint>
 #include <string>
 
 namespace utils {

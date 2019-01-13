@@ -2,14 +2,9 @@
 #define MOVEGEN_H
 
 #include "board/board.h"
-#include "board/move.h"
 #include "search/movelist.h"
 
-#include <cmath>
-#include <random>
-
-namespace search {
-namespace movegen {
+namespace search { namespace movegen {
 
 // Sliding pieces
 const int SLIDERS[6] = {board::WQ, board::WR, board::WB, board::BQ, board::BR, board::BB};
@@ -48,7 +43,6 @@ inline void addPawnMove(const int, const int, const int, const int, MoveList&, b
 // Generate all moves
 MoveList generateAll(board::Board&, const bool);
 
-} // namespace movegen
-} // namespace search
+}} // namespace search::movegen
 
 #endif

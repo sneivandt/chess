@@ -1,8 +1,13 @@
-#include "unittest/boardtest.h"
+#include "boardtest.h"
+
+#include "gtest/gtest_pred_impl.h"
+#include <gtest/gtest-message.h>
+#include <gtest/gtest-test-part.h>
+#include <utility>
 
 using namespace test;
 
-void BoardTest::ASSERT_BOARD(board::Board pos, std::map<board::Square, board::Piece> pieces, board::Color side,
+void BoardTest::ASSERT_BOARD(const board::Board& pos, std::map<board::Square, board::Piece> pieces, board::Color side,
                              board::Square enPas, int fiftyMove, int castlePerm)
 {
     ASSERT_EQ(pos.getSide(), side);

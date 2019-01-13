@@ -1,13 +1,13 @@
 #ifndef IO_H
 #define IO_H
 
-#include "board/board.h"
 #include "board/move.h"
-#include "search/movegen.h"
-#include "search/movelist.h"
 
 #include <string>
-#include <vector>
+
+namespace board {
+class Board;
+}
 
 namespace io {
 

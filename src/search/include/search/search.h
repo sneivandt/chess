@@ -1,19 +1,16 @@
 #ifndef SEARCH_H
 #define SEARCH_H
 
-#include "board/board.h"
-#include "board/evaluate.h"
-#include "board/undo.h"
-#include "search/movegen.h"
-#include "search/movelist.h"
-#include "search/pvtable.h"
-#include "search/searchinfo.h"
-
-#include <algorithm>
 #include <limits>
-#include <vector>
+
+namespace board {
+class Board;
+}
 
 namespace search {
+
+class SearchInfo;
+class PVTable;
 
 // Positive infinity
 const int POS_INFINITY = std::numeric_limits<int>::max() - 1;

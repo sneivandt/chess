@@ -1,13 +1,15 @@
 #ifndef PVTABLE_H
 #define PVTABLE_H
 
-#include "board/board.h"
-#include "board/makemove.h"
 #include "board/move.h"
 
 #include <cstdint>
 #include <unordered_map>
 #include <vector>
+
+namespace board {
+class Board;
+}
 
 namespace search {
 
@@ -19,7 +21,7 @@ class PVTable
 
   public:
     // Default Constructor
-    PVTable(){};
+    PVTable() {};
 
     // Add a move to the hash table
     void addMove(board::Board&, board::Move&);

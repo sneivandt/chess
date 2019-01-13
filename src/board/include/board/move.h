@@ -1,9 +1,7 @@
 #ifndef MOVE_H
 #define MOVE_H
 
-#include "board/board.h"
-
-#include <iostream>
+#include <string>
 
 namespace board {
 
@@ -17,8 +15,8 @@ class Move
     int score;
 
   public:
-    Move() : value(0), score(0){};
-    Move(const int value, const int score) : value(value), score(score){};
+    Move() : value(0), score(0) {};
+    Move(const int value, const int score) : value(value), score(score) {};
 
     // From square
     static int FROMSQ(const int);

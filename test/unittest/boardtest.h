@@ -1,9 +1,10 @@
 #ifndef BOARDTEST_H
 #define BOARDTEST_H
 
-#include "unittest/unittest.h"
-
 #include "board/board.h"
+#include "unittest.h"
+
+#include <map>
 
 namespace test {
 
@@ -25,7 +26,7 @@ class BoardTest : public test::UnitTest
         UnitTest::TearDown();
     }
 
-    void ASSERT_BOARD(board::Board, std::map<board::Square, board::Piece>, board::Color, board::Square, int,
+    void ASSERT_BOARD(const board::Board&, std::map<board::Square, board::Piece>, board::Color, board::Square, int,
                       int = board::WKCA | board::WQCA | board::BKCA | board::BQCA);
 };
 

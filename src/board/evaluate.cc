@@ -1,5 +1,10 @@
 #include "board/evaluate.h"
 
+#include "board/board.h"
+
+#include <cstdint>
+#include <cstdlib>
+
 inline bool board::evaluate::materialDraw(Board& pos)
 {
     if (!pos.getPieceNum(WR) && !pos.getPieceNum(BR) && !pos.getPieceNum(WQ) && !pos.getPieceNum(BQ) &&

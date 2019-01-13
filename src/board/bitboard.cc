@@ -1,4 +1,6 @@
-#include "board/bitboard.h"
+#include "bitboard.h"
+
+#include <iostream>
 
 int board::bitboard::popBit(uint64_t& bb)
 {

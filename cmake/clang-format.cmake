@@ -18,4 +18,11 @@ else()
         -i
         ${ALL_SOURCE_FILES}
     )
+
+    if(TARGET unittest)
+        add_dependencies(unittest clang-format)
+    endif()
+    if(TARGET perfttest)
+        add_dependencies(perfttest clang-format)
+    endif()
 endif()

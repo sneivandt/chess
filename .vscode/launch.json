@@ -5,7 +5,7 @@
             "name": "Launch (Linux)",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/ace",
+            "program": "${workspaceFolder}/build/src/main/ace",
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "externalConsole": false
@@ -14,7 +14,7 @@
             "name": "Launch (Windows)",
             "type": "cppvsdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/bin/Debug/ace.exe",
+            "program": "${workspaceFolder}/build/src/main/Debug/ace.exe",
             "stopAtEntry": false,
             "cwd": "${workspaceRoot}",
             "externalConsole": true

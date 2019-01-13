@@ -16,6 +16,7 @@ else()
             -cppcoreguidelines-pro-bounds-pointer-arithmetic, \
             google-*, \
             llvm-*, \
+            -llvm-include-order, \
             misc-*, \
             modernize-*, \
             performance-*, \
@@ -29,5 +30,7 @@ else()
         io
         search
         utils
+        unittest
+        perfttest
         PROPERTIES CXX_CLANG_TIDY "${DO_CLANG_TIDY}")
 endif()

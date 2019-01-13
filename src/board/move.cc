@@ -1,5 +1,7 @@
 #include "board/move.h"
 
+#include "board/board.h"
+
 std::string board::Move::getString() const
 {
     int fromSquare = Board::SQ64[FROMSQ(value)];

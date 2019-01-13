@@ -1,9 +1,16 @@
 #include "board/board.h"
+#include "board/evaluate.h"
+#include "board/makemove.h"
+#include "board/move.h"
+#include "io/io.h"
 #include "io/uci.h"
+#include "search/movegen.h"
 #include "search/search.h"
 #include "search/searchinfo.h"
 
+#include <iostream>
 #include <string>
+#include <vector>
 
 int main()
 {

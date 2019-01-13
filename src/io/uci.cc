@@ -1,5 +1,16 @@
 #include "io/uci.h"
 
+#include "board/board.h"
+#include "board/makemove.h"
+#include "board/move.h"
+#include "io/io.h"
+#include "search/search.h"
+#include "search/searchinfo.h"
+
+#include <cstddef>
+#include <iostream>
+#include <sstream>
+
 void io::uci::parseGo(const std::string& input, search::SearchInfo& info, board::Board& pos)
 {
     int inc = 0;

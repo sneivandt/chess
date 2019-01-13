@@ -1,5 +1,10 @@
 #include "search/movelist.h"
 
+#include <iomanip>
+#include <iostream>
+#include <memory>
+#include <string>
+
 void search::MoveList::print() const
 {
     std::cout << "Move List" << std::endl;

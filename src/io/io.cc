@@ -1,5 +1,12 @@
 #include "io/io.h"
 
+#include "board/board.h"
+#include "board/move.h"
+#include "search/movegen.h"
+#include "search/movelist.h"
+
+#include <vector>
+
 board::Move io::parseMove(const std::string& input, board::Board& pos)
 {
     if (input.length() > 3) {

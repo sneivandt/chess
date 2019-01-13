@@ -1,5 +1,7 @@
 #include "search/movegen.h"
 
+#include "board/move.h"
+
 int search::movegen::MVVLVA_SCORES[13][13];
 
 void search::movegen::INIT()

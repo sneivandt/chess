@@ -21,9 +21,10 @@ add_subdirectory(src/search)
 add_subdirectory(src/io)
 add_subdirectory(src/main)
 
+enable_testing()
+add_subdirectory(extern/googletest EXCLUDE_FROM_ALL)
+add_subdirectory(test EXCLUDE_FROM_ALL)
+
 include(cmake/clang-format.cmake)
 include(cmake/clang-tidy.cmake)
-
-enable_testing()
-add_subdirectory(extern/googletest)
-add_subdirectory(test EXCLUDE_FROM_ALL)
+include(cmake/include-what-you-use.cmake)

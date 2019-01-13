@@ -1,12 +1,11 @@
 #ifndef EVALUATE_H
 #define EVALUATE_H
 
-#include "board/board.h"
-
-#include <vector>
-
 namespace board {
-namespace evaluate {
+class Board;
+}
+
+namespace board { namespace evaluate {
 
 // Endgame material threshold
 const int ENDGAME_MATERIAL = 1100;
@@ -83,7 +82,6 @@ inline bool isEndGame(Board&, const int);
 // Evaluate a board
 int score(Board&);
 
-} // namespace evaluate
-} // namespace board
+}} // namespace board::evaluate
 
 #endif

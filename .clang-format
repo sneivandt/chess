@@ -1,8 +1,8 @@
 ---
 Language: Cpp
 
-AlignAfterOpenBracket: Align
-AlignTrailingComments: true
+AlignAfterOpenBracket: true
+AlignEscapedNewlines: true
 AlignOperands: true
 AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
@@ -26,12 +26,15 @@ BraceWrapping:
   IndentBraces: false
 BreakBeforeBinaryOperators: None
 BreakBeforeBraces: Custom
-BreakConstructorInitializersBeforeComma: true
+BreakBeforeTernaryOperators: true
+BreakConstructorInitializers: BeforeComma
+BreakInheritanceList: BeforeComma
 ColumnLimit: 120
+CompactNamespaces: true
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 Cpp11BracedListStyle: true
 FixNamespaceComments: true
-IncludeBlocks: Preserve
+IncludeBlocks: Regroup
 IndentCaseLabels: true
 IndentWidth: 4
 KeepEmptyLinesAtTheStartOfBlocks: false
@@ -39,17 +42,21 @@ MaxEmptyLinesToKeep: 1
 NamespaceIndentation: None
 PointerAlignment: Left
 ReflowComments: true
-SortUsingDeclarations: true
 SortIncludes: true
+SortUsingDeclarations: true
 SpaceAfterCStyleCast: true
 SpaceAfterTemplateKeyword: false
 SpaceBeforeAssignmentOperators: true
+SpaceBeforeCpp11BracedList: true
+SpaceBeforeCtorInitializerColon: true
+SpaceBeforeInheritanceColon: true
 SpaceBeforeParens: true
+SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
-SpacesInContainerLiterals: false
 SpacesInCStyleCastParentheses: false
+SpacesInContainerLiterals: true
 SpacesInParentheses: false
 SpacesInSquareBrackets: false
 Standard: Cpp11

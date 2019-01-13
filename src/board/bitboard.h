@@ -2,10 +2,8 @@
 #define BITBOARD_H
 
 #include <cstdint>
-#include <iostream>
 
-namespace board {
-namespace bitboard {
+namespace board { namespace bitboard {
 
 // Magic bit table
 const int BITTABLE[64] = {63, 30, 3,  32, 25, 41, 22, 33, 15, 50, 42, 13, 11, 53, 19, 34, 61, 29, 2,  51, 21, 43,
@@ -27,7 +25,6 @@ void setBit(uint64_t&, int);
 // Print
 void print(uint64_t);
 
-} // namespace bitboard
-} // namespace board
+}} // namespace board::bitboard
 
 #endif
