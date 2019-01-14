@@ -1,4 +1,4 @@
-# ACE - A Chess Engine
+# ACE - A Chess Engine [![Build Status](https://travis-ci.org/sneivandt/chess.svg?branch=master)](https://travis-ci.org/sneivandt/chess)
 
 ## Build
 
