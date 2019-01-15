@@ -2,6 +2,38 @@ cmake_minimum_required(VERSION 3.8)
 project(chess VERSION 1.0.0)
 
 if(MSVC)
+    if("${MSVC_RUNTIME}" STREQUAL "")
+        set(MSVC_RUNTIME "static")
+    endif()
+    set(variables
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_MINSIZEREL
+        CMAKE_C_FLAGS_RELEASE
+        CMAKE_C_FLAGS_RELWITHDEBINFO
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_MINSIZEREL
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_CXX_FLAGS_RELWITHDEBINFO
+    )
+    if(${MSVC_RUNTIME} STREQUAL "static")
+        message(STATUS
+            "MSVC -> forcing use of statically-linked runtime."
+        )
+        foreach(variable ${variables})
+            if(${variable} MATCHES "/MD")
+                string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
+            endif()
+        endforeach()
+    else()
+        message(STATUS
+            "MSVC -> forcing use of dynamically-linked runtime."
+        )
+        foreach(variable ${variables})
+            if(${variable} MATCHES "/MT")
+                string(REGEX REPLACE "/MT" "/MD" ${variable} "${${variable}}")
+            endif()
+        endforeach()
+    endif()
     add_compile_options(
         /W3
         /WX)

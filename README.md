@@ -15,7 +15,7 @@ Run unit tests.
 ```
 cd build
 cmake ..
-cmake --build . --target unittest
+cmake --build test/unittest
 ctest -R unittest --output-on-failure
 ```
 
@@ -24,7 +24,7 @@ Run perft test.
 ```
 cd build
 cmake ..
-cmake --build . --target perfttest
+cmake --build test/perfttest
 ctest -R perfttest --verbose
 ```
 

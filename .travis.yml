@@ -5,7 +5,9 @@ dist: trusty
 
 matrix:
   include:
-    - name: "Trusty GCC 6"
+    - name: "GCC 6"
+      os: linux
+      dist: trusty
       compiler: gcc
       addons:
         apt:
@@ -15,7 +17,9 @@ matrix:
             - g++-6
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-    - name: "Trusty GCC 7"
+    - name: "GCC 7"
+      os: linux
+      dist: trusty
       compiler: gcc
       addons:
         apt:
@@ -25,7 +29,9 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - name: "Trusty Clang 6.0"
+    - name: "Clang"
+      os: linux
+      dist: trusty
       compiler: clang
       addons:
         apt:
@@ -36,12 +42,16 @@ matrix:
             - clang-6.0
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+    - name: "MSVC"
+      os: windows
+      env:
+        - MATRIX_EVAL="CC=CL.exe && CXX=CL.exe"
 
 before_install:
     - eval "${MATRIX_EVAL}"
 
 script: 
   - cd build
-  - cmake -DCI=TRUE .. -G "Unix Makefiles"
-  - cmake --build . --target unittest 
-  - ctest -R unittest --output-on-failure
+  - cmake -DCI=1 ..
+  - cmake --build test/unittest --target unittest 
+  - ctest -C Debug -R unittest --verbose
