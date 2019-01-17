@@ -3,6 +3,8 @@
 #ifdef WIN32
 #define NOMINMAX
 #include "Windows.h"
+#elif __APPLE__
+#include <sys/select.h>
 #endif
 
 #include <chrono>
@@ -54,6 +56,12 @@ bool utils::inputWaiting()
         GetNumberOfConsoleInputEvents(inh, &dw);
         return dw <= 1 ? false : dw > 0;
     }
+#elif __APPLE__
+    fd_set fds;
+    struct timeval tv;
+    FD_ZERO(&fds);
+    FD_SET(fileno(stdin), &fds);
+    return select(sizeof(fds) * 8, &fds, nullptr, nullptr, &tv);
 #else
     fd_set fds;
     struct timeval tv

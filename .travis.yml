@@ -5,7 +5,7 @@ dist: trusty
 
 matrix:
   include:
-    - name: "GCC 6"
+    - name: "Trusty GCC 6"
       os: linux
       dist: trusty
       compiler: gcc
@@ -17,7 +17,7 @@ matrix:
             - g++-6
       env:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-    - name: "GCC 7"
+    - name: "Trusty GCC 7"
       os: linux
       dist: trusty
       compiler: gcc
@@ -29,7 +29,7 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
-    - name: "Clang"
+    - name: "Trusty Clang 6"
       os: linux
       dist: trusty
       compiler: clang
@@ -42,10 +42,11 @@ matrix:
             - clang-6.0
       env:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+    - name: "Xcode 10"
+      os: osx
+      osx_image: xcode10
     - name: "MSVC"
       os: windows
-      env:
-        - MATRIX_EVAL="CC=CL.exe && CXX=CL.exe"
 
 before_install:
     - eval "${MATRIX_EVAL}"

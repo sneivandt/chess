@@ -46,7 +46,7 @@ class Move
     const static int MFLAGPROM = 0xf00000;
 
     // Less than operator
-    bool operator<(Move&) const;
+    bool operator<(const Move&) const;
 
     // Get string representation of the move
     std::string getString() const;
@@ -87,9 +87,9 @@ inline int Move::PROMOTED(const int move)
     return (move >> 20) & 0xf;
 }
 
-inline bool Move::operator<(Move& other) const
+inline bool Move::operator<(const Move& rhs) const
 {
-    return score < other.getScore();
+    return score < rhs.getScore();
 }
 
 inline int Move::getScore() const
