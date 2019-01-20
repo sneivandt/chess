@@ -61,6 +61,9 @@ add_subdirectory(test EXCLUDE_FROM_ALL)
 
 if(NOT CI)
     include(cmake/clang-format.cmake)
+endif()
+
+if(CHECK)
     include(cmake/clang-tidy.cmake)
     include(cmake/include-what-you-use.cmake)
 endif()

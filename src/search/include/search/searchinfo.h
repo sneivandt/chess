@@ -34,7 +34,7 @@ class SearchInfo
     {
         reset();
     };
-    SearchInfo(const int depth) : depth(depth), stopTime(-1) {};
+    SearchInfo(const int depth) : depth(depth), stopTime(-1){};
 
     // Reset the search info
     void reset();

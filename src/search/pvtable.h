@@ -21,7 +21,7 @@ class PVTable
 
   public:
     // Default Constructor
-    PVTable() {};
+    PVTable(){};
 
     // Add a move to the hash table
     void addMove(board::Board&, board::Move&);

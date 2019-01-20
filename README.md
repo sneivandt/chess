@@ -15,8 +15,8 @@ Run unit tests.
 ```
 cd build
 cmake ..
-cmake --build test/unittest
-ctest -R unittest --output-on-failure
+cmake --build test/unittest --target unittest
+ctest -C Debug -R unittest --output-on-failure
 ```
 
 Run perft test.
@@ -24,8 +24,8 @@ Run perft test.
 ```
 cd build
 cmake ..
-cmake --build test/perfttest
-ctest -R perfttest --verbose
+cmake --build test/perfttest --target perfttest
+ctest -C Debug -R perfttest --verbose
 ```
 
 ## Install
