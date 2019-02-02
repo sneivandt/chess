@@ -1,0 +1,5 @@
+add_subdirectory(utils)
+add_subdirectory(board)
+add_subdirectory(search)
+add_subdirectory(io)
+add_subdirectory(main)

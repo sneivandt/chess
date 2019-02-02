@@ -1,7 +1,14 @@
 cmake_minimum_required(VERSION 3.6)
+
+# Project
+
 project(chess VERSION 1.0.0)
 
-set(CMAKE_CXX_STANDARD 11)
+# Compiler features
+
+set(CMAKE_CXX_STANDARD 17)
+
+# MSVC static linking
 
 if(MSVC)
     if("${MSVC_RUNTIME}" STREQUAL "")
@@ -36,28 +43,23 @@ if(MSVC)
             endif()
         endforeach()
     endif()
-    add_compile_options(
-        /W3
-        /WX)
-else()
-    add_compile_options(
-        -Wall
-        -Wextra
-        -Werror
-        -pedantic
-        $<$<CONFIG:DEBUG>:-O0>
-        $<$<CONFIG:RELEASE>:-O3>)
 endif()
 
-add_subdirectory(src/utils)
-add_subdirectory(src/board)
-add_subdirectory(src/search)
-add_subdirectory(src/io)
-add_subdirectory(src/main)
+# Source
+
+add_subdirectory(src)
+
+# Test
 
 enable_testing()
-add_subdirectory(extern/googletest EXCLUDE_FROM_ALL)
-add_subdirectory(test EXCLUDE_FROM_ALL)
+
+option(INSTALL_GTEST OFF)
+option(BUILD_GMOCK OFF)
+add_subdirectory(extern/googletest)
+
+add_subdirectory(test)
+
+# Tools
 
 if(NOT CI)
     include(cmake/clang-format.cmake)

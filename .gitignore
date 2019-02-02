@@ -23,5 +23,7 @@ CTestTestfile.cmake
 
 ##### Chess
 
+.vs/
+
 build/*
 !build/.gitkeep

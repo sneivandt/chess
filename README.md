@@ -1,4 +1,6 @@
-# ACE - A Chess Engine [![Build Status](https://travis-ci.org/sneivandt/chess.svg?branch=master)](https://travis-ci.org/sneivandt/chess)
+# ACE - A Chess Engine 
+
+[![Build Status](https://travis-ci.org/sneivandt/chess.svg?branch=master)](https://travis-ci.org/sneivandt/chess)
 
 ## Build
 
@@ -15,17 +17,17 @@ Run unit tests.
 ```
 cd build
 cmake ..
-cmake --build test/unittest --target unittest
-ctest -C Debug -R unittest --output-on-failure
+cmake --build .
+ctest -R unittest --output-on-failure
 ```
 
-Run perft test.
+Run a perft test.
 
 ```
 cd build
 cmake ..
-cmake --build test/perfttest --target perfttest
-ctest -C Debug -R perfttest --verbose
+cmake --build .
+ctest -R perfttest --verbose
 ```
 
 ## Install
@@ -33,7 +35,7 @@ ctest -C Debug -R perfttest --verbose
 ```
 cd build
 cmake ..
-sudo cmake --build . --target install
+sudo cmake --build src/main --target install
 ```
 
 ## Play
