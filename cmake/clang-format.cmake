@@ -12,17 +12,10 @@ else()
         test/**/*.h)
 
     add_custom_target(
-        clang-format ALL
+        clang-format
         COMMAND ${clang-format}
         -style=file
         -i
         ${ALL_SOURCE_FILES}
     )
-
-    if(TARGET unittest)
-        add_dependencies(unittest clang-format)
-    endif()
-    if(TARGET perfttest)
-        add_dependencies(perfttest clang-format)
-    endif()
 endif()

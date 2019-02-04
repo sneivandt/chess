@@ -4,6 +4,11 @@ cmake_minimum_required(VERSION 3.6)
 
 project(chess VERSION 1.0.0)
 
+# Options
+
+option(CLANG_TIDY "Build with Clang-Tidy" OFF)
+option(INCLUDE_WHAT_YOU_USE "Build with Include What You Use" OFF)
+
 # Compiler features
 
 set(CMAKE_CXX_STANDARD 17)
@@ -61,11 +66,12 @@ add_subdirectory(test)
 
 # Tools
 
-if(NOT CI)
-    include(cmake/clang-format.cmake)
+include(cmake/clang-format.cmake)
+
+if(CLANG_TIDY)
+    include(cmake/clang-tidy.cmake)
 endif()
 
-if(CHECK)
-    include(cmake/clang-tidy.cmake)
+if(INCLUDE_WHAT_YOU_USE)
     include(cmake/include-what-you-use.cmake)
 endif()

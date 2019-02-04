@@ -35,7 +35,7 @@ ctest -R perfttest --verbose
 ```
 cd build
 cmake ..
-sudo cmake --build src/main --target install
+sudo cmake --build . --target install
 ```
 
 ## Play
