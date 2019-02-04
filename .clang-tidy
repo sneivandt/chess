@@ -1,2 +1,17 @@
 ---
-Checks: '-*, bugprone-*, cert-*, clang-analyzer-*, cppcoreguidelines-*, -cppcoreguidelines-pro-bounds-constant-array-index, -cppcoreguidelines-pro-bounds-pointer-arithmetic, google-*, llvm-*, -llvm-include-order, misc-*, modernize-*, performance-*, portability-*, readability-*, -readability-implicit-bool-conversion'
+Checks: >
+    -*,
+    bugprone-*,
+    cert-*,
+    clang-analyzer-*,
+    cppcoreguidelines-*,
+    -cppcoreguidelines-pro-bounds-constant-array-index,
+    -cppcoreguidelines-pro-bounds-pointer-arithmetic,
+    google-*,
+    llvm-*,
+    -llvm-include-order,
+    misc-*,
+    modernize-*,
+    performance-*,
+    readability-*,
+    -readability-implicit-bool-conversion
