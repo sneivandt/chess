@@ -38,6 +38,6 @@ target_include_directories(search
         ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(search
-    PRIVATE 
+    PRIVATE
         ace::board
         ace::utils)

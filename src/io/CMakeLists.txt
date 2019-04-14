@@ -32,7 +32,7 @@ target_include_directories(io
         ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(io
-    PRIVATE 
+    PRIVATE
         ace::board
         ace::search
         ace::utils)

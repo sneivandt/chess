@@ -32,7 +32,7 @@ target_include_directories(unittest
 
 target_link_libraries(unittest
     PRIVATE
-        gtest 
+        gtest
         gtest_main
         ace::board
         ace::search

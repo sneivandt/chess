@@ -9,45 +9,12 @@ project(chess VERSION 1.0.0)
 option(CLANG_TIDY "Build with Clang-Tidy" OFF)
 option(INCLUDE_WHAT_YOU_USE "Build with Include What You Use" OFF)
 
-# Compiler features
+# Global Flags
 
 set(CMAKE_CXX_STANDARD 17)
 
-# MSVC static linking
-
 if(MSVC)
-    if("${MSVC_RUNTIME}" STREQUAL "")
-        set(MSVC_RUNTIME "static")
-    endif()
-    set(variables
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_MINSIZEREL
-        CMAKE_C_FLAGS_RELEASE
-        CMAKE_C_FLAGS_RELWITHDEBINFO
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_MINSIZEREL
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_CXX_FLAGS_RELWITHDEBINFO
-    )
-    if(${MSVC_RUNTIME} STREQUAL "static")
-        message(STATUS
-            "MSVC -> forcing use of statically-linked runtime."
-        )
-        foreach(variable ${variables})
-            if(${variable} MATCHES "/MD")
-                string(REGEX REPLACE "/MD" "/MT" ${variable} "${${variable}}")
-            endif()
-        endforeach()
-    else()
-        message(STATUS
-            "MSVC -> forcing use of dynamically-linked runtime."
-        )
-        foreach(variable ${variables})
-            if(${variable} MATCHES "/MT")
-                string(REGEX REPLACE "/MT" "/MD" ${variable} "${${variable}}")
-            endif()
-        endforeach()
-    endif()
+  include(cmake/msvc-rumtime.cmake)
 endif()
 
 # Source
@@ -58,8 +25,8 @@ add_subdirectory(src)
 
 enable_testing()
 
-option(INSTALL_GTEST OFF)
-option(BUILD_GMOCK OFF)
+set(INSTALL_GTEST OFF CACHE INTERNAL "Do not install gtest")
+set(BUILD_GMOCK OFF CACHE INTERNAL "Do not build gmock")
 add_subdirectory(extern/googletest)
 
 add_subdirectory(test)

@@ -28,7 +28,7 @@ target_include_directories(perfttest
         ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_link_libraries(perfttest
-    PRIVATE 
+    PRIVATE
         gtest
         gtest_main
         ace::board

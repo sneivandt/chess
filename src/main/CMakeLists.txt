@@ -20,7 +20,7 @@ else()
 endif()
 
 target_link_libraries(ace
-    PRIVATE 
+    PRIVATE
         ace::board
         ace::io
         ace::search
