@@ -14,7 +14,7 @@ option(INCLUDE_WHAT_YOU_USE "Build with Include What You Use" OFF)
 set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
-  include(cmake/msvc-rumtime.cmake)
+  include(cmake/msvc-runtime.cmake)
 endif()
 
 # Source
