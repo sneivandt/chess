@@ -30,4 +30,4 @@ build/*
 build-*/
 
 # CodeQL
-_codeql_*/
+_codeql_*

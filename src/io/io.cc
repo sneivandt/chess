@@ -4,6 +4,7 @@
 #include "board/move.h"
 #include "search/movegen.h"
 #include "search/movelist.h"
+#include "utils/exceptions.h"
 
 #include <vector>
 
@@ -37,5 +38,5 @@ board::Move io::parseMove(const std::string& input, board::Board& pos)
             }
         }
     }
-    throw 0;
+    throw utils::AceException("Invalid move");
 }
