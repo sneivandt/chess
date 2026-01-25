@@ -20,12 +20,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-
-      # Setup core dependencies
-      - name: install cmake
-        uses: jwlawrence/actions-setup-cmake@v1
         with:
-          cmake-version: "latest"
+          submodules: recursive
 
       - name: Configure CMake (Release)
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
@@ -42,11 +38,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
-      - name: install cmake
-        uses: jwlawrence/actions-setup-cmake@v1
         with:
-          cmake-version: "latest"
+          submodules: recursive
 
       - name: Configure CMake (Sanitizers)
         run: cmake -B ${{github.workspace}}/build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZER_ADDRESS=ON -DENABLE_SANITIZER_UNDEFINED=ON
