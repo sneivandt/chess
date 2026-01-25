@@ -27,8 +27,17 @@ void test::perft::test()
     // Get max depth from environment variable, default to 6 if not set
     const int DEFAULT_MAX_DEPTH = 6;
     int maxDepth = DEFAULT_MAX_DEPTH;
+    
+    // Use platform-specific environment variable access
+#ifdef _WIN32
+    char* maxDepthEnv = nullptr;
+    size_t len = 0;
+    errno_t err = _dupenv_s(&maxDepthEnv, &len, "PERFT_MAX_DEPTH");
+    if (err == 0 && maxDepthEnv != nullptr) {
+#else
     const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
     if (maxDepthEnv != nullptr) {
+#endif
         try {
             maxDepth = std::stoi(maxDepthEnv);
             if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
@@ -38,6 +47,9 @@ void test::perft::test()
             // Invalid input, use default
             maxDepth = DEFAULT_MAX_DEPTH;
         }
+#ifdef _WIN32
+        free(maxDepthEnv);
+#endif
     }
     std::cout << "Running perft tests with max depth: " << maxDepth << std::endl;
 
