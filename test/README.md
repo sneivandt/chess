@@ -94,7 +94,7 @@ TEST_F(MyTest, TestName)
 ```
 
 ### Best Practices
-1. **One assertion per test**: Each test should focus on one specific behavior
+1. **One logical behavior per test**: Each test should focus on a single scenario or behavior; multiple related assertions are fine if they verify different aspects of that same behavior
 2. **Descriptive names**: Test names should clearly describe what is being tested
 3. **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification
 4. **Independent tests**: Tests should not depend on each other
