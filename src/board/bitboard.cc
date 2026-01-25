@@ -1,22 +1,18 @@
 #include "bitboard.h"
 
+#include <bit>
 #include <iostream>
 
 int board::bitboard::popBit(uint64_t& bb)
 {
-    uint64_t b = bb ^ (bb - 1);
-    auto fold = static_cast<unsigned>((b & 0xffffffff) ^ (b >> 32));
+    int sq = std::countr_zero(bb);
     bb &= (bb - 1);
-    return BITTABLE[(fold * 0x783a9b23) >> 26];
+    return sq;
 }
 
 int board::bitboard::countBits(uint64_t bb)
 {
-    int r;
-    for (r = 0; bb; r++, bb &= bb - 1) {
-        ;
-    }
-    return r;
+    return std::popcount(bb);
 }
 
 void board::bitboard::clearBit(uint64_t& bb, int sq)

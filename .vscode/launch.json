@@ -2,22 +2,64 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Launch (Linux)",
+            "name": "Debug ACE",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/src/main/ace",
+            "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "externalConsole": false
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
         },
         {
-            "name": "Launch (Windows)",
-            "type": "cppvsdbg",
+            "name": "Debug Unit Tests",
+            "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/src/main/Debug/ace.exe",
+            "program": "${workspaceFolder}/build/test/unittest/unittest",
+            "args": [],
             "stopAtEntry": false,
-            "cwd": "${workspaceRoot}",
-            "externalConsole": true
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
+        },
+        {
+            "name": "Debug Perft",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/test/perfttest/perfttest",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/test/perfttest",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "build"
         }
     ]
 }

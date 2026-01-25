@@ -1,0 +1,59 @@
+name: CMake CI
+
+on:
+  push:
+    branches: ["master", "main"]
+  pull_request:
+    branches: ["master", "main"]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v3
+
+      # Setup core dependencies
+      - name: install cmake
+        uses: jwlawrence/actions-setup-cmake@v1
+        with:
+          cmake-version: "latest"
+
+      - name: Configure CMake (Release)
+        run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+      - name: Build (Release)
+        run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+      - name: Test (Release)
+        working-directory: ${{github.workspace}}/build
+        run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure
+
+  sanitizers:
+    name: Build and Test (Sanitizers)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: install cmake
+        uses: jwlawrence/actions-setup-cmake@v1
+        with:
+          cmake-version: "latest"
+
+      - name: Configure CMake (Sanitizers)
+        run: cmake -B ${{github.workspace}}/build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZER_ADDRESS=ON -DENABLE_SANITIZER_UNDEFINED=ON
+
+      - name: Build (Sanitizers)
+        run: cmake --build ${{github.workspace}}/build-asan
+
+      - name: Test (Sanitizers)
+        working-directory: ${{github.workspace}}/build-asan
+        run: ctest --output-on-failure

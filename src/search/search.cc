@@ -34,7 +34,8 @@ void search::checkup(SearchInfo& info)
 
 bool search::isRepetition(board::Board& pos)
 {
-    for (size_t i = pos.getHistory().size() - pos.getFiftyMove(); i < pos.getHistory().size(); i++) {
+    for (size_t i = pos.getHistory().size() - static_cast<size_t>(pos.getFiftyMove()); i < pos.getHistory().size();
+         i++) {
         if (pos.getHashKey() == pos.getHistory()[i].getHashKey()) {
             return true;
         }

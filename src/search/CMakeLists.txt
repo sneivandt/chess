@@ -12,23 +12,10 @@ add_library(search
 
 add_library(ace::search ALIAS search)
 
-if(MSVC)
-    target_compile_options(search
-        PRIVATE
-            /W3
-            /WX
-            $<$<CONFIG:DEBUG>:/Odi>
-            $<$<CONFIG:RELEASE>:/O2>)
-else()
-    add_compile_options(search
-        PRIVATE
-            -Wall
-            -Wextra
-            -Werror
-            -pedantic
-            $<$<CONFIG:DEBUG>:-O0>
-            $<$<CONFIG:RELEASE>:-O3>)
-endif()
+target_link_libraries(search
+    PRIVATE
+        project_options
+        project_warnings)
 
 target_include_directories(search
     PUBLIC

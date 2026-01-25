@@ -52,16 +52,15 @@ inline void search::movegen::addPawnMove(const int from, const int to, const int
     }
 }
 
-search::MoveList search::movegen::generateAll(board::Board& pos, const bool onlyCaps)
+void search::movegen::generatePawnMoves(board::Board& pos, MoveList& moves, const bool onlyCaps)
 {
-    MoveList moves;
-    int square;
     int piece;
     int offset;
-    int direction;
-    int targetSquare;
+    int square;
+
     pos.getSide() == board::WHITE ? piece = board::WP : piece = board::BP;
     pos.getSide() == board::WHITE ? offset = 1 : offset = -1;
+
     for (int pceNum = 0; pceNum < pos.getPieceNum(piece); pceNum++) {
         square = pos.getPieceList(piece)[pceNum];
         if (!onlyCaps) {
@@ -96,6 +95,16 @@ search::MoveList search::movegen::generateAll(board::Board& pos, const bool only
             }
         }
     }
+}
+
+void search::movegen::generateSliderMoves(board::Board& pos, MoveList& moves, const bool onlyCaps)
+{
+    int offset;
+    int piece;
+    int square;
+    int direction;
+    int targetSquare;
+
     pos.getSide() == board::WHITE ? offset = 0 : offset = 3;
     for (int index = 0; index < 3; index++) {
         piece = SLIDERS[index + offset];
@@ -122,6 +131,16 @@ search::MoveList search::movegen::generateAll(board::Board& pos, const bool only
             }
         }
     }
+}
+
+void search::movegen::generateNonSliderMoves(board::Board& pos, MoveList& moves, const bool onlyCaps)
+{
+    int offset;
+    int piece;
+    int square;
+    int direction;
+    int targetSquare;
+
     pos.getSide() == board::WHITE ? offset = 0 : offset = 2;
     for (int index = 0; index < 2; index++) {
         piece = NON_SLIDERS[index + offset];
@@ -147,49 +166,62 @@ search::MoveList search::movegen::generateAll(board::Board& pos, const bool only
             }
         }
     }
+}
+
+void search::movegen::generateCastlingMoves(board::Board& pos, MoveList& moves)
+{
+    if (pos.getSide() == board::WHITE) {
+        if (pos.getCastlePerm() & board::WKCA) {
+            if (pos.getSquare(board::F1) == board::EMPTY && pos.getSquare(board::G1) == board::EMPTY) {
+                if (!pos.sqAttacked(board::E1, board::BLACK) && !pos.sqAttacked(board::F1, board::BLACK)) {
+                    addQuietMove(
+                        board::Move::MOVE(board::E1, board::G1, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
+                        moves, pos);
+                }
+            }
+        }
+        if (pos.getCastlePerm() & board::WQCA) {
+            if (pos.getSquare(board::D1) == board::EMPTY && pos.getSquare(board::C1) == board::EMPTY &&
+                pos.getSquare(board::B1) == board::EMPTY) {
+                if (!pos.sqAttacked(board::E1, board::BLACK) && !pos.sqAttacked(board::D1, board::BLACK)) {
+                    addQuietMove(
+                        board::Move::MOVE(board::E1, board::C1, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
+                        moves, pos);
+                }
+            }
+        }
+    }
+    else {
+        if (pos.getCastlePerm() & board::BKCA) {
+            if (pos.getSquare(board::F8) == board::EMPTY && pos.getSquare(board::G8) == board::EMPTY) {
+                if (!pos.sqAttacked(board::E8, board::WHITE) && !pos.sqAttacked(board::F8, board::WHITE)) {
+                    addQuietMove(
+                        board::Move::MOVE(board::E8, board::G8, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
+                        moves, pos);
+                }
+            }
+        }
+        if (pos.getCastlePerm() & board::BQCA) {
+            if (pos.getSquare(board::D8) == board::EMPTY && pos.getSquare(board::C8) == board::EMPTY &&
+                pos.getSquare(board::B8) == board::EMPTY) {
+                if (!pos.sqAttacked(board::E8, board::WHITE) && !pos.sqAttacked(board::D8, board::WHITE)) {
+                    addQuietMove(
+                        board::Move::MOVE(board::E8, board::C8, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
+                        moves, pos);
+                }
+            }
+        }
+    }
+}
+
+search::MoveList search::movegen::generateAll(board::Board& pos, const bool onlyCaps)
+{
+    MoveList moves;
+    generatePawnMoves(pos, moves, onlyCaps);
+    generateSliderMoves(pos, moves, onlyCaps);
+    generateNonSliderMoves(pos, moves, onlyCaps);
     if (!onlyCaps) {
-        if (pos.getSide() == board::WHITE) {
-            if (pos.getCastlePerm() & board::WKCA) {
-                if (pos.getSquare(board::F1) == board::EMPTY && pos.getSquare(board::G1) == board::EMPTY) {
-                    if (!pos.sqAttacked(board::E1, board::BLACK) && !pos.sqAttacked(board::F1, board::BLACK)) {
-                        addQuietMove(
-                            board::Move::MOVE(board::E1, board::G1, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
-                            moves, pos);
-                    }
-                }
-            }
-            if (pos.getCastlePerm() & board::WQCA) {
-                if (pos.getSquare(board::D1) == board::EMPTY && pos.getSquare(board::C1) == board::EMPTY &&
-                    pos.getSquare(board::B1) == board::EMPTY) {
-                    if (!pos.sqAttacked(board::E1, board::BLACK) && !pos.sqAttacked(board::D1, board::BLACK)) {
-                        addQuietMove(
-                            board::Move::MOVE(board::E1, board::C1, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
-                            moves, pos);
-                    }
-                }
-            }
-        }
-        else {
-            if (pos.getCastlePerm() & board::BKCA) {
-                if (pos.getSquare(board::F8) == board::EMPTY && pos.getSquare(board::G8) == board::EMPTY) {
-                    if (!pos.sqAttacked(board::E8, board::WHITE) && !pos.sqAttacked(board::F8, board::WHITE)) {
-                        addQuietMove(
-                            board::Move::MOVE(board::E8, board::G8, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
-                            moves, pos);
-                    }
-                }
-            }
-            if (pos.getCastlePerm() & board::BQCA) {
-                if (pos.getSquare(board::D8) == board::EMPTY && pos.getSquare(board::C8) == board::EMPTY &&
-                    pos.getSquare(board::B8) == board::EMPTY) {
-                    if (!pos.sqAttacked(board::E8, board::WHITE) && !pos.sqAttacked(board::D8, board::WHITE)) {
-                        addQuietMove(
-                            board::Move::MOVE(board::E8, board::C8, board::EMPTY, board::EMPTY, board::Move::MFLAGCA),
-                            moves, pos);
-                    }
-                }
-            }
-        }
+        generateCastlingMoves(pos, moves);
     }
     return moves;
 }

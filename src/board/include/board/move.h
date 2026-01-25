@@ -15,8 +15,8 @@ class Move
     int score;
 
   public:
-    Move() : value(0), score(0){};
-    Move(const int value, const int score) : value(value), score(score){};
+    Move() : value(0), score(0) {};
+    Move(const int v, const int s) : value(v), score(s) {};
 
     // From square
     static int FROMSQ(const int);
@@ -62,9 +62,24 @@ class Move
     static int MOVE(const int, const int, const int, const int, const int);
 };
 
+/*
+ * Move integer layout:
+ *
+ *  0 -  6 : From square (7 bits)
+ *  7 - 13 : To square (7 bits)
+ * 14 - 17 : Captured piece (4 bits)
+ *      18 : En Passant flag (1 bit)
+ *      19 : Pawn Start flag (1 bit)
+ * 20 - 23 : Promoted piece (4 bits)
+ *      24 : Castle flag (1 bit)
+ *
+ * Captured Piece limits: 0-15 (4 bits)
+ * Promoted Piece limits: 0-15 (4 bits)
+ */
+
 inline int Move::MOVE(const int from, const int to, const int capture, const int promoted, const int flag)
 {
-    return from | (to << 7) | (capture << 14) | (promoted << 20) | flag;
+    return (from & 0x7f) | ((to & 0x7f) << 7) | ((capture & 0xf) << 14) | ((promoted & 0xf) << 20) | flag;
 }
 
 inline int Move::FROMSQ(const int move)
@@ -97,9 +112,9 @@ inline int Move::getScore() const
     return score;
 }
 
-inline void Move::addScore(const int value)
+inline void Move::addScore(const int s)
 {
-    score += value;
+    score += s;
 }
 
 inline int Move::getValue() const

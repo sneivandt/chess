@@ -47,7 +47,8 @@ void test::perft::test()
             first = false;
         } while (p != std::string::npos);
     }
-    std::cout << "RUNTIME " << ((std::clock() - start) / static_cast<float>(CLOCKS_PER_SEC)) << "s" << std::endl;
+    std::cout << "RUNTIME " << (static_cast<double>(std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC)) << "s"
+              << std::endl;
 }
 
 void test::perft::testPosition(const std::string& token, board::Board& pos)

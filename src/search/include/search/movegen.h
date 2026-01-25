@@ -40,6 +40,18 @@ inline void addEnPasMove(const int, MoveList&);
 // Add pawn move
 inline void addPawnMove(const int, const int, const int, const int, MoveList&, board::Board&);
 
+// Generate pawn moves
+void generatePawnMoves(board::Board&, MoveList&, const bool);
+
+// Generate sliding piece moves
+void generateSliderMoves(board::Board&, MoveList&, const bool);
+
+// Generate non-sliding piece moves
+void generateNonSliderMoves(board::Board&, MoveList&, const bool);
+
+// Generate castling moves
+void generateCastlingMoves(board::Board&, MoveList&);
+
 // Generate all moves
 MoveList generateAll(board::Board&, const bool);
 
