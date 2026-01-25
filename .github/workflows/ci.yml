@@ -1,8 +1,6 @@
 name: CMake CI
 
 on:
-  push:
-    branches: ["master", "main"]
   pull_request:
     branches: ["master", "main"]
 
@@ -17,6 +15,7 @@ jobs:
         os: [ubuntu-latest, windows-latest]
     name: Build and Test
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
 
     steps:
       - uses: actions/checkout@v3
@@ -25,17 +24,21 @@ jobs:
 
       - name: Configure CMake (Release)
         run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        timeout-minutes: 5
 
       - name: Build (Release)
         run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        timeout-minutes: 15
 
       - name: Test (Release)
         working-directory: ${{github.workspace}}/build
         run: ctest -C ${{env.BUILD_TYPE}} --output-on-failure
+        timeout-minutes: 10
 
   sanitizers:
     name: Build and Test (Sanitizers)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
         with:
@@ -43,10 +46,13 @@ jobs:
 
       - name: Configure CMake (Sanitizers)
         run: cmake -B ${{github.workspace}}/build-asan -DCMAKE_BUILD_TYPE=Debug -DENABLE_SANITIZER_ADDRESS=ON -DENABLE_SANITIZER_UNDEFINED=ON
+        timeout-minutes: 5
 
       - name: Build (Sanitizers)
         run: cmake --build ${{github.workspace}}/build-asan
+        timeout-minutes: 15
 
       - name: Test (Sanitizers)
         working-directory: ${{github.workspace}}/build-asan
         run: ctest --output-on-failure
+        timeout-minutes: 10
