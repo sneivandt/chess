@@ -35,13 +35,13 @@ TEST_F(SearchTest, IsRepetitionAfterMoves)
     // Setup position and make moves that repeat
     pos.parseFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
     
-    // Make a move and undo to create same position
+    // Make a move and undo to return to the same position
     auto moves = search::movegen::generateAll(pos, false).getMoves();
     if (!moves.empty()) {
         board::Move firstMove = moves[0];
         if (board::makemove::move(firstMove, pos)) {
             board::makemove::undo(pos);
-            // After undo, should not be repetition (need 3 occurrences)
+            // After undo, this position has only a single occurrence in history, so isRepetition should be false
             EXPECT_FALSE(search::isRepetition(pos));
         }
     }
