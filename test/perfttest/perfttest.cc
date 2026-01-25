@@ -13,7 +13,6 @@
 #include <gtest/gtest-test-part.h>
 #include <gtest/gtest.h>
 #include <iostream>
-#include <sys/time.h>
 #include <vector>
 
 TEST(PerftTest, perft)
