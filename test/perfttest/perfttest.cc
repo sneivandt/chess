@@ -22,6 +22,24 @@ TEST(PerftTest, perft)
     test::perft::test();
 }
 
+namespace {
+    int parseMaxDepth(const char* envValue, int defaultDepth) {
+        if (envValue == nullptr) {
+            return defaultDepth;
+        }
+        try {
+            int depth = std::stoi(envValue);
+            if (depth < 1 || depth > defaultDepth) {
+                return defaultDepth;
+            }
+            return depth;
+        } catch (...) {
+            // Invalid input, use default
+            return defaultDepth;
+        }
+    }
+}
+
 void test::perft::test()
 {
     // Get max depth from environment variable, default to 6 if not set
@@ -34,30 +52,12 @@ void test::perft::test()
     size_t len = 0;
     errno_t err = _dupenv_s(&maxDepthEnv, &len, "PERFT_MAX_DEPTH");
     if (err == 0 && maxDepthEnv != nullptr) {
-        try {
-            maxDepth = std::stoi(maxDepthEnv);
-            if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
-                maxDepth = DEFAULT_MAX_DEPTH;
-            }
-        } catch (...) {
-            // Invalid input, use default
-            maxDepth = DEFAULT_MAX_DEPTH;
-        }
+        maxDepth = parseMaxDepth(maxDepthEnv, DEFAULT_MAX_DEPTH);
         free(maxDepthEnv);
     }
 #else
     const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
-    if (maxDepthEnv != nullptr) {
-        try {
-            maxDepth = std::stoi(maxDepthEnv);
-            if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
-                maxDepth = DEFAULT_MAX_DEPTH;
-            }
-        } catch (...) {
-            // Invalid input, use default
-            maxDepth = DEFAULT_MAX_DEPTH;
-        }
-    }
+    maxDepth = parseMaxDepth(maxDepthEnv, DEFAULT_MAX_DEPTH);
 #endif
     std::cout << "Running perft tests with max depth: " << maxDepth << std::endl;
 
