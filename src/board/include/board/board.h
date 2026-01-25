@@ -260,7 +260,7 @@ class Board
     void addMaterial(const int, const int);
 
     // Game history
-    std::vector<Undo> getHistory();
+    const std::vector<Undo>& getHistory() const;
     void addHistory(Undo&);
     Undo popHistory();
 
@@ -404,17 +404,17 @@ inline void Board::hashEnPas()
     hashKey ^= PIECE_KEYS[EMPTY][enPas];
 }
 
-inline int Board::getMaterial(const int side) const
+inline int Board::getMaterial(const int s) const
 {
-    return material[side];
+    return material[s];
 }
 
-inline void Board::addMaterial(const int side, const int value)
+inline void Board::addMaterial(const int s, const int value)
 {
-    material[side] += value;
+    material[s] += value;
 }
 
-inline std::vector<Undo> Board::getHistory()
+inline const std::vector<Undo>& Board::getHistory() const
 {
     return history;
 }

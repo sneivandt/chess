@@ -175,124 +175,148 @@ void board::Board::reset()
 bool board::Board::parseFen(const std::string& fen)
 {
     reset();
-    int piece = 0;
+    int piece = EMPTY;
     int sq64 = 0;
     int sq120 = 0;
     int rank = RANK_8;
     int file = FILE_A;
-    unsigned int index = 0;
-    while (index < fen.size()) {
-        for (index = 0; rank >= RANK_1; index++) {
-            int count = 1;
-            switch (fen[index]) {
-                case 'p':
-                    piece = BP;
-                    break;
-                case 'r':
-                    piece = BR;
-                    break;
-                case 'n':
-                    piece = BN;
-                    break;
-                case 'b':
-                    piece = BB;
-                    break;
-                case 'q':
-                    piece = BQ;
-                    break;
-                case 'k':
-                    piece = BK;
-                    break;
-                case 'P':
-                    piece = WP;
-                    break;
-                case 'R':
-                    piece = WR;
-                    break;
-                case 'N':
-                    piece = WN;
-                    break;
-                case 'B':
-                    piece = WB;
-                    break;
-                case 'Q':
-                    piece = WQ;
-                    break;
-                case 'K':
-                    piece = WK;
-                    break;
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                    piece = EMPTY;
-                    count = fen[index] - '0';
-                    break;
-                case '/':
-                case ' ':
-                    rank--;
-                    file = FILE_A;
-                    count = 0;
-                    break;
-                default:
-                    return false;
-            }
-            for (int i = 0; i < count; i++) {
-                sq64 = rank * 8 + file;
+    size_t index = 0;
+
+    // Parse piece placement
+    while (rank >= RANK_1 && index < fen.length()) {
+        int count = 1;
+        char c = fen[index];
+        piece = EMPTY;
+
+        switch (c) {
+            case 'p':
+                piece = BP;
+                break;
+            case 'r':
+                piece = BR;
+                break;
+            case 'n':
+                piece = BN;
+                break;
+            case 'b':
+                piece = BB;
+                break;
+            case 'q':
+                piece = BQ;
+                break;
+            case 'k':
+                piece = BK;
+                break;
+            case 'P':
+                piece = WP;
+                break;
+            case 'R':
+                piece = WR;
+                break;
+            case 'N':
+                piece = WN;
+                break;
+            case 'B':
+                piece = WB;
+                break;
+            case 'Q':
+                piece = WQ;
+                break;
+            case 'K':
+                piece = WK;
+                break;
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+                piece = EMPTY;
+                count = c - '0';
+                break;
+            case '/':
+            case ' ':
+                rank--;
+                file = FILE_A;
+                index++;
+                continue;
+            default:
+                return false;
+        }
+
+        for (int i = 0; i < count; i++) {
+            sq64 = rank * 8 + file;
+            if (sq64 >= 0 && sq64 < 64) {
                 sq120 = SQ120[sq64];
                 if (piece != EMPTY) {
                     board[sq120] = piece;
                 }
-                file++;
             }
-        }
-        side = fen[index] == 'w' ? WHITE : BLACK;
-        index += 2;
-        for (int i = 0; i < 4; i++) {
-            if (fen.size() < index || fen[index] == ' ') {
-                break;
-            }
-            switch (fen[index]) {
-                case 'K':
-                    castlePerm |= WKCA;
-                    break;
-                case 'Q':
-                    castlePerm |= WQCA;
-                    break;
-                case 'k':
-                    castlePerm |= BKCA;
-                    break;
-                case 'q':
-                    castlePerm |= BQCA;
-                    break;
-            }
-            index++;
+            file++;
         }
         index++;
-        if (fen.size() > index && fen[index] != '-') {
+    }
+
+    // Check if we finished the board part
+    // The previous loop decrements rank when it hits ' ' or '/', so we need to find the space separator
+    // actually, my loop logic for ' ' decrements rank effectively exiting the loop.
+    // We should find the next part of the FEN string.
+
+    // Recover index position if we overshot or loop terminated
+    // We need to find the space that separates board from side
+    size_t spacePos = fen.find(' ', 0);
+    if (spacePos == std::string::npos)
+        return false;
+
+    index = spacePos + 1;
+    if (index >= fen.length())
+        return false;
+
+    side = fen[index] == 'w' ? WHITE : BLACK;
+    index += 2;
+
+    for (int i = 0; i < 4; i++) {
+        if (index >= fen.length() || fen[index] == ' ') {
+            break;
+        }
+        switch (fen[index]) {
+            case 'K':
+                castlePerm |= WKCA;
+                break;
+            case 'Q':
+                castlePerm |= WQCA;
+                break;
+            case 'k':
+                castlePerm |= BKCA;
+                break;
+            case 'q':
+                castlePerm |= BQCA;
+                break;
+        }
+        index++;
+    }
+    index++;
+
+    if (index < fen.length() && fen[index] != '-') {
+        if (index + 1 < fen.length()) { // Check bounds for valid EnPas parsing
             file = fen[index] - 'a';
             rank = fen[index + 1] - '1';
             enPas = FR2SQ(file, rank);
-            index++;
         }
-        index += 2;
-        while (fen.size() > index && fen[index] != ' ') {
-            fiftyMove *= 10;
-            fiftyMove += fen[index] - '0';
-            index++;
-        }
-        /* index++;
-        while (fen.size() > index && fen[index] != ' ') {
-            fiftyMove *= 10;
-            fiftyMove += fen[index] - '0';
-            index++;
-        }*/
-        break;
+        index++; // Skip char
     }
+    index += 2; // Skip space
+
+    while (index < fen.length() && fen[index] != ' ') {
+        fiftyMove *= 10;
+        fiftyMove += fen[index] - '0';
+        index++;
+    }
+
+    // ply parsing would follow but seems commented out or missing in original logic
+
     updateListMaterial();
     generateHash();
     return true;
@@ -318,34 +342,42 @@ void board::Board::print() const
     }
 }
 
-bool board::Board::sqAttacked(const int square, const int side) const
+bool board::Board::sqAttacked(const int square, const int side_in) const
 {
     int targetSquare;
     int piece;
-    if (side == WHITE && (board[square - 11] == WP || board[square - 9] == WP)) {
-        return true;
+
+    // Pawn attacks
+    if (side_in == WHITE) {
+        if (board[square - 11] == WP || board[square - 9] == WP)
+            return true;
     }
-    if (side == BLACK && (board[square + 11] == BP || board[square + 9] == BP)) {
-        return true;
+    else {
+        if (board[square + 11] == BP || board[square + 9] == BP)
+            return true;
     }
+
+    // Knight attacks
     for (int i = 0; i < 8; i++) {
         piece = board[square + MOVE_DIR[WN][i]];
-        if (side == WHITE && piece == WN) {
+        if (side_in == WHITE && piece == WN) {
             return true;
         }
-        if (side == BLACK && piece == BN) {
+        if (side_in == BLACK && piece == BN) {
             return true;
         }
     }
+
+    // Rook / Queen attacks
     for (int i = 0; i < 4; i++) {
         targetSquare = square + MOVE_DIR[WR][i];
         piece = board[targetSquare];
         while (piece != NO_SQ) {
             if (piece != EMPTY) {
-                if (side == WHITE && (board[targetSquare] == WR || board[targetSquare] == WQ)) {
+                if (side_in == WHITE && (piece == WR || piece == WQ)) {
                     return true;
                 }
-                if (side == BLACK && (board[targetSquare] == BR || board[targetSquare] == BQ)) {
+                if (side_in == BLACK && (piece == BR || piece == BQ)) {
                     return true;
                 }
                 break;
@@ -354,15 +386,17 @@ bool board::Board::sqAttacked(const int square, const int side) const
             piece = board[targetSquare];
         }
     }
+
+    // Bishop / Queen attacks
     for (int i = 0; i < 4; i++) {
         targetSquare = square + MOVE_DIR[WB][i];
         piece = board[targetSquare];
         while (piece != NO_SQ) {
             if (piece != EMPTY) {
-                if (side == WHITE && (board[targetSquare] == WB || board[targetSquare] == WQ)) {
+                if (side_in == WHITE && (piece == WB || piece == WQ)) {
                     return true;
                 }
-                if (side == BLACK && (board[targetSquare] == BB || board[targetSquare] == BQ)) {
+                if (side_in == BLACK && (piece == BB || piece == BQ)) {
                     return true;
                 }
                 break;
@@ -371,9 +405,11 @@ bool board::Board::sqAttacked(const int square, const int side) const
             piece = board[targetSquare];
         }
     }
+
+    // King attacks
     for (int i = 0; i < 8; i++) {
         piece = board[square + MOVE_DIR[WK][i]];
-        if ((side == WHITE && piece == WK) || (side == BLACK && piece == BK)) {
+        if ((side_in == WHITE && piece == WK) || (side_in == BLACK && piece == BK)) {
             return true;
         }
     }

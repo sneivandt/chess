@@ -7,13 +7,14 @@
 #include "search/movelist.h"
 #include "utils/utils.h"
 
+#include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 #include <gtest/gtest.h>
 #include <iostream>
-#include <sys/time.h>
+#include <string>
 #include <vector>
 
 TEST(PerftTest, perft)
@@ -21,8 +22,45 @@ TEST(PerftTest, perft)
     test::perft::test();
 }
 
+namespace {
+    int parseMaxDepth(const char* envValue, int defaultDepth) {
+        if (envValue == nullptr) {
+            return defaultDepth;
+        }
+        try {
+            int depth = std::stoi(envValue);
+            if (depth < 1 || depth > defaultDepth) {
+                return defaultDepth;
+            }
+            return depth;
+        } catch (...) {
+            // Invalid input, use default
+            return defaultDepth;
+        }
+    }
+}
+
 void test::perft::test()
 {
+    // Get max depth from environment variable, default to 6 if not set
+    const int DEFAULT_MAX_DEPTH = 6;
+    int maxDepth = DEFAULT_MAX_DEPTH;
+    
+    // Use platform-specific environment variable access
+#ifdef _WIN32
+    char* maxDepthEnv = nullptr;
+    size_t len = 0;
+    errno_t err = _dupenv_s(&maxDepthEnv, &len, "PERFT_MAX_DEPTH");
+    if (err == 0 && maxDepthEnv != nullptr) {
+        maxDepth = parseMaxDepth(maxDepthEnv, DEFAULT_MAX_DEPTH);
+        free(maxDepthEnv);
+    }
+#else
+    const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
+    maxDepth = parseMaxDepth(maxDepthEnv, DEFAULT_MAX_DEPTH);
+#endif
+    std::cout << "Running perft tests with max depth: " << maxDepth << std::endl;
+
     board::Board pos;
     std::ifstream input("perft.txt");
     ASSERT_FALSE(input.fail());
@@ -41,18 +79,24 @@ void test::perft::test()
                 pos.parseFen(token);
             }
             else {
-                testPosition(token, pos);
+                testPosition(token, pos, maxDepth);
             }
             line.erase(0, p + delimiter.length());
             first = false;
         } while (p != std::string::npos);
     }
-    std::cout << "RUNTIME " << ((std::clock() - start) / static_cast<float>(CLOCKS_PER_SEC)) << "s" << std::endl;
+    std::cout << "RUNTIME " << (static_cast<double>(std::clock() - start) / static_cast<double>(CLOCKS_PER_SEC)) << "s"
+              << std::endl;
 }
 
-void test::perft::testPosition(const std::string& token, board::Board& pos)
+void test::perft::testPosition(const std::string& token, board::Board& pos, int maxDepth)
 {
     int depth = token[1] - '0';
+    // Skip tests that exceed max depth
+    if (depth > maxDepth) {
+        std::cout << utils::getTimestamp() << " D" << depth << " SKIPPED (max depth: " << maxDepth << ")" << std::endl;
+        return;
+    }
     std::string target = token.substr(token.find(' ') + 1, token.length());
     int64_t nodes = countMoves(depth, pos);
     std::cout << utils::getTimestamp() << " D" << depth << " " << nodes << std::endl;
