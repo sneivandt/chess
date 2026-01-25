@@ -61,7 +61,7 @@ TEST_F(MoveGenTest, GenerateMultiplePawnCaptures)
 TEST_F(MoveGenTest, GenerateKnightMoves)
 {
     // Knight in center should have 8 moves
-    pos.parseFen("8/8/8/4N3/8/8/8/8 w - - 0 1");
+    pos.parseFen("4k3/8/8/4N3/8/8/8/4K3 w - - 0 1");
 
     search::MoveList moves = search::movegen::generateAll(pos, false);
     EXPECT_EQ(moves.getMoves().size(), 8);
