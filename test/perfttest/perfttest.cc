@@ -14,6 +14,7 @@
 #include <gtest/gtest-test-part.h>
 #include <gtest/gtest.h>
 #include <iostream>
+#include <string>
 #include <vector>
 
 TEST(PerftTest, perft)
@@ -24,12 +25,18 @@ TEST(PerftTest, perft)
 void test::perft::test()
 {
     // Get max depth from environment variable, default to 6 if not set
-    int maxDepth = 6;
+    const int DEFAULT_MAX_DEPTH = 6;
+    int maxDepth = DEFAULT_MAX_DEPTH;
     const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
     if (maxDepthEnv != nullptr) {
-        maxDepth = std::atoi(maxDepthEnv);
-        if (maxDepth < 1 || maxDepth > 6) {
-            maxDepth = 6;
+        try {
+            maxDepth = std::stoi(maxDepthEnv);
+            if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
+                maxDepth = DEFAULT_MAX_DEPTH;
+            }
+        } catch (...) {
+            // Invalid input, use default
+            maxDepth = DEFAULT_MAX_DEPTH;
         }
     }
     std::cout << "Running perft tests with max depth: " << maxDepth << std::endl;
