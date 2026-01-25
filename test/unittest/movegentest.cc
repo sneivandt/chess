@@ -106,7 +106,7 @@ TEST_F(MoveGenTest, GenerateEnPassantCapture)
 TEST_F(MoveGenTest, GeneratePromotionMoves)
 {
     // White pawn can promote
-    pos.parseFen("8/P7/8/8/8/8/8/8 w - - 0 1");
+    pos.parseFen("8/P7/8/8/8/8/8/4K2k w - - 0 1");
 
     search::MoveList moves = search::movegen::generateAll(pos, false);
     
