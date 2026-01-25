@@ -7,6 +7,7 @@
 #include "search/movegen.h"
 #include "search/search.h"
 #include "search/searchinfo.h"
+#include "utils/exceptions.h"
 
 #include <iostream>
 #include <string>
@@ -63,9 +64,9 @@ int main()
                     throw;
                 }
             }
-            catch (int) {
+            catch (const std::exception& e) {
                 std::cout << std::endl;
-                std::cout << "ERROR Invalid input" << std::endl;
+                std::cout << "ERROR " << e.what() << std::endl;
             }
         }
     }

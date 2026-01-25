@@ -1,6 +1,8 @@
 add_executable(unittest
     boardtest.cc
     boardtest.h
+    iotest.cc
+    iotest.h
     makemovetest.cc
     movegentest.cc
     ucitest.cc
