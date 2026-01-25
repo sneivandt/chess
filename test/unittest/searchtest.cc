@@ -36,7 +36,7 @@ TEST_F(SearchTest, IsRepetitionAfterMoves)
     pos.parseFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
     
     // Make a move and undo to create same position
-    std::vector<board::Move> moves = search::movegen::generateAll(pos, false).getMoves();
+    auto moves = search::movegen::generateAll(pos, false).getMoves();
     if (!moves.empty()) {
         board::Move firstMove = moves[0];
         if (board::makemove::move(firstMove, pos)) {

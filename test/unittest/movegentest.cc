@@ -126,7 +126,7 @@ TEST_F(MoveGenTest, GenerateNoMovesInCheckmate)
     // Fool's mate position
     pos.parseFen("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
 
-    std::vector<board::Move> moves = search::movegen::generateAll(pos, false).getMoves();
+    auto moves = search::movegen::generateAll(pos, false).getMoves();
     
     // Check that no legal moves (all moves leave king in check)
     int legalMoves = 0;
