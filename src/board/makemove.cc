@@ -189,7 +189,7 @@ void board::makemove::undo(Board& pos)
         }
     }
     movePiece(to, from, pos);
-    if (captured != EMPTY) {
+    if (captured != EMPTY && !(Move::MFLAGEP & move)) {
         addPiece(captured, to, pos);
     }
     if (promoted != EMPTY) {
