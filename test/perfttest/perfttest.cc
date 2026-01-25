@@ -34,10 +34,6 @@ void test::perft::test()
     size_t len = 0;
     errno_t err = _dupenv_s(&maxDepthEnv, &len, "PERFT_MAX_DEPTH");
     if (err == 0 && maxDepthEnv != nullptr) {
-#else
-    const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
-    if (maxDepthEnv != nullptr) {
-#endif
         try {
             maxDepth = std::stoi(maxDepthEnv);
             if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
@@ -47,10 +43,22 @@ void test::perft::test()
             // Invalid input, use default
             maxDepth = DEFAULT_MAX_DEPTH;
         }
-#ifdef _WIN32
         free(maxDepthEnv);
-#endif
     }
+#else
+    const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
+    if (maxDepthEnv != nullptr) {
+        try {
+            maxDepth = std::stoi(maxDepthEnv);
+            if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
+                maxDepth = DEFAULT_MAX_DEPTH;
+            }
+        } catch (...) {
+            // Invalid input, use default
+            maxDepth = DEFAULT_MAX_DEPTH;
+        }
+    }
+#endif
     std::cout << "Running perft tests with max depth: " << maxDepth << std::endl;
 
     board::Board pos;
