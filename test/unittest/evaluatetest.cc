@@ -95,7 +95,7 @@ TEST_F(EvaluateTest, IsolatedPawnPenalty)
 TEST_F(EvaluateTest, PassedPawnBonus)
 {
     // White passed pawn on 6th rank
-    pos.parseFen("8/8/3P4/8/8/8/8/8 w - - 0 1");
+    pos.parseFen("4k3/8/3P4/8/8/8/8/4K3 w - - 0 1");
     int score = board::evaluate::score(pos);
     // Should have bonus for passed pawn
     EXPECT_GT(score, 100); // More than just material value
