@@ -28,3 +28,6 @@ CTestTestfile.cmake
 build/*
 !build/.gitkeep
 build-*/
+
+# CodeQL
+_codeql_*/
