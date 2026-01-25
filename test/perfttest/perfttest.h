@@ -14,7 +14,7 @@ namespace test { namespace perft {
 void test();
 
 // Test a position
-void testPosition(const std::string&, board::Board&);
+void testPosition(const std::string&, board::Board&, int maxDepth);
 
 // Count the moves in position
 int64_t countMoves(const int, board::Board&);
