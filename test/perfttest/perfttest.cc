@@ -7,13 +7,14 @@
 #include "search/movelist.h"
 #include "utils/utils.h"
 
+#include <cstdlib>
 #include <ctime>
 #include <fstream>
 #include <gtest/gtest-message.h>
 #include <gtest/gtest-test-part.h>
 #include <gtest/gtest.h>
 #include <iostream>
-#include <sys/time.h>
+#include <string>
 #include <vector>
 
 TEST(PerftTest, perft)
@@ -23,6 +24,23 @@ TEST(PerftTest, perft)
 
 void test::perft::test()
 {
+    // Get max depth from environment variable, default to 6 if not set
+    const int DEFAULT_MAX_DEPTH = 6;
+    int maxDepth = DEFAULT_MAX_DEPTH;
+    const char* maxDepthEnv = std::getenv("PERFT_MAX_DEPTH");
+    if (maxDepthEnv != nullptr) {
+        try {
+            maxDepth = std::stoi(maxDepthEnv);
+            if (maxDepth < 1 || maxDepth > DEFAULT_MAX_DEPTH) {
+                maxDepth = DEFAULT_MAX_DEPTH;
+            }
+        } catch (...) {
+            // Invalid input, use default
+            maxDepth = DEFAULT_MAX_DEPTH;
+        }
+    }
+    std::cout << "Running perft tests with max depth: " << maxDepth << std::endl;
+
     board::Board pos;
     std::ifstream input("perft.txt");
     ASSERT_FALSE(input.fail());
@@ -41,7 +59,7 @@ void test::perft::test()
                 pos.parseFen(token);
             }
             else {
-                testPosition(token, pos);
+                testPosition(token, pos, maxDepth);
             }
             line.erase(0, p + delimiter.length());
             first = false;
@@ -51,9 +69,14 @@ void test::perft::test()
               << std::endl;
 }
 
-void test::perft::testPosition(const std::string& token, board::Board& pos)
+void test::perft::testPosition(const std::string& token, board::Board& pos, int maxDepth)
 {
     int depth = token[1] - '0';
+    // Skip tests that exceed max depth
+    if (depth > maxDepth) {
+        std::cout << utils::getTimestamp() << " D" << depth << " SKIPPED (max depth: " << maxDepth << ")" << std::endl;
+        return;
+    }
     std::string target = token.substr(token.find(' ') + 1, token.length());
     int64_t nodes = countMoves(depth, pos);
     std::cout << utils::getTimestamp() << " D" << depth << " " << nodes << std::endl;

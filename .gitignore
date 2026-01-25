@@ -27,3 +27,4 @@ CTestTestfile.cmake
 
 build/*
 !build/.gitkeep
+build-*/
