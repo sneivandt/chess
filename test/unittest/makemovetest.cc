@@ -171,8 +171,11 @@ TEST_F(BoardTest, MakeMoveEnPassant)
     EXPECT_EQ(pos.getSquare(board::D6), board::WP);
     EXPECT_EQ(pos.getSquare(board::D5), board::EMPTY); // Captured pawn removed
 
-    // Note: Undo test removed due to potential engine bug with en passant undo
-    // board::makemove::undo(pos);
+    // Note: Undo functionality not tested here.
+    // Investigation needed: En passant undo may have an issue where the captured pawn
+    // is restored to the wrong square (d6 instead of d5). This appears to be an
+    // existing engine bug that should be investigated and fixed separately.
+    // Once fixed, add undo tests similar to other move types.
 }
 
 TEST_F(BoardTest, MakeMovePromotionQueen)
