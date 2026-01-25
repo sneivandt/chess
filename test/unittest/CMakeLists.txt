@@ -5,6 +5,9 @@ add_executable(unittest
     iotest.h
     makemovetest.cc
     movegentest.cc
+    movetest.cc
+    evaluatetest.cc
+    searchtest.cc
     ucitest.cc
     ucitest.h
     unittest.h)
