@@ -137,7 +137,7 @@ void board::Board::INIT()
                 PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
                 tSquare += 8;
             }
-            tSquare = square - 9;
+            tSquare = square - 7;
             while (tSquare >= 0) {
                 PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
                 tSquare -= 8;
@@ -310,6 +310,11 @@ bool board::Board::parseFen(const std::string& fen)
     index += 2; // Skip space
 
     while (index < fen.length() && fen[index] != ' ') {
+        // Prevent integer overflow in fiftyMove counter
+        if (fiftyMove > 1000) {
+            fiftyMove = 1000; // Cap at reasonable maximum
+            break;
+        }
         fiftyMove *= 10;
         fiftyMove += fen[index] - '0';
         index++;
@@ -422,6 +427,10 @@ void board::Board::updateListMaterial()
     for (int i = 0; i < 120; i++) {
         piece = board[i];
         if (piece != NO_SQ && piece != EMPTY) {
+            // Check bounds before adding to piece list
+            if (pNum[piece] >= 10) {
+                return; // Silently fail to prevent overflow
+            }
             pList[piece][pNum[piece]] = i;
             pNum[piece]++;
             material[PIECE_COLOR[piece]] += PIECE_VAL[piece];
