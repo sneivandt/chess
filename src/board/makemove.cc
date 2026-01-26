@@ -25,6 +25,11 @@ inline void board::makemove::clearPiece(const int square, Board& pos)
             break;
         }
     }
+    // Assert that the piece was found in the piece list
+    if (targetPNum == -1) {
+        // Piece not found - this should never happen in valid state
+        return;
+    }
     pos.decrementPieceNum(piece);
     pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];
 }
