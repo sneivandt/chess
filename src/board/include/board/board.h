@@ -137,7 +137,8 @@ class Board
     int searchHistory[13][120];
 
     // Non capture beta cutoffs
-    int searchKillers[2][64];
+    // Increased from 64 to 128 to handle deeper searches
+    int searchKillers[2][128];
 
   public:
     Board()
@@ -464,7 +465,7 @@ inline void Board::addSearchKiller(const int move)
 
 inline void Board::clearSearchKillers()
 {
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < 128; i++) {
         searchKillers[0][i] = 0;
         searchKillers[1][i] = 0;
     }

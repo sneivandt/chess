@@ -37,11 +37,17 @@ bool search::isRepetition(board::Board& pos)
     size_t historySize = pos.getHistory().size();
     size_t fiftyMove = static_cast<size_t>(pos.getFiftyMove());
     
+    // No repetition possible if history is empty or fiftyMove is 0
+    if (historySize == 0 || fiftyMove == 0) {
+        return false;
+    }
+    
     // Prevent unsigned underflow
     if (fiftyMove > historySize) {
         fiftyMove = historySize;
     }
     
+    // Check only positions within the fifty move rule window
     for (size_t i = historySize - fiftyMove; i < historySize; i++) {
         if (pos.getHashKey() == pos.getHistory()[i].getHashKey()) {
             return true;

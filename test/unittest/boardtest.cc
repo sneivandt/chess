@@ -220,6 +220,16 @@ TEST_F(BoardTest, ParseFenLargeFiftyMove)
     std::string fen_1000 = "8/8/8/8/8/8/8/8 w - - 1000 1";
     ASSERT_TRUE(pos.parseFen(fen_1000));
     ASSERT_EQ(pos.getFiftyMove(), 1000);
+    
+    // Test with value just above 1000 - should be capped
+    std::string fen_1001 = "8/8/8/8/8/8/8/8 w - - 1001 1";
+    ASSERT_TRUE(pos.parseFen(fen_1001));
+    ASSERT_EQ(pos.getFiftyMove(), 1000);
+    
+    // Test with value moderately above 1000 - should be capped
+    std::string fen_2000 = "8/8/8/8/8/8/8/8 w - - 2000 1";
+    ASSERT_TRUE(pos.parseFen(fen_2000));
+    ASSERT_EQ(pos.getFiftyMove(), 1000);
 }
 
 // Test for Bug Fix 2: FEN parsing en passant with correct character consumption

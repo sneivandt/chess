@@ -313,13 +313,18 @@ bool board::Board::parseFen(const std::string& fen)
     index++; // Skip space
 
     while (index < fen.length() && fen[index] != ' ') {
-        // Prevent integer overflow in fiftyMove counter - check before multiplying
-        if (fiftyMove > 100) {
+        int digit = fen[index] - '0';
+        // Validate digit range
+        if (digit < 0 || digit > 9) {
+            break;
+        }
+        // Check if multiplication would overflow beyond 1000
+        if (fiftyMove > 1000 || (fiftyMove == 100 && digit > 0) || fiftyMove * 10 + digit > 1000) {
             fiftyMove = 1000; // Cap at reasonable maximum
             break;
         }
         fiftyMove *= 10;
-        fiftyMove += fen[index] - '0';
+        fiftyMove += digit;
         index++;
     }
 
