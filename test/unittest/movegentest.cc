@@ -227,6 +227,11 @@ TEST_F(MoveGenTest, QuietPawnMovesUseDifferentScoringThanCaptures)
                 foundCapture = true;
             }
         }
+        
+        // Early exit when both moves are found
+        if (foundQuiet && foundCapture) {
+            break;
+        }
     }
     
     ASSERT_TRUE(foundQuiet) << "Should find at least one quiet pawn move";
