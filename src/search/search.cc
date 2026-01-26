@@ -91,7 +91,7 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
             }
         }
     }
-    board::Move bestMove;
+    board::Move bestMove(0, 0); // Initialize to avoid using uninitialized value
     int legal = 0;
     int oldAlpha = alpha;
     int score = NEG_INFINITY;
