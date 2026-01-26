@@ -147,7 +147,7 @@ TEST_F(SearchTest, SearchKillersDeepPly)
     pos.addSearchKiller(12345);
     EXPECT_EQ(pos.getSearchKiller(0), 12345);
     
-    // Test at ply 127 (maximum safe value for 128-element array)
+    // Test at ply 127 (boundary condition for 128-element array with indices 0-127)
     pos.resetPly();
     for (int i = 0; i < 127; i++) {
         pos.incrementPly();

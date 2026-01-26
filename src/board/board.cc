@@ -318,8 +318,8 @@ bool board::Board::parseFen(const std::string& fen)
         if (digit < 0 || digit > 9) {
             break;
         }
-        // Check if multiplication would overflow beyond 1000
-        if (fiftyMove > 1000 || (fiftyMove == 100 && digit > 0) || fiftyMove * 10 + digit > 1000) {
+        // Check if the next multiplication and addition would exceed 1000
+        if (fiftyMove * 10 + digit > 1000) {
             fiftyMove = 1000; // Cap at reasonable maximum
             break;
         }
