@@ -162,7 +162,8 @@ TEST_F(BoardTest, MakeMoveEnPassant)
 
     int from = board::E5;
     int to = board::D6;
-    int moveVal = board::Move::MOVE(from, to, board::BP, board::EMPTY, board::Move::MFLAGEP);
+    // En passant moves should have captured = EMPTY, as the capture is handled separately
+    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::EMPTY, board::Move::MFLAGEP);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);

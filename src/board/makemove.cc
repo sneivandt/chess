@@ -5,7 +5,9 @@
 #include "board/move.h"
 #include "board/undo.h"
 
+#include <cassert>
 #include <cstdint>
+#include <cstdlib>
 
 inline void board::makemove::clearPiece(const int square, Board& pos)
 {
@@ -25,10 +27,9 @@ inline void board::makemove::clearPiece(const int square, Board& pos)
             break;
         }
     }
-    // Assert that the piece was found in the piece list
+    // Piece must be found in the piece list - if not, board state is corrupted
     if (targetPNum == -1) {
-        // Piece not found - this should never happen in valid state
-        return;
+        std::abort();
     }
     pos.decrementPieceNum(piece);
     pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];

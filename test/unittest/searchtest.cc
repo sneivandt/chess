@@ -93,6 +93,27 @@ TEST_F(SearchTest, SearchReset)
     EXPECT_EQ(info.getNodes(), 0);
 }
 
+TEST_F(SearchTest, IsRepetitionWithHighFiftyMoveCounter)
+{
+    // Test edge case where fifty-move counter exceeds history size
+    // This tests the fix for unsigned underflow in isRepetition()
+    
+    // Parse FEN with high fifty-move counter (50 half-moves)
+    pos.parseFen("4k3/8/8/8/8/8/8/4K3 w - - 50 26");
+    
+    // With empty or small history, this should not crash or cause underflow
+    EXPECT_FALSE(search::isRepetition(pos));
+    
+    // Make a move to add to history
+    auto moves = search::movegen::generateAll(pos, false).getMoves();
+    if (!moves.empty()) {
+        if (board::makemove::move(moves[0], pos)) {
+            // Still should not crash
+            EXPECT_FALSE(search::isRepetition(pos));
+        }
+    }
+}
+
 TEST_F(SearchTest, InfinityConstants)
 {
     // Ensure infinity constants are properly defined
