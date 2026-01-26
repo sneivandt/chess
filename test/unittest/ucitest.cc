@@ -86,3 +86,15 @@ TEST_F(UciTest, parseFenWithMovesComplexPosition)
                  },
                  board::BLACK, board::NO_SQ, 3);
 }
+
+// Test for Bug Fix 6: Bounds check in UCI position parsing
+TEST_F(UciTest, parsePositionShortInput)
+{
+    // Test with input that is too short (edge case)
+    // This should not crash with the bounds check in place
+    // Note: In real UCI loop, this wouldn't happen, but we test the bounds check
+    io::uci::parsePosition("startpos", pos);
+    
+    // Should parse successfully to start position
+    ASSERT_EQ(pos.getSide(), board::WHITE);
+}

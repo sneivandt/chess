@@ -113,7 +113,7 @@ void io::uci::loop()
         else if (input == "ucinewgame") {
             parsePosition("startposition", pos);
         }
-        else if (input.compare(0, 8, "position") == 0) {
+        else if (input.compare(0, 8, "position") == 0 && input.length() > 9) {
             parsePosition(input.substr(9), pos);
         }
         else if (input.compare(0, 2, "go") == 0) {

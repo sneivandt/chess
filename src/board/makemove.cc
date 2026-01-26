@@ -45,6 +45,10 @@ inline void board::makemove::addPiece(const int piece, const int square, Board& 
         bitboard::setBit(pos.getPawns()[color], Board::SQ64[square]);
         bitboard::setBit(pos.getPawns()[BOTH], Board::SQ64[square]);
     }
+    // Check bounds before adding to piece list
+    if (pos.getPieceNum(piece) >= 10) {
+        std::abort();
+    }
     pos.getPieceList(piece)[pos.getPieceNum(piece)] = square;
     pos.incrementPieceNum(piece);
 }

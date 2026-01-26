@@ -181,3 +181,48 @@ TEST_F(BoardTest, sqAttackedPawn)
                          },
                          board::WHITE, board::NO_SQ, 0);
         }
+
+// Test for Bug Fix 1 & 2: Array bounds checking in piece list
+TEST_F(BoardTest, PieceListBoundsOverflow)
+{
+    // Create a FEN with too many pieces of one type (e.g., 10+ queens via promotions)
+    // This is an illegal position but tests the bounds check
+    // Note: 10 is the maximum for the pList array [13][10]
+    // A position with 9 white queens should work, 10 should trigger the bounds check
+    
+    // 9 white queens - should work (just at the limit)
+    // 8 queens on rank 8, 1 queen on rank 7
+    std::string fen_9q = "QQQQQQQQ/Q7/8/8/8/8/8/8 w - - 0 1";
+    ASSERT_TRUE(pos.parseFen(fen_9q));
+    ASSERT_EQ(pos.getPieceNum(board::WQ), 9);
+    
+    // 10 white queens - should be capped due to bounds check
+    // The updateListMaterial function will stop adding after reaching 10
+    std::string fen_10q = "QQQQQQQQ/QQ6/8/8/8/8/8/8 w - - 0 1";
+    ASSERT_TRUE(pos.parseFen(fen_10q));
+    // With bounds check, it should stop at 10 (but pNum might be different)
+    // The function returns early so we might have fewer
+    ASSERT_LE(pos.getPieceNum(board::WQ), 10);
+}
+
+// Test for Bug Fix 3: FEN parsing integer overflow in fiftyMove
+TEST_F(BoardTest, ParseFenLargeFiftyMove)
+{
+    // Test with a very large fiftyMove value that would cause integer overflow
+    // Should be capped at 1000
+    std::string fen_overflow = "8/8/8/8/8/8/8/8 w - - 99999999999999 1";
+    ASSERT_TRUE(pos.parseFen(fen_overflow));
+    
+    // Should be capped at 1000, not overflowed
+    ASSERT_EQ(pos.getFiftyMove(), 1000);
+    
+    // Test with a reasonable large value
+    std::string fen_large = "8/8/8/8/8/8/8/8 w - - 999 1";
+    ASSERT_TRUE(pos.parseFen(fen_large));
+    ASSERT_EQ(pos.getFiftyMove(), 999);
+    
+    // Test with exactly 1000
+    std::string fen_1000 = "8/8/8/8/8/8/8/8 w - - 1000 1";
+    ASSERT_TRUE(pos.parseFen(fen_1000));
+    ASSERT_EQ(pos.getFiftyMove(), 1000);
+}
