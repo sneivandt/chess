@@ -44,14 +44,20 @@ cmake --preset [preset_name]
 cmake --build --preset [preset_name]
 ```
 
-**Run tests using a preset:**
+## Test
+
+### Using CMake Presets
+
+If you built using a preset, run tests with:
 ```bash
 ctest --preset [preset_name]
 ```
 
-## Test
+### Standard Testing
 
-### Unit Tests
+After building, navigate to the build directory to run tests.
+
+**Unit Tests:**
 Run the suite of functional tests to ensure engine correctness.
 
 ```bash
@@ -59,7 +65,7 @@ cd build
 ctest -R unittest --output-on-failure
 ```
 
-### Performance (Perft) Tests
+**Performance (Perft) Tests:**
 Verify the move generator by counting leaf nodes at various depths.
 
 ```bash
