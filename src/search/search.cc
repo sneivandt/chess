@@ -34,8 +34,15 @@ void search::checkup(SearchInfo& info)
 
 bool search::isRepetition(board::Board& pos)
 {
-    for (size_t i = pos.getHistory().size() - static_cast<size_t>(pos.getFiftyMove()); i < pos.getHistory().size();
-         i++) {
+    size_t historySize = pos.getHistory().size();
+    size_t fiftyMove = static_cast<size_t>(pos.getFiftyMove());
+    
+    // Prevent unsigned underflow
+    if (fiftyMove > historySize) {
+        fiftyMove = historySize;
+    }
+    
+    for (size_t i = historySize - fiftyMove; i < historySize; i++) {
         if (pos.getHashKey() == pos.getHistory()[i].getHashKey()) {
             return true;
         }

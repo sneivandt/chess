@@ -5,7 +5,9 @@
 #include "board/move.h"
 #include "board/undo.h"
 
+#include <cassert>
 #include <cstdint>
+#include <cstdlib>
 
 inline void board::makemove::clearPiece(const int square, Board& pos)
 {
@@ -24,6 +26,10 @@ inline void board::makemove::clearPiece(const int square, Board& pos)
             targetPNum = i;
             break;
         }
+    }
+    // Piece must be found in the piece list - if not, board state is corrupted
+    if (targetPNum == -1) {
+        std::abort();
     }
     pos.decrementPieceNum(piece);
     pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];

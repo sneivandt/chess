@@ -74,10 +74,13 @@ void io::uci::parsePosition(const std::string& input, board::Board& pos)
     }
     else if (indexFen != std::string::npos) {
         if (indexMoves != std::string::npos) {
-            pos.parseFen(input.substr(indexFen + 4));
+            // Moves exist, so extract FEN only up to "moves"
+            // Length is: indexMoves - (indexFen + 4) - 1 (for space before "moves")
+            pos.parseFen(input.substr(indexFen + 4, indexMoves - indexFen - 5));
         }
         else {
-            pos.parseFen(input.substr(indexFen + 4, indexMoves - 5));
+            // No moves, so take the rest of the string as FEN
+            pos.parseFen(input.substr(indexFen + 4));
         }
     }
     if (indexMoves != std::string::npos) {
