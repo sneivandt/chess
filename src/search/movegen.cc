@@ -7,7 +7,7 @@ int search::movegen::MVVLVA_SCORES[13][13];
 void search::movegen::INIT()
 {
     for (int attacker = board::WP; attacker <= board::BK; attacker++) {
-        for (int victim = board::WP; victim < board::BK; victim++) {
+        for (int victim = board::WP; victim <= board::BK; victim++) {
             MVVLVA_SCORES[victim][attacker] = VICTUM_SCORES[victim] + 6 - (VICTUM_SCORES[attacker] / 100);
         }
     }
@@ -48,7 +48,12 @@ inline void search::movegen::addPawnMove(const int from, const int to, const int
         }
     }
     else {
-        addCaptureMove(board::Move::MOVE(from, to, cap, board::EMPTY, 0), list, pos);
+        if (cap == board::EMPTY) {
+            addQuietMove(board::Move::MOVE(from, to, cap, board::EMPTY, 0), list, pos);
+        }
+        else {
+            addCaptureMove(board::Move::MOVE(from, to, cap, board::EMPTY, 0), list, pos);
+        }
     }
 }
 
