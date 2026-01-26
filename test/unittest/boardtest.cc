@@ -226,3 +226,31 @@ TEST_F(BoardTest, ParseFenLargeFiftyMove)
     ASSERT_TRUE(pos.parseFen(fen_1000));
     ASSERT_EQ(pos.getFiftyMove(), 1000);
 }
+
+// Test for Bug Fix 2: FEN parsing en passant with correct character consumption
+TEST_F(BoardTest, ParseFenEnPassantParsing)
+{
+    // Test with en passant square (e3)
+    std::string fen_with_ep = "rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1";
+    ASSERT_TRUE(pos.parseFen(fen_with_ep));
+    ASSERT_EQ(pos.getEnPas(), board::E3);
+    ASSERT_EQ(pos.getFiftyMove(), 0); // Should correctly parse fifty-move after en passant
+    
+    // Test with en passant square (d6)
+    std::string fen_with_ep2 = "rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 2";
+    ASSERT_TRUE(pos.parseFen(fen_with_ep2));
+    ASSERT_EQ(pos.getEnPas(), board::D6);
+    ASSERT_EQ(pos.getFiftyMove(), 0);
+    
+    // Test with no en passant (dash)
+    std::string fen_no_ep = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 5 1";
+    ASSERT_TRUE(pos.parseFen(fen_no_ep));
+    ASSERT_EQ(pos.getEnPas(), board::NO_SQ);
+    ASSERT_EQ(pos.getFiftyMove(), 5); // Should correctly parse fifty-move after dash
+    
+    // Test with various en passant squares and different fifty-move values
+    std::string fen_ep_a6 = "8/8/8/8/8/8/8/8 w KQkq a6 42 10";
+    ASSERT_TRUE(pos.parseFen(fen_ep_a6));
+    ASSERT_EQ(pos.getEnPas(), board::A6);
+    ASSERT_EQ(pos.getFiftyMove(), 42);
+}

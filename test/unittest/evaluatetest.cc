@@ -86,37 +86,55 @@ TEST_F(EvaluateTest, IsolatedPawnPenalty)
 {
     // White has isolated pawn on d4, also has king
     pos.parseFen("4k3/8/8/8/3P4/8/8/4K3 w - - 0 1");
-    int score = board::evaluate::score(pos);
-    // Just check that it returns a valid score
-    EXPECT_GT(score, -1000);
-    EXPECT_LT(score, 1000);
+    int score1 = board::evaluate::score(pos);
+    
+    // White has non-isolated pawn (with neighboring pawns)
+    pos.parseFen("4k3/8/8/8/2PPP3/8/8/4K3 w - - 0 1");
+    int score2 = board::evaluate::score(pos);
+    
+    // Non-isolated pawns should score better (higher) than isolated pawn
+    EXPECT_GT(score2, score1);
 }
 
 TEST_F(EvaluateTest, PassedPawnBonus)
 {
     // White passed pawn on 6th rank
     pos.parseFen("4k3/8/3P4/8/8/8/8/4K3 w - - 0 1");
-    int score = board::evaluate::score(pos);
+    int score1 = board::evaluate::score(pos);
+    
+    // White pawn on 6th rank but blocked by black pawn (not passed)
+    pos.parseFen("4k3/3p4/3P4/8/8/8/8/4K3 w - - 0 1");
+    int score2 = board::evaluate::score(pos);
+    
+    // Passed pawn should score better than blocked pawn
+    EXPECT_GT(score1, score2);
     // Should have bonus for passed pawn
-    EXPECT_GT(score, 100); // More than just material value
+    EXPECT_GT(score1, 100); // More than just material value
 }
 
 TEST_F(EvaluateTest, RookOnOpenFile)
 {
-    // White rook on open file
-    pos.parseFen("4k3/8/8/8/8/8/8/3RK3 w - - 0 1");
-    int score1 = board::evaluate::score(pos);
+    // Test rook on open file vs semi-open vs closed file
+    // Note: Material differences will dominate positional bonuses
     
-    // White rook blocked by own pawn
-    pos.parseFen("4k3/8/8/8/8/8/3P4/3RK3 w - - 0 1");
-    int score2 = board::evaluate::score(pos);
+    // Open file - no pawns on d-file
+    pos.parseFen("3k4/8/8/8/8/8/8/3RK3 w - - 0 1");
+    int openFileScore = board::evaluate::score(pos);
     
-    // With pawn should have material advantage but worse position
-    // Just check that both return valid scores
-    EXPECT_GT(score1, -1000);
-    EXPECT_LT(score1, 1000);
-    EXPECT_GT(score2, -1000);
-    EXPECT_LT(score2, 1000);
+    // Semi-open file - only white pawn on d-file (extra material but worse position)
+    pos.parseFen("3k4/8/8/8/8/8/3P4/3RK3 w - - 0 1");
+    int semiOpenFileScore = board::evaluate::score(pos);
+    
+    // Closed file - both white and black pawns on d-file (equal material but worst position)
+    pos.parseFen("3k4/3p4/8/8/8/8/3P4/3RK3 w - - 0 1");
+    int closedFileScore = board::evaluate::score(pos);
+    
+    // Semi-open should be better than closed (same material, better position)
+    EXPECT_GT(semiOpenFileScore, closedFileScore);
+    
+    // Semi-open has extra material so should outscore open file
+    // (material advantage > positional advantage)
+    EXPECT_GT(semiOpenFileScore, openFileScore);
 }
 
 TEST_F(EvaluateTest, BlackToMove)
