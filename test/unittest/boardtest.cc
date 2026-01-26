@@ -182,27 +182,22 @@ TEST_F(BoardTest, sqAttackedPawn)
                          board::WHITE, board::NO_SQ, 0);
         }
 
-// Test for Bug Fix 1 & 2: Array bounds checking in piece list
+// Test for Bug Fix: Piece list overflow should cause parseFen to fail
 TEST_F(BoardTest, PieceListBoundsOverflow)
 {
-    // Create a FEN with too many pieces of one type (e.g., 10+ queens via promotions)
+    // Create a FEN with too many pieces of one type (e.g., 11+ queens via promotions)
     // This is an illegal position but tests the bounds check
-    // Note: 10 is the maximum for the pList array [13][10]
-    // A position with 9 white queens should work, 10 should trigger the bounds check
+    // Note: pList array is [13][10], so it can hold indices 0-9 (10 pieces max)
     
-    // 9 white queens - should work (just at the limit)
-    // 8 queens on rank 8, 1 queen on rank 7
-    std::string fen_9q = "QQQQQQQQ/Q7/8/8/8/8/8/8 w - - 0 1";
-    ASSERT_TRUE(pos.parseFen(fen_9q));
-    ASSERT_EQ(pos.getPieceNum(board::WQ), 9);
-    
-    // 10 white queens - should be capped due to bounds check
-    // The updateListMaterial function will stop adding after reaching 10
-    std::string fen_10q = "QQQQQQQQ/QQ6/8/8/8/8/8/8 w - - 0 1";
+    // 10 white queens - should work (at the limit with king)
+    std::string fen_10q = "QQQQQQQQ/QQK5/8/8/8/8/8/8 w - - 0 1";
     ASSERT_TRUE(pos.parseFen(fen_10q));
-    // With bounds check, it should stop at 10 (but pNum might be different)
-    // The function returns early so we might have fewer
-    ASSERT_LE(pos.getPieceNum(board::WQ), 10);
+    ASSERT_EQ(pos.getPieceNum(board::WQ), 10);
+    
+    // 11 white queens - should fail due to bounds check (exceeds array capacity)
+    // The updateListMaterial function will return false when overflow detected
+    std::string fen_11q = "QQQQQQQQ/QQQK4/8/8/8/8/8/8 w - - 0 1";
+    ASSERT_FALSE(pos.parseFen(fen_11q)); // Should return false for invalid position
 }
 
 // Test for Bug Fix 3: FEN parsing integer overflow in fiftyMove

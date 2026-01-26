@@ -212,7 +212,7 @@ class Board
     bool sqAttacked(const int, const int) const;
 
     // Update lists and material
-    void updateListMaterial();
+    bool updateListMaterial();
 
     // Board square
     int getSquare(const int) const;

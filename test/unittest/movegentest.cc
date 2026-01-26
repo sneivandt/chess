@@ -138,3 +138,42 @@ TEST_F(MoveGenTest, GenerateNoMovesInCheckmate)
     }
     EXPECT_EQ(legalMoves, 0);
 }
+
+TEST_F(MoveGenTest, GeneratePawnDoubleMoveFromStartingRank)
+{
+    // Test that white pawns can double-move from rank 2 (their starting rank)
+    pos.parseFen(board::Board::DEFAULT_FEN);
+    
+    search::MoveList moves = search::movegen::generateAll(pos, false);
+    
+    // Count pawn double-moves for white (should be 8 - one for each pawn)
+    int doubleMoves = 0;
+    for (const auto& move : moves.getMoves()) {
+        if (move.getValue() & board::Move::MFLAGPS) { // MFLAGPS = pawn start (double move)
+            doubleMoves++;
+            // Verify these are from rank 2 to rank 4
+            int from = board::Move::FROMSQ(move.getValue());
+            int to = board::Move::TOSQ(move.getValue());
+            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[from]], board::RANK_2);
+            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[to]], board::RANK_4);
+        }
+    }
+    EXPECT_EQ(doubleMoves, 8);
+    
+    // Test for black pawns from rank 7
+    pos.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
+    moves = search::movegen::generateAll(pos, false);
+    
+    doubleMoves = 0;
+    for (const auto& move : moves.getMoves()) {
+        if (move.getValue() & board::Move::MFLAGPS) {
+            doubleMoves++;
+            // Verify these are from rank 7 to rank 5
+            int from = board::Move::FROMSQ(move.getValue());
+            int to = board::Move::TOSQ(move.getValue());
+            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[from]], board::RANK_7);
+            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[to]], board::RANK_5);
+        }
+    }
+    EXPECT_EQ(doubleMoves, 8);
+}
