@@ -123,3 +123,50 @@ TEST_F(SearchTest, InfinityConstants)
     EXPECT_LT(search::NEG_INFINITY, -1000000);
     EXPECT_GT(search::POS_INFINITY, 1000000);
 }
+
+// Test for Bug Fix 1: searchKillers array bounds with deep ply
+TEST_F(SearchTest, SearchKillersDeepPly)
+{
+    // Test that searchKillers can handle ply values up to 127
+    pos.parseFen(board::Board::DEFAULT_FEN);
+    
+    // Manually increment ply to a high value to test bounds
+    pos.resetPly();
+    for (int i = 0; i < 100; i++) {
+        pos.incrementPly();
+    }
+    
+    // Should be able to access searchKillers without crash
+    // Get current ply (should be 100)
+    EXPECT_EQ(pos.getPly(), 100);
+    
+    // Clear search killers (should handle the full range)
+    pos.clearSearchKillers();
+    
+    // Adding search killers at high ply should not crash
+    pos.addSearchKiller(12345);
+    EXPECT_EQ(pos.getSearchKiller(0), 12345);
+    
+    // Test at ply 127 (boundary condition for 128-element array with indices 0-127)
+    pos.resetPly();
+    for (int i = 0; i < 127; i++) {
+        pos.incrementPly();
+    }
+    pos.addSearchKiller(67890);
+    EXPECT_EQ(pos.getSearchKiller(0), 67890);
+}
+
+// Test for Bug Fix 3: isRepetition with empty history
+TEST_F(SearchTest, IsRepetitionEmptyHistory)
+{
+    // Test that isRepetition handles empty history gracefully
+    pos.parseFen(board::Board::DEFAULT_FEN);
+    
+    // Initial position has empty history
+    EXPECT_FALSE(search::isRepetition(pos));
+    
+    // Also test with fiftyMove = 0
+    pos.parseFen("4k3/8/8/8/8/8/8/4K3 w - - 0 1");
+    EXPECT_FALSE(search::isRepetition(pos));
+}
+
