@@ -177,3 +177,70 @@ TEST_F(MoveGenTest, GeneratePawnDoubleMoveFromStartingRank)
     }
     EXPECT_EQ(doubleMoves, 8);
 }
+
+// Test for Bug Fix #1: MVVLVA scores should be initialized for all pieces including BK
+TEST_F(MoveGenTest, MVVLVAScoresInitializedForAllPieces)
+{
+    // After calling INIT(), all MVVLVA_SCORES should be non-zero for valid piece combinations
+    // This test verifies that the loop includes BK (value 12), not just up to BQ (value 11)
+    
+    // Check that scores are set for capturing a king (victim = BK)
+    for (int attacker = board::WP; attacker <= board::BK; attacker++) {
+        EXPECT_NE(search::movegen::MVVLVA_SCORES[board::BK][attacker], 0) 
+            << "MVVLVA_SCORES[BK][" << attacker << "] should be initialized";
+    }
+    
+    // Check that scores are set for a king capturing (attacker = BK)
+    for (int victim = board::WP; victim <= board::BK; victim++) {
+        EXPECT_NE(search::movegen::MVVLVA_SCORES[victim][board::BK], 0)
+            << "MVVLVA_SCORES[" << victim << "][BK] should be initialized";
+    }
+}
+
+// Test for Bug Fix #2: Quiet pawn moves should use quiet move scoring, not capture scoring
+TEST_F(MoveGenTest, QuietPawnMovesUseDifferentScoringThanCaptures)
+{
+    // Position with both quiet pawn moves and pawn captures available
+    pos.parseFen("rnbqkbnr/ppp2ppp/8/3pp3/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3");
+    
+    search::MoveList moves = search::movegen::generateAll(pos, false);
+    
+    // Find a quiet pawn move and a capturing pawn move
+    board::Move quietPawnMove;
+    board::Move capturingPawnMove;
+    bool foundQuiet = false;
+    bool foundCapture = false;
+    
+    for (const auto& move : moves.getMoves()) {
+        int piece = pos.getSquare(board::Move::FROMSQ(move.getValue()));
+        int captured = board::Move::CAPTURED(move.getValue());
+        
+        // Look for pawn moves (not promotions)
+        if ((piece == board::WP || piece == board::BP) && 
+            board::Move::PROMOTED(move.getValue()) == board::EMPTY) {
+            if (captured == board::EMPTY && !foundQuiet) {
+                quietPawnMove = move;
+                foundQuiet = true;
+            }
+            else if (captured != board::EMPTY && !foundCapture) {
+                capturingPawnMove = move;
+                foundCapture = true;
+            }
+        }
+        
+        // Early exit when both moves are found
+        if (foundQuiet && foundCapture) {
+            break;
+        }
+    }
+    
+    ASSERT_TRUE(foundQuiet) << "Should find at least one quiet pawn move";
+    ASSERT_TRUE(foundCapture) << "Should find at least one capturing pawn move";
+    
+    // Capturing moves should have high scores (> 1000000) due to MVVLVA + 1000000
+    // Quiet moves should have lower scores (history/killer scoring, typically < 1000000)
+    EXPECT_GT(capturingPawnMove.getScore(), 1000000) 
+        << "Capturing pawn moves should use high MVVLVA-based scoring";
+    EXPECT_LT(quietPawnMove.getScore(), 1000000)
+        << "Quiet pawn moves should use history/killer-based scoring, not capture scoring";
+}
