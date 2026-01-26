@@ -15,6 +15,9 @@ const int NON_SLIDERS[4] = {board::WN, board::WK, board::BN, board::BK};
 // Pawn ranks for promotion
 const int PAWN_RANK[2] = {board::RANK_7, board::RANK_2};
 
+// Pawn starting ranks for double moves
+const int PAWN_START_RANK[2] = {board::RANK_2, board::RANK_7};
+
 // Promotion pieces
 const int PROMOTION_PIECES[2][4] = {{board::WQ, board::WR, board::WB, board::WN},
                                     {board::BQ, board::BR, board::BB, board::BN}};

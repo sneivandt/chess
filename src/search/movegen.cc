@@ -66,7 +66,7 @@ void search::movegen::generatePawnMoves(board::Board& pos, MoveList& moves, cons
         if (!onlyCaps) {
             if (pos.getSquare(square + offset * 10) == board::EMPTY) {
                 addPawnMove(square, square + offset * 10, board::EMPTY, pos.getSide(), moves, pos);
-                if (board::Board::RANKS[board::Board::SQ64[square]] == PAWN_RANK[(pos.getSide() ^ 1)] &&
+                if (board::Board::RANKS[board::Board::SQ64[square]] == PAWN_START_RANK[pos.getSide()] &&
                     pos.getSquare(square + offset * 20) == board::EMPTY) {
                     addQuietMove(board::Move::MOVE(square, square + offset * 20, board::EMPTY, board::EMPTY,
                                                    board::Move::MFLAGPS),
