@@ -325,7 +325,9 @@ bool board::Board::parseFen(const std::string& fen)
 
     // ply parsing would follow but seems commented out or missing in original logic
 
-    updateListMaterial();
+    if (!updateListMaterial()) {
+        return false; // Invalid position: too many pieces of one type
+    }
     generateHash();
     return true;
 }
@@ -424,7 +426,7 @@ bool board::Board::sqAttacked(const int square, const int side_in) const
     return false;
 }
 
-void board::Board::updateListMaterial()
+bool board::Board::updateListMaterial()
 {
     int piece;
     for (int i = 0; i < 120; i++) {
@@ -432,7 +434,7 @@ void board::Board::updateListMaterial()
         if (piece != NO_SQ && piece != EMPTY) {
             // Check bounds before adding to piece list
             if (pNum[piece] >= 10) {
-                return; // Silently fail to prevent overflow
+                return false; // Return false to indicate overflow
             }
             pList[piece][pNum[piece]] = i;
             pNum[piece]++;
@@ -447,6 +449,7 @@ void board::Board::updateListMaterial()
             }
         }
     }
+    return true; // Success
 }
 
 void board::Board::generateHash()
