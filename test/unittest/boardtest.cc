@@ -249,7 +249,7 @@ TEST_F(BoardTest, ParseFenEnPassantParsing)
     ASSERT_EQ(pos.getFiftyMove(), 5); // Should correctly parse fifty-move after dash
     
     // Test with various en passant squares and different fifty-move values
-    std::string fen_ep_a6 = "8/8/8/8/8/8/8/8 w - a6 42 10";
+    std::string fen_ep_a6 = "8/8/8/8/8/8/8/8 w KQkq a6 42 10";
     ASSERT_TRUE(pos.parseFen(fen_ep_a6));
     ASSERT_EQ(pos.getEnPas(), board::A6);
     ASSERT_EQ(pos.getFiftyMove(), 42);

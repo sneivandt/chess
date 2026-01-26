@@ -114,23 +114,26 @@ TEST_F(EvaluateTest, PassedPawnBonus)
 
 TEST_F(EvaluateTest, RookOnOpenFile)
 {
-    // Test rook on open file gets bonus
+    // Test rook on open file vs semi-open vs closed file
+    // Note: Material differences will dominate positional bonuses
+    
     // Open file - no pawns on d-file
     pos.parseFen("3k4/8/8/8/8/8/8/3RK3 w - - 0 1");
     int openFileScore = board::evaluate::score(pos);
     
-    // Semi-open file - only white pawn on d-file
+    // Semi-open file - only white pawn on d-file (extra material but worse position)
     pos.parseFen("3k4/8/8/8/8/8/3P4/3RK3 w - - 0 1");
     int semiOpenFileScore = board::evaluate::score(pos);
     
-    // Closed file - both white and black pawns on d-file
+    // Closed file - both white and black pawns on d-file (equal material but worst position)
     pos.parseFen("3k4/3p4/8/8/8/8/3P4/3RK3 w - - 0 1");
     int closedFileScore = board::evaluate::score(pos);
     
-    // Semi-open should be better than closed (despite same material)
+    // Semi-open should be better than closed (same material, better position)
     EXPECT_GT(semiOpenFileScore, closedFileScore);
     
-    // With extra material, semi-open file position should outscore open file
+    // Semi-open has extra material so should outscore open file
+    // (material advantage > positional advantage)
     EXPECT_GT(semiOpenFileScore, openFileScore);
 }
 
