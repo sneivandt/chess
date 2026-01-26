@@ -304,14 +304,17 @@ bool board::Board::parseFen(const std::string& fen)
             file = fen[index] - 'a';
             rank = fen[index + 1] - '1';
             enPas = FR2SQ(file, rank);
+            index += 2; // Skip both characters of en passant square
         }
-        index++; // Skip char
     }
-    index += 2; // Skip space
+    else {
+        index++; // Skip the '-' character
+    }
+    index++; // Skip space
 
     while (index < fen.length() && fen[index] != ' ') {
-        // Prevent integer overflow in fiftyMove counter
-        if (fiftyMove > 1000) {
+        // Prevent integer overflow in fiftyMove counter - check before multiplying
+        if (fiftyMove > 100) {
             fiftyMove = 1000; // Cap at reasonable maximum
             break;
         }
