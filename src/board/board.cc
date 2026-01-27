@@ -247,6 +247,9 @@ bool board::Board::parseFen(const std::string& fen)
         }
 
         for (int i = 0; i < count; i++) {
+            if (file > FILE_H) {
+                return false; // Too many files in this rank
+            }
             sq64 = rank * 8 + file;
             if (sq64 >= 0 && sq64 < 64) {
                 sq120 = SQ120[sq64];
@@ -303,6 +306,10 @@ bool board::Board::parseFen(const std::string& fen)
         if (index + 1 < fen.length()) { // Check bounds for valid EnPas parsing
             file = fen[index] - 'a';
             rank = fen[index + 1] - '1';
+            // Validate en passant square is within valid range
+            if (file < FILE_A || file > FILE_H || rank < RANK_1 || rank > RANK_8) {
+                return false; // Invalid en passant square
+            }
             enPas = FR2SQ(file, rank);
             index += 2; // Skip both characters of en passant square
         }

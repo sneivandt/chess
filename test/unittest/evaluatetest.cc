@@ -149,3 +149,60 @@ TEST_F(EvaluateTest, BlackToMove)
     // Scores should be opposite (negated)
     EXPECT_EQ(whiteScore, -blackScore);
 }
+
+TEST_F(EvaluateTest, PassedPawnOnAllRanks)
+{
+    // Test that passed pawn evaluation works correctly for all ranks
+    // This tests the fix for the array bounds bug where RANKS[square] was used
+    // with 120-square index instead of 64-square index
+    
+    // Test passed pawns on different ranks (2nd through 7th)
+    pos.parseFen("4k3/8/8/8/8/8/4P3/4K3 w - - 0 1");  // Rank 2
+    int score2 = board::evaluate::score(pos);
+    EXPECT_GT(score2, 0);  // White should be ahead
+    
+    pos.parseFen("4k3/8/8/8/8/4P3/8/4K3 w - - 0 1");  // Rank 3
+    int score3 = board::evaluate::score(pos);
+    EXPECT_GT(score3, score2);  // Advanced pawn should be better
+    
+    pos.parseFen("4k3/8/8/8/4P3/8/8/4K3 w - - 0 1");  // Rank 4
+    int score4 = board::evaluate::score(pos);
+    EXPECT_GT(score4, score3);
+    
+    pos.parseFen("4k3/8/8/4P3/8/8/8/4K3 w - - 0 1");  // Rank 5
+    int score5 = board::evaluate::score(pos);
+    EXPECT_GT(score5, score4);
+    
+    pos.parseFen("4k3/8/4P3/8/8/8/8/4K3 w - - 0 1");  // Rank 6
+    int score6 = board::evaluate::score(pos);
+    EXPECT_GT(score6, score5);
+    
+    pos.parseFen("4k3/4P3/8/8/8/8/8/4K3 w - - 0 1");  // Rank 7
+    int score7 = board::evaluate::score(pos);
+    EXPECT_GT(score7, score6);  // 7th rank pawn is most valuable
+}
+
+TEST_F(EvaluateTest, RookAndQueenOnAllFiles)
+{
+    // Test that rook and queen evaluation works correctly for all files
+    // This tests the fix for the array bounds bug where FILES[square] was used
+    // with 120-square index instead of 64-square index
+    
+    // Test rooks on different files (a through h)
+    pos.parseFen("4k3/8/8/8/8/8/8/R3K3 w - - 0 1");  // File A
+    int scoreA = board::evaluate::score(pos);
+    EXPECT_GT(scoreA, 0);
+    
+    pos.parseFen("4k3/8/8/8/8/8/8/4K2R w - - 0 1");  // File H
+    int scoreH = board::evaluate::score(pos);
+    EXPECT_GT(scoreH, 0);
+    
+    // Test queen on different files
+    pos.parseFen("4k3/8/8/8/8/8/8/Q3K3 w - - 0 1");  // File A
+    int queenScoreA = board::evaluate::score(pos);
+    EXPECT_GT(queenScoreA, scoreA);  // Queen is more valuable
+    
+    pos.parseFen("4k3/8/8/8/8/8/8/4K2Q w - - 0 1");  // File H
+    int queenScoreH = board::evaluate::score(pos);
+    EXPECT_GT(queenScoreH, scoreH);
+}

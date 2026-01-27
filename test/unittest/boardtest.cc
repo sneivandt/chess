@@ -25,6 +25,30 @@ TEST_F(BoardTest, parseFenInvalid)
     ASSERT_FALSE(pos.parseFen("foo"));
 }
 
+TEST_F(BoardTest, parseFenTooManyFilesInRank)
+{
+    // Test FEN with 9 pieces on first rank (should be rejected)
+    ASSERT_FALSE(pos.parseFen("rnbqkbnrr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"));
+}
+
+TEST_F(BoardTest, parseFenInvalidEnPassantFile)
+{
+    // Test FEN with invalid en passant file 'z'
+    ASSERT_FALSE(pos.parseFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq z3 0 1"));
+}
+
+TEST_F(BoardTest, parseFenInvalidEnPassantRank)
+{
+    // Test FEN with invalid en passant rank '9'
+    ASSERT_FALSE(pos.parseFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e9 0 1"));
+}
+
+TEST_F(BoardTest, parseFenInvalidEnPassantRank0)
+{
+    // Test FEN with invalid en passant rank '0'
+    ASSERT_FALSE(pos.parseFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e0 0 1"));
+}
+
 TEST_F(BoardTest, parseFenStartPos)
 {
     ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
