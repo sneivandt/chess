@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <string>
+#include <unistd.h>
 #include <vector>
 
 int main()
@@ -20,12 +21,16 @@ int main()
     board::Board pos;
     board::Move move;
     std::string input;
+    bool isInteractive = isatty(fileno(stdin));
+
     while (true) {
         std::cout << std::endl;
         pos.print();
         std::cout << std::endl;
         std::cout << ((pos.getHistory().size() / 2) + 1) << ": ";
-        std::getline(std::cin, input);
+        if (!std::getline(std::cin, input)) {
+            break;
+        }
         if (input == "uci") {
             io::uci::loop();
             break;
@@ -40,6 +45,9 @@ int main()
             if (!pos.parseFen(input.substr(2))) {
                 std::cout << std::endl;
                 std::cout << "ERROR Invalid FEN" << std::endl;
+                if (!isInteractive) {
+                    return 1;
+                }
                 pos.parseFen(board::Board::DEFAULT_FEN);
             }
         }
@@ -61,12 +69,15 @@ int main()
             try {
                 move = io::parseMove(input, pos);
                 if (!board::makemove::move(move, pos)) {
-                    throw;
+                    throw utils::AceException("Invalid move");
                 }
             }
             catch (const std::exception& e) {
                 std::cout << std::endl;
                 std::cout << "ERROR " << e.what() << std::endl;
+                if (!isInteractive) {
+                    return 1;
+                }
             }
         }
     }
