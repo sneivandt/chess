@@ -84,22 +84,22 @@ int board::evaluate::score(Board& pos)
                     score += PAWN_ISOLATED * (side == WHITE ? 1 : -1);
                 }
                 if (!(pos.getPawns()[side ^ 1] & Board::PASSED_PAWN_MASK[side][Board::SQ64[square]])) {
-                    score += PASSED_PAWN[Board::RANKS[square]] * (side == WHITE ? 1 : -1);
+                    score += PASSED_PAWN[Board::RANKS[Board::SQ64[square]]] * (side == WHITE ? 1 : -1);
                 }
             }
             else if (Board::PIECE_NO_TEAM[piece] == WR) {
-                if (!(pos.getPawns()[BOTH] & Board::FILE_MASK[Board::FILES[square]])) {
+                if (!(pos.getPawns()[BOTH] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
                     score += ROOK_OPEN_FILE * (side == WHITE ? 1 : -1);
                 }
-                else if (!(pos.getPawns()[side] & Board::FILE_MASK[Board::FILES[square]])) {
+                else if (!(pos.getPawns()[side] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
                     score += ROOK_SEMI_OPEN_FILE * (side == WHITE ? 1 : -1);
                 }
             }
             else if (Board::PIECE_NO_TEAM[piece] == WQ) {
-                if (!(pos.getPawns()[BOTH] & Board::FILE_MASK[Board::FILES[square]])) {
+                if (!(pos.getPawns()[BOTH] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
                     score += QUEEN_OPEN_FILE * (side == WHITE ? 1 : -1);
                 }
-                else if (!(pos.getPawns()[side] & Board::FILE_MASK[Board::FILES[square]])) {
+                else if (!(pos.getPawns()[side] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
                     score += QUEEN_SEMI_OPEN_FILE * (side == WHITE ? 1 : -1);
                 }
             }
