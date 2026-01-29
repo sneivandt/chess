@@ -283,3 +283,53 @@ TEST_F(BoardTest, ParseFenEnPassantParsing)
     ASSERT_EQ(pos.getEnPas(), board::A6);
     ASSERT_EQ(pos.getFiftyMove(), 42);
 }
+
+// Test bounds checking in incrementSearchHistory
+TEST_F(BoardTest, IncrementSearchHistoryBoundsCheck)
+{
+    ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
+    
+    // Valid bounds - should not crash
+    pos.incrementSearchHistory(50, board::E2, 10);
+    pos.incrementSearchHistory(0, board::E2, 5);
+    pos.incrementSearchHistory(119, board::E2, 3);
+    
+    // Test with invalid 'to' values - should be silently ignored
+    pos.incrementSearchHistory(-1, board::E2, 10);
+    pos.incrementSearchHistory(120, board::E2, 10);
+    pos.incrementSearchHistory(200, board::E2, 10);
+    
+    // Test with invalid 'from' that would produce out-of-bounds piece index
+    // These should also be handled gracefully
+    pos.incrementSearchHistory(50, 121, 10);
+    pos.incrementSearchHistory(50, -1, 10);
+}
+
+// Test bounds checking in search killer moves
+TEST_F(BoardTest, SearchKillersBoundsCheck)
+{
+    ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
+    
+    // Set ply to valid value
+    pos.resetPly();
+    pos.addSearchKiller(12345);
+    ASSERT_EQ(pos.getSearchKiller(0), 12345);
+    
+    // Test with ply at boundary
+    for (int i = 0; i < 127; i++) {
+        pos.incrementPly();
+    }
+    pos.addSearchKiller(99999);
+    ASSERT_EQ(pos.getSearchKiller(0), 99999);
+    
+    // Test with ply beyond bounds - should be handled gracefully
+    pos.incrementPly(); // ply = 128, out of bounds
+    pos.addSearchKiller(11111); // Should not crash
+    ASSERT_EQ(pos.getSearchKiller(0), 0); // Should return 0 for out of bounds
+    
+    // Test with invalid num parameter
+    pos.resetPly();
+    ASSERT_EQ(pos.getSearchKiller(-1), 0);
+    ASSERT_EQ(pos.getSearchKiller(2), 0);
+    ASSERT_EQ(pos.getSearchKiller(10), 0);
+}
