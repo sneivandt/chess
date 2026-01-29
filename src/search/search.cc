@@ -73,8 +73,12 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
     if ((isRepetition(pos) || pos.getFiftyMove() >= 100) && pos.getPly() > 0) {
         return 0;
     }
-    bool inCheck =
-        pos.sqAttacked(pos.getPieceList(pos.getSide() == board::WHITE ? board::WK : board::BK)[0], pos.getSide() ^ 1);
+    int kingPiece = pos.getSide() == board::WHITE ? board::WK : board::BK;
+    if (pos.getPieceNum(kingPiece) == 0) {
+        // No king on the board - this should never happen in a valid position
+        return 0;
+    }
+    bool inCheck = pos.sqAttacked(pos.getPieceList(kingPiece)[0], pos.getSide() ^ 1);
     if (inCheck) {
         depth++;
     }

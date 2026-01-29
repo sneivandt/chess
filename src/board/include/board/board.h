@@ -454,13 +454,18 @@ inline void Board::resetPly()
 
 inline int Board::getSearchKiller(const int num) const
 {
-    return searchKillers[num][ply];
+    if (ply >= 0 && ply < 128 && num >= 0 && num < 2) {
+        return searchKillers[num][ply];
+    }
+    return 0;
 }
 
 inline void Board::addSearchKiller(const int move)
 {
-    searchKillers[1][ply] = searchKillers[0][ply];
-    searchKillers[0][ply] = move;
+    if (ply >= 0 && ply < 128) {
+        searchKillers[1][ply] = searchKillers[0][ply];
+        searchKillers[0][ply] = move;
+    }
 }
 
 inline void Board::clearSearchKillers()
@@ -478,7 +483,12 @@ inline int Board::getSearchHistory(const int piece, const int square) const
 
 inline void Board::incrementSearchHistory(const int to, const int from, const int depth)
 {
-    searchHistory[getSquare(from)][to] += depth;
+    if (from >= 0 && from < 120 && to >= 0 && to < 120) {
+        int piece = getSquare(from);
+        if (piece >= 0 && piece < 13) {
+            searchHistory[piece][to] += depth;
+        }
+    }
 }
 
 inline void Board::clearSearchHistory()

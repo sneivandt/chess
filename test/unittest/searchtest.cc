@@ -170,3 +170,16 @@ TEST_F(SearchTest, IsRepetitionEmptyHistory)
     EXPECT_FALSE(search::isRepetition(pos));
 }
 
+// Test that search handles valid positions correctly
+TEST_F(SearchTest, SearchValidPosition)
+{
+    pos.parseFen(board::Board::DEFAULT_FEN);
+    search::SearchInfo info;
+    info.setDepth(1);
+    
+    // Should not crash with valid position containing kings
+    EXPECT_NO_THROW({
+        search::go(pos, info);
+    });
+}
+
