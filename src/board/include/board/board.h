@@ -483,9 +483,11 @@ inline int Board::getSearchHistory(const int piece, const int square) const
 
 inline void Board::incrementSearchHistory(const int to, const int from, const int depth)
 {
-    int piece = getSquare(from);
-    if (piece >= 0 && piece < 13 && to >= 0 && to < 120) {
-        searchHistory[piece][to] += depth;
+    if (from >= 0 && from < 120 && to >= 0 && to < 120) {
+        int piece = getSquare(from);
+        if (piece >= 0 && piece < 13) {
+            searchHistory[piece][to] += depth;
+        }
     }
 }
 
