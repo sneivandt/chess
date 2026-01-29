@@ -289,18 +289,29 @@ TEST_F(BoardTest, IncrementSearchHistoryBoundsCheck)
 {
     ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
     
-    // Valid bounds - should not crash
+    // Valid bounds - should work and modify search history
+    pos.clearSearchHistory();
     pos.incrementSearchHistory(50, board::E2, 10);
-    pos.incrementSearchHistory(0, board::E2, 5);
-    pos.incrementSearchHistory(119, board::E2, 3);
+    ASSERT_EQ(pos.getSearchHistory(pos.getSquare(board::E2), 50), 10);
     
-    // Test with invalid 'to' values - should be silently ignored
-    pos.incrementSearchHistory(-1, board::E2, 10);
-    pos.incrementSearchHistory(120, board::E2, 10);
-    pos.incrementSearchHistory(200, board::E2, 10);
+    pos.incrementSearchHistory(50, board::E2, 5);
+    ASSERT_EQ(pos.getSearchHistory(pos.getSquare(board::E2), 50), 15); // Should accumulate
+    
+    pos.incrementSearchHistory(0, board::E2, 3);
+    ASSERT_EQ(pos.getSearchHistory(pos.getSquare(board::E2), 0), 3);
+    
+    pos.incrementSearchHistory(119, board::E2, 7);
+    ASSERT_EQ(pos.getSearchHistory(pos.getSquare(board::E2), 119), 7);
+    
+    // Test with invalid 'to' values - should be silently ignored, values unchanged
+    int prevValue = pos.getSearchHistory(pos.getSquare(board::E2), 50);
+    pos.incrementSearchHistory(-1, board::E2, 100);
+    pos.incrementSearchHistory(120, board::E2, 100);
+    pos.incrementSearchHistory(200, board::E2, 100);
+    ASSERT_EQ(pos.getSearchHistory(pos.getSquare(board::E2), 50), prevValue); // Should remain unchanged
     
     // Test with invalid 'from' that would produce out-of-bounds piece index
-    // These should also be handled gracefully
+    // These should also be handled gracefully without crashing
     pos.incrementSearchHistory(50, 121, 10);
     pos.incrementSearchHistory(50, -1, 10);
 }
@@ -310,22 +321,41 @@ TEST_F(BoardTest, SearchKillersBoundsCheck)
 {
     ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
     
-    // Set ply to valid value
+    // Set ply to valid value and store a killer move
     pos.resetPly();
     pos.addSearchKiller(12345);
     ASSERT_EQ(pos.getSearchKiller(0), 12345);
+    ASSERT_EQ(pos.getSearchKiller(1), 0); // Second killer should be 0
     
-    // Test with ply at boundary
+    // Add another killer, first should move to second slot
+    pos.addSearchKiller(54321);
+    ASSERT_EQ(pos.getSearchKiller(0), 54321);
+    ASSERT_EQ(pos.getSearchKiller(1), 12345);
+    
+    // Test with ply at boundary (127)
     for (int i = 0; i < 127; i++) {
         pos.incrementPly();
     }
     pos.addSearchKiller(99999);
     ASSERT_EQ(pos.getSearchKiller(0), 99999);
     
+    // Store another valid killer at a different ply level to test preservation
+    pos.resetPly();
+    pos.incrementPly(); // ply = 1
+    pos.addSearchKiller(77777);
+    ASSERT_EQ(pos.getSearchKiller(0), 77777);
+    
     // Test with ply beyond bounds - should be handled gracefully
-    pos.incrementPly(); // ply = 128, out of bounds
-    pos.addSearchKiller(11111); // Should not crash
+    for (int i = 0; i < 128; i++) {
+        pos.incrementPly();
+    } // ply = 129, out of bounds
+    pos.addSearchKiller(11111); // Should not crash or corrupt data
     ASSERT_EQ(pos.getSearchKiller(0), 0); // Should return 0 for out of bounds
+    
+    // Verify that previously stored valid killer moves are intact
+    pos.resetPly();
+    pos.incrementPly(); // ply = 1
+    ASSERT_EQ(pos.getSearchKiller(0), 77777); // Should still be there, uncorrupted
     
     // Test with invalid num parameter
     pos.resetPly();
