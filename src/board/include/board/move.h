@@ -18,17 +18,34 @@ class Move
     Move() : value(0), score(0) {};
     Move(const int v, const int s) : value(v), score(s) {};
 
+    // Copy semantics (explicitly defaulted)
+    Move(const Move&) = default;
+    Move& operator=(const Move&) = default;
+
+    // Move semantics
+    Move(Move&&) noexcept = default;
+    Move& operator=(Move&&) noexcept = default;
+
+    // Bit masks and shifts for move encoding
+    static constexpr int FROM_MASK = 0x7f;
+    static constexpr int TO_MASK = 0x7f;
+    static constexpr int TO_SHIFT = 7;
+    static constexpr int CAPTURE_MASK = 0xf;
+    static constexpr int CAPTURE_SHIFT = 14;
+    static constexpr int PROMOTED_MASK = 0xf;
+    static constexpr int PROMOTED_SHIFT = 20;
+
     // From square
-    static int FROMSQ(const int);
+    static int FROMSQ(const int) noexcept;
 
     // Get the to square
-    static int TOSQ(const int);
+    static int TOSQ(const int) noexcept;
 
     // Get the captured piece
-    static int CAPTURED(const int);
+    static int CAPTURED(const int) noexcept;
 
     // Get the promoted piece
-    static int PROMOTED(const int);
+    static int PROMOTED(const int) noexcept;
 
     // En passant flag
     const static int MFLAGEP = 0x40000;
@@ -46,20 +63,20 @@ class Move
     const static int MFLAGPROM = 0xf00000;
 
     // Less than operator
-    bool operator<(const Move&) const;
+    bool operator<(const Move&) const noexcept;
 
     // Get string representation of the move
     std::string getString() const;
 
     // Score
-    int getScore() const;
-    void addScore(const int);
+    int getScore() const noexcept;
+    void addScore(const int) noexcept;
 
     // Value
-    int getValue() const;
+    int getValue() const noexcept;
 
     // Construct a move value
-    static int MOVE(const int, const int, const int, const int, const int);
+    static int MOVE(const int, const int, const int, const int, const int) noexcept;
 };
 
 /*
@@ -77,47 +94,48 @@ class Move
  * Promoted Piece limits: 0-15 (4 bits)
  */
 
-inline int Move::MOVE(const int from, const int to, const int capture, const int promoted, const int flag)
+inline int Move::MOVE(const int from, const int to, const int capture, const int promoted, const int flag) noexcept
 {
-    return (from & 0x7f) | ((to & 0x7f) << 7) | ((capture & 0xf) << 14) | ((promoted & 0xf) << 20) | flag;
+    return (from & FROM_MASK) | ((to & TO_MASK) << TO_SHIFT) | ((capture & CAPTURE_MASK) << CAPTURE_SHIFT) |
+           ((promoted & PROMOTED_MASK) << PROMOTED_SHIFT) | flag;
 }
 
-inline int Move::FROMSQ(const int move)
+inline int Move::FROMSQ(const int move) noexcept
 {
-    return move & 0x7f;
+    return move & FROM_MASK;
 }
 
-inline int Move::TOSQ(const int move)
+inline int Move::TOSQ(const int move) noexcept
 {
-    return (move >> 7) & 0x7f;
+    return (move >> TO_SHIFT) & TO_MASK;
 }
 
-inline int Move::CAPTURED(const int move)
+inline int Move::CAPTURED(const int move) noexcept
 {
-    return (move >> 14) & 0xf;
+    return (move >> CAPTURE_SHIFT) & CAPTURE_MASK;
 }
 
-inline int Move::PROMOTED(const int move)
+inline int Move::PROMOTED(const int move) noexcept
 {
-    return (move >> 20) & 0xf;
+    return (move >> PROMOTED_SHIFT) & PROMOTED_MASK;
 }
 
-inline bool Move::operator<(const Move& rhs) const
+inline bool Move::operator<(const Move& rhs) const noexcept
 {
     return score < rhs.getScore();
 }
 
-inline int Move::getScore() const
+inline int Move::getScore() const noexcept
 {
     return score;
 }
 
-inline void Move::addScore(const int s)
+inline void Move::addScore(const int s) noexcept
 {
     score += s;
 }
 
-inline int Move::getValue() const
+inline int Move::getValue() const noexcept
 {
     return value;
 }

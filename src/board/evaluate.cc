@@ -56,27 +56,31 @@ int board::evaluate::score(Board& pos)
         for (int i = 0; i < pos.getPieceNum(piece); i++) {
             square = pos.getPieceList(piece)[i];
             side = Board::PIECE_COLOR[piece];
+            const auto sq64 = static_cast<size_t>(Board::SQ64[square]);
+            const auto pieceType = static_cast<size_t>(Board::PIECE_NO_TEAM[piece]);
+            
             if (Board::PIECE_COLOR[piece] == WHITE) {
-                score += PIECE_SQUARE_TABLE[Board::PIECE_NO_TEAM[piece]][Board::SQ64[square]];
+                score += PIECE_SQUARE_TABLE[pieceType][sq64];
             }
             else {
-                score -=
-                    PIECE_SQUARE_TABLE[Board::PIECE_NO_TEAM[piece]][MIRROR_PIECE_SQUARE_TABLE[Board::SQ64[square]]];
+                const auto mirroredSq = static_cast<size_t>(MIRROR_PIECE_SQUARE_TABLE[sq64]);
+                score -= PIECE_SQUARE_TABLE[pieceType][mirroredSq];
             }
             if (piece == WK) {
                 if (isEndGame(pos, WHITE)) {
-                    score += PIECE_SQUARE_TABLE_KING_END[Board::SQ64[square]];
+                    score += PIECE_SQUARE_TABLE_KING_END[sq64];
                 }
                 else {
-                    score += PIECE_SQUARE_TABLE_KING_OPENING[Board::SQ64[square]];
+                    score += PIECE_SQUARE_TABLE_KING_OPENING[sq64];
                 }
             }
             else if (piece == BK) {
+                const auto mirroredSq = static_cast<size_t>(MIRROR_PIECE_SQUARE_TABLE[sq64]);
                 if (isEndGame(pos, BLACK)) {
-                    score -= PIECE_SQUARE_TABLE_KING_END[MIRROR_PIECE_SQUARE_TABLE[Board::SQ64[square]]];
+                    score -= PIECE_SQUARE_TABLE_KING_END[mirroredSq];
                 }
                 else {
-                    score -= PIECE_SQUARE_TABLE_KING_OPENING[MIRROR_PIECE_SQUARE_TABLE[Board::SQ64[square]]];
+                    score -= PIECE_SQUARE_TABLE_KING_OPENING[mirroredSq];
                 }
             }
             else if (Board::PIECE_NO_TEAM[piece] == WP) {
@@ -84,7 +88,8 @@ int board::evaluate::score(Board& pos)
                     score += PAWN_ISOLATED * (side == WHITE ? 1 : -1);
                 }
                 if (!(pos.getPawns()[side ^ 1] & Board::PASSED_PAWN_MASK[side][Board::SQ64[square]])) {
-                    score += PASSED_PAWN[Board::RANKS[Board::SQ64[square]]] * (side == WHITE ? 1 : -1);
+                    const auto rank = static_cast<size_t>(Board::RANKS[Board::SQ64[square]]);
+                    score += PASSED_PAWN[rank] * (side == WHITE ? 1 : -1);
                 }
             }
             else if (Board::PIECE_NO_TEAM[piece] == WR) {
