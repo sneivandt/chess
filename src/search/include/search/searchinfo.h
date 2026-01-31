@@ -36,6 +36,14 @@ class SearchInfo
     };
     SearchInfo(const int d) : depth(d), stopTime(-1) {};
 
+    // Copy semantics
+    SearchInfo(const SearchInfo&) = default;
+    SearchInfo& operator=(const SearchInfo&) = default;
+
+    // Move semantics
+    SearchInfo(SearchInfo&&) noexcept = default;
+    SearchInfo& operator=(SearchInfo&&) noexcept = default;
+
     // Reset the search info
     void reset();
 
@@ -43,40 +51,40 @@ class SearchInfo
     void calculateStopTime(const int, const int);
 
     // Nodes
-    int64_t getNodes() const;
-    void incrementNodes();
+    int64_t getNodes() const noexcept;
+    void incrementNodes() noexcept;
 
     // Start time
-    int64_t getStartTime() const;
+    int64_t getStartTime() const noexcept;
     void setStartTime();
 
     // Stop time
-    int64_t getStopTime() const;
+    int64_t getStopTime() const noexcept;
 
     // Depth
-    int getDepth() const;
-    void setDepth(const int);
+    int getDepth() const noexcept;
+    void setDepth(const int) noexcept;
 
     // Stopped
-    bool getStopped() const;
-    void setStopped(const bool);
+    bool getStopped() const noexcept;
+    void setStopped(const bool) noexcept;
 
     // Quit
-    bool getQuit() const;
-    void setQuit(const bool);
+    bool getQuit() const noexcept;
+    void setQuit(const bool) noexcept;
 };
 
-inline int64_t SearchInfo::getNodes() const
+inline int64_t SearchInfo::getNodes() const noexcept
 {
     return nodes;
 }
 
-inline void SearchInfo::incrementNodes()
+inline void SearchInfo::incrementNodes() noexcept
 {
     nodes++;
 }
 
-inline int64_t SearchInfo::getStartTime() const
+inline int64_t SearchInfo::getStartTime() const noexcept
 {
     return startTime;
 }
@@ -86,37 +94,37 @@ inline void SearchInfo::setStartTime()
     startTime = utils::getTime();
 }
 
-inline int64_t SearchInfo::getStopTime() const
+inline int64_t SearchInfo::getStopTime() const noexcept
 {
     return stopTime;
 }
 
-inline int SearchInfo::getDepth() const
+inline int SearchInfo::getDepth() const noexcept
 {
     return depth;
 }
 
-inline void SearchInfo::setDepth(const int d)
+inline void SearchInfo::setDepth(const int d) noexcept
 {
     depth = d;
 }
 
-inline bool SearchInfo::getStopped() const
+inline bool SearchInfo::getStopped() const noexcept
 {
     return stopped;
 }
 
-inline void SearchInfo::setStopped(const bool s)
+inline void SearchInfo::setStopped(const bool s) noexcept
 {
     stopped = s;
 }
 
-inline bool SearchInfo::getQuit() const
+inline bool SearchInfo::getQuit() const noexcept
 {
     return quit;
 }
 
-inline void SearchInfo::setQuit(const bool q)
+inline void SearchInfo::setQuit(const bool q) noexcept
 {
     quit = q;
 }

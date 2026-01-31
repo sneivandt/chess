@@ -15,15 +15,22 @@ class MoveList
     std::vector<board::Move> moves;
 
   public:
+    // Move semantics
+    MoveList() = default;
+    MoveList(const MoveList&) = default;
+    MoveList& operator=(const MoveList&) = default;
+    MoveList(MoveList&&) noexcept = default;
+    MoveList& operator=(MoveList&&) noexcept = default;
+
     // Print the move list
     void print() const;
 
-    // Moves
-    std::vector<board::Move> getMoves();
+    // Moves - return const reference instead of copy
+    const std::vector<board::Move>& getMoves() const noexcept;
     void addMove(const board::Move);
 };
 
-inline std::vector<board::Move> MoveList::getMoves()
+inline const std::vector<board::Move>& MoveList::getMoves() const noexcept
 {
     return moves;
 }

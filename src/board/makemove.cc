@@ -7,7 +7,7 @@
 
 #include <cassert>
 #include <cstdint>
-#include <cstdlib>
+#include <stdexcept>
 
 inline void board::makemove::clearPiece(const int square, Board& pos)
 {
@@ -29,7 +29,7 @@ inline void board::makemove::clearPiece(const int square, Board& pos)
     }
     // Piece must be found in the piece list - if not, board state is corrupted
     if (targetPNum == -1) {
-        std::abort();
+        throw std::runtime_error("Piece not found in piece list - corrupted board state");
     }
     pos.decrementPieceNum(piece);
     pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];
@@ -47,7 +47,7 @@ inline void board::makemove::addPiece(const int piece, const int square, Board& 
     }
     // Check bounds before adding to piece list
     if (pos.getPieceNum(piece) >= 10) {
-        std::abort();
+        throw std::runtime_error("Piece list overflow - maximum number of pieces exceeded");
     }
     pos.getPieceList(piece)[pos.getPieceNum(piece)] = square;
     pos.incrementPieceNum(piece);
