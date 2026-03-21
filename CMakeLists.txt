@@ -39,9 +39,15 @@ add_subdirectory(src)
 
 enable_testing()
 
+include(FetchContent)
+FetchContent_Declare(
+    googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG        v1.17.0
+)
 set(INSTALL_GTEST OFF CACHE INTERNAL "Do not install gtest")
 set(BUILD_GMOCK OFF CACHE INTERNAL "Do not build gmock")
-add_subdirectory(extern/googletest)
+FetchContent_MakeAvailable(googletest)
 
 add_subdirectory(test)
 
