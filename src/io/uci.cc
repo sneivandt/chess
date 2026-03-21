@@ -26,19 +26,19 @@ void io::uci::parseGo(const std::string& input, search::SearchInfo& info, board:
             ss >> val;
             depth = stoi(val);
         }
-        else if (key == "wtime" && pos.getSide() == board::WHITE) {
+        else if (key == "wtime" && pos.getSide() == board::toInt(board::Color::WHITE)) {
             ss >> val;
             time = stoi(val);
         }
-        else if (key == "btime" && pos.getSide() == board::BLACK) {
+        else if (key == "btime" && pos.getSide() == board::toInt(board::Color::BLACK)) {
             ss >> val;
             time = stoi(val);
         }
-        else if (key == "winc" && pos.getSide() == board::WHITE) {
+        else if (key == "winc" && pos.getSide() == board::toInt(board::Color::WHITE)) {
             ss >> val;
             inc = stoi(val);
         }
-        else if (key == "binc" && pos.getSide() == board::BLACK) {
+        else if (key == "binc" && pos.getSide() == board::toInt(board::Color::BLACK)) {
             ss >> val;
             inc = stoi(val);
         }

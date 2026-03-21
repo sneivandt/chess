@@ -1,15 +1,17 @@
-#include "gtest/gtest.h"
+#include "search/movegen.h"
+
 #include "board/board.h"
 #include "board/makemove.h"
-#include "search/movegen.h"
 #include "search/movelist.h"
 #include "unittest.h"
+
+#include "gtest/gtest.h"
 
 using namespace test;
 
 class MoveGenTest : public test::UnitTest
 {
-protected:
+  protected:
     board::Board pos;
     virtual void SetUp()
     {
@@ -43,9 +45,9 @@ TEST_F(MoveGenTest, GenerateKnightCapture)
 
     if (captures.getMoves().size() > 0) {
         board::Move m = captures.getMoves()[0];
-        EXPECT_EQ(board::Move::FROMSQ(m.getValue()), board::F3);
-        EXPECT_EQ(board::Move::TOSQ(m.getValue()), board::E5);
-        EXPECT_EQ(board::Move::CAPTURED(m.getValue()), board::BP);
+        EXPECT_EQ(board::Move::FROMSQ(m.getValue()), board::toInt(board::Square::F3));
+        EXPECT_EQ(board::Move::TOSQ(m.getValue()), board::toInt(board::Square::E5));
+        EXPECT_EQ(board::Move::CAPTURED(m.getValue()), board::toInt(board::Piece::BP));
     }
 }
 
@@ -73,7 +75,7 @@ TEST_F(MoveGenTest, GenerateCastlingMoves)
     pos.parseFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
 
     search::MoveList moves = search::movegen::generateAll(pos, false);
-    
+
     // Count castling moves
     int castlingMoves = 0;
     for (const auto& move : moves.getMoves()) {
@@ -90,14 +92,14 @@ TEST_F(MoveGenTest, GenerateEnPassantCapture)
     pos.parseFen("rnbqkbnr/ppp2ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3");
 
     search::MoveList captures = search::movegen::generateAll(pos, true);
-    
+
     // Check for en passant move
     bool foundEnPassant = false;
     for (const auto& move : captures.getMoves()) {
         if (move.getValue() & board::Move::MFLAGEP) {
             foundEnPassant = true;
-            EXPECT_EQ(board::Move::FROMSQ(move.getValue()), board::E5);
-            EXPECT_EQ(board::Move::TOSQ(move.getValue()), board::D6);
+            EXPECT_EQ(board::Move::FROMSQ(move.getValue()), board::toInt(board::Square::E5));
+            EXPECT_EQ(board::Move::TOSQ(move.getValue()), board::toInt(board::Square::D6));
         }
     }
     EXPECT_TRUE(foundEnPassant);
@@ -109,12 +111,12 @@ TEST_F(MoveGenTest, GeneratePromotionMoves)
     pos.parseFen("8/P7/8/8/8/8/8/4K2k w - - 0 1");
 
     search::MoveList moves = search::movegen::generateAll(pos, false);
-    
+
     // Should have 4 promotion moves (Q, R, B, N)
     int promotionMoves = 0;
     for (const auto& move : moves.getMoves()) {
         int promoted = board::Move::PROMOTED(move.getValue());
-        if (promoted != board::EMPTY) {
+        if (promoted != board::toInt(board::Piece::EMPTY)) {
             promotionMoves++;
         }
     }
@@ -127,7 +129,7 @@ TEST_F(MoveGenTest, GenerateNoMovesInCheckmate)
     pos.parseFen("rnb1kbnr/pppp1ppp/8/4p3/6Pq/5P2/PPPPP2P/RNBQKBNR w KQkq - 1 3");
 
     auto moves = search::movegen::generateAll(pos, false).getMoves();
-    
+
     // Check that no legal moves (all moves leave king in check)
     int legalMoves = 0;
     for (auto move : moves) {
@@ -143,9 +145,9 @@ TEST_F(MoveGenTest, GeneratePawnDoubleMoveFromStartingRank)
 {
     // Test that white pawns can double-move from rank 2 (their starting rank)
     pos.parseFen(board::Board::DEFAULT_FEN);
-    
+
     search::MoveList moves = search::movegen::generateAll(pos, false);
-    
+
     // Count pawn double-moves for white (should be 8 - one for each pawn)
     int doubleMoves = 0;
     for (const auto& move : moves.getMoves()) {
@@ -154,16 +156,16 @@ TEST_F(MoveGenTest, GeneratePawnDoubleMoveFromStartingRank)
             // Verify these are from rank 2 to rank 4
             int from = board::Move::FROMSQ(move.getValue());
             int to = board::Move::TOSQ(move.getValue());
-            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[from]], board::RANK_2);
-            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[to]], board::RANK_4);
+            EXPECT_EQ(board::Board::RANKS[board::idx(board::Board::SQ64[board::idx(from)])], board::toInt(board::Rank::RANK_2));
+            EXPECT_EQ(board::Board::RANKS[board::idx(board::Board::SQ64[board::idx(to)])], board::toInt(board::Rank::RANK_4));
         }
     }
     EXPECT_EQ(doubleMoves, 8);
-    
+
     // Test for black pawns from rank 7
     pos.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
     moves = search::movegen::generateAll(pos, false);
-    
+
     doubleMoves = 0;
     for (const auto& move : moves.getMoves()) {
         if (move.getValue() & board::Move::MFLAGPS) {
@@ -171,8 +173,8 @@ TEST_F(MoveGenTest, GeneratePawnDoubleMoveFromStartingRank)
             // Verify these are from rank 7 to rank 5
             int from = board::Move::FROMSQ(move.getValue());
             int to = board::Move::TOSQ(move.getValue());
-            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[from]], board::RANK_7);
-            EXPECT_EQ(board::Board::RANKS[board::Board::SQ64[to]], board::RANK_5);
+            EXPECT_EQ(board::Board::RANKS[board::idx(board::Board::SQ64[board::idx(from)])], board::toInt(board::Rank::RANK_7));
+            EXPECT_EQ(board::Board::RANKS[board::idx(board::Board::SQ64[board::idx(to)])], board::toInt(board::Rank::RANK_5));
         }
     }
     EXPECT_EQ(doubleMoves, 8);
@@ -183,16 +185,16 @@ TEST_F(MoveGenTest, MVVLVAScoresInitializedForAllPieces)
 {
     // After calling INIT(), all MVVLVA_SCORES should be non-zero for valid piece combinations
     // This test verifies that the loop includes BK (value 12), not just up to BQ (value 11)
-    
+
     // Check that scores are set for capturing a king (victim = BK)
-    for (int attacker = board::WP; attacker <= board::BK; attacker++) {
-        EXPECT_NE(search::movegen::MVVLVA_SCORES[board::BK][attacker], 0) 
+    for (int attacker = board::toInt(board::Piece::WP); attacker <= board::toInt(board::Piece::BK); attacker++) {
+        EXPECT_NE(search::movegen::MVVLVA_SCORES[board::idx(board::toInt(board::Piece::BK))][board::idx(attacker)], 0)
             << "MVVLVA_SCORES[BK][" << attacker << "] should be initialized";
     }
-    
+
     // Check that scores are set for a king capturing (attacker = BK)
-    for (int victim = board::WP; victim <= board::BK; victim++) {
-        EXPECT_NE(search::movegen::MVVLVA_SCORES[victim][board::BK], 0)
+    for (int victim = board::toInt(board::Piece::WP); victim <= board::toInt(board::Piece::BK); victim++) {
+        EXPECT_NE(search::movegen::MVVLVA_SCORES[board::idx(victim)][board::idx(board::toInt(board::Piece::BK))], 0)
             << "MVVLVA_SCORES[" << victim << "][BK] should be initialized";
     }
 }
@@ -202,45 +204,44 @@ TEST_F(MoveGenTest, QuietPawnMovesUseDifferentScoringThanCaptures)
 {
     // Position with both quiet pawn moves and pawn captures available
     pos.parseFen("rnbqkbnr/ppp2ppp/8/3pp3/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3");
-    
+
     search::MoveList moves = search::movegen::generateAll(pos, false);
-    
+
     // Find a quiet pawn move and a capturing pawn move
     board::Move quietPawnMove;
     board::Move capturingPawnMove;
     bool foundQuiet = false;
     bool foundCapture = false;
-    
+
     for (const auto& move : moves.getMoves()) {
         int piece = pos.getSquare(board::Move::FROMSQ(move.getValue()));
         int captured = board::Move::CAPTURED(move.getValue());
-        
+
         // Look for pawn moves (not promotions)
-        if ((piece == board::WP || piece == board::BP) && 
-            board::Move::PROMOTED(move.getValue()) == board::EMPTY) {
-            if (captured == board::EMPTY && !foundQuiet) {
+        if ((piece == board::toInt(board::Piece::WP) || piece == board::toInt(board::Piece::BP)) &&
+            board::Move::PROMOTED(move.getValue()) == board::toInt(board::Piece::EMPTY)) {
+            if (captured == board::toInt(board::Piece::EMPTY) && !foundQuiet) {
                 quietPawnMove = move;
                 foundQuiet = true;
             }
-            else if (captured != board::EMPTY && !foundCapture) {
+            else if (captured != board::toInt(board::Piece::EMPTY) && !foundCapture) {
                 capturingPawnMove = move;
                 foundCapture = true;
             }
         }
-        
+
         // Early exit when both moves are found
         if (foundQuiet && foundCapture) {
             break;
         }
     }
-    
+
     ASSERT_TRUE(foundQuiet) << "Should find at least one quiet pawn move";
     ASSERT_TRUE(foundCapture) << "Should find at least one capturing pawn move";
-    
+
     // Capturing moves should have high scores (> 1000000) due to MVVLVA + 1000000
     // Quiet moves should have lower scores (history/killer scoring, typically < 1000000)
-    EXPECT_GT(capturingPawnMove.getScore(), 1000000) 
-        << "Capturing pawn moves should use high MVVLVA-based scoring";
+    EXPECT_GT(capturingPawnMove.getScore(), 1000000) << "Capturing pawn moves should use high MVVLVA-based scoring";
     EXPECT_LT(quietPawnMove.getScore(), 1000000)
         << "Quiet pawn moves should use history/killer-based scoring, not capture scoring";
 }

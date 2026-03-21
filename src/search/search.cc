@@ -4,10 +4,11 @@
 #include "board/evaluate.h"
 #include "board/makemove.h"
 #include "board/move.h"
-#include "pvtable.h"
+#include "search/pvtable.h"
 #include "search/movegen.h"
 #include "search/movelist.h"
 #include "search/searchinfo.h"
+#include "search/searchstate.h"
 #include "utils/utils.h"
 
 #include <algorithm>
@@ -36,17 +37,17 @@ bool search::isRepetition(board::Board& pos)
 {
     size_t historySize = pos.getHistory().size();
     size_t fiftyMove = static_cast<size_t>(pos.getFiftyMove());
-    
+
     // No repetition possible if history is empty or fiftyMove is 0
     if (historySize == 0 || fiftyMove == 0) {
         return false;
     }
-    
+
     // Prevent unsigned underflow
     if (fiftyMove > historySize) {
         fiftyMove = historySize;
     }
-    
+
     // Check only positions within the fifty move rule window
     for (size_t i = historySize - fiftyMove; i < historySize; i++) {
         if (pos.getHashKey() == pos.getHistory()[i].getHashKey()) {
@@ -56,15 +57,15 @@ bool search::isRepetition(board::Board& pos)
     return false;
 }
 
-void search::reset(board::Board& pos, SearchInfo& info)
+void search::reset(board::Board& pos, SearchInfo& info, SearchState& ss)
 {
-    pos.clearSearchHistory();
-    pos.clearSearchKillers();
+    ss.clear();
     pos.resetPly();
     info.reset();
 }
 
-int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInfo& info, PVTable& pvtable)
+int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInfo& info, PVTable& pvtable,
+                    SearchState& ss)
 {
     if ((info.getNodes() & 2047) == 0) {
         checkup(info);
@@ -73,7 +74,8 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
     if ((isRepetition(pos) || pos.getFiftyMove() >= 100) && pos.getPly() > 0) {
         return 0;
     }
-    int kingPiece = pos.getSide() == board::WHITE ? board::WK : board::BK;
+    int kingPiece = pos.getSide() == board::toInt(board::Color::WHITE) ? board::toInt(board::Piece::WK)
+                                                                       : board::toInt(board::Piece::BK);
     if (pos.getPieceNum(kingPiece) == 0) {
         // No king on the board - this should never happen in a valid position
         return 0;
@@ -91,11 +93,11 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
             alpha = score;
         }
     }
-    std::vector<board::Move> moves = movegen::generateAll(pos, depth == 0).getMoves();
-    board::Move pvMove = pvtable.getMove(pos);
-    if (pvMove.getValue() != 0) {
+    std::vector<board::Move> moves = movegen::generateAll(pos, depth == 0, &ss).getMoves();
+    auto pvMove = pvtable.getMove(pos);
+    if (pvMove) {
         for (board::Move move : moves) {
-            if (pvMove.getValue() == move.getValue()) {
+            if (pvMove->getValue() == move.getValue()) {
                 move.addScore(2000000);
                 break;
             }
@@ -111,7 +113,7 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
             continue;
         }
         legal++;
-        score = -negamax(-beta, -alpha, depth > 0 ? depth - 1 : 0, pos, info, pvtable);
+        score = -negamax(-beta, -alpha, depth > 0 ? depth - 1 : 0, pos, info, pvtable, ss);
         board::makemove::undo(pos);
         if (info.getStopped()) {
             return 0;
@@ -120,7 +122,7 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
             if (score >= beta) {
                 if (depth > 0) {
                     if (!(move.getValue() & board::Move::MFLAGCAP)) {
-                        pos.addSearchKiller(move.getValue());
+                        ss.addKiller(move.getValue(), pos.getPly());
                     }
                 }
                 return beta;
@@ -129,8 +131,9 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
             bestMove = move;
             if (depth > 0) {
                 if (!(move.getValue() & board::Move::MFLAGCAP)) {
-                    pos.incrementSearchHistory(board::Move::TOSQ(move.getValue()), board::Move::FROMSQ(move.getValue()),
-                                               depth);
+                    int fromSq = board::Move::FROMSQ(move.getValue());
+                    int toSq = board::Move::TOSQ(move.getValue());
+                    ss.incrementHistory(fromSq, toSq, depth, pos.getSquare(fromSq));
                 }
             }
         }
@@ -151,10 +154,11 @@ void search::go(board::Board& pos, SearchInfo& info)
 {
     int score = NEG_INFINITY;
     PVTable pvtable;
+    SearchState ss;
     std::vector<board::Move> pv;
-    reset(pos, info);
+    reset(pos, info, ss);
     for (int depth = 1; info.getDepth() == -1 || depth <= info.getDepth(); depth++) {
-        score = negamax(NEG_INFINITY, POS_INFINITY, depth, pos, info, pvtable);
+        score = negamax(NEG_INFINITY, POS_INFINITY, depth, pos, info, pvtable, ss);
         if (info.getStopped()) {
             break;
         }

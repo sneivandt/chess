@@ -4,10 +4,7 @@ add_executable(ace
 target_link_libraries(ace
     PRIVATE
         project_options
-        project_warnings)
-
-target_link_libraries(ace
-    PRIVATE
+        project_warnings
         ace::board
         ace::io
         ace::search

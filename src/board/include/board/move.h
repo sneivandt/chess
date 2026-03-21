@@ -1,5 +1,4 @@
-#ifndef MOVE_H
-#define MOVE_H
+#pragma once
 
 #include <string>
 
@@ -141,5 +140,3 @@ inline int Move::getValue() const noexcept
 }
 
 } // namespace board
-
-#endif

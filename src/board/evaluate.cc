@@ -7,15 +7,16 @@
 
 inline bool board::evaluate::materialDraw(Board& pos)
 {
-    if (!pos.getPieceNum(WR) && !pos.getPieceNum(BR) && !pos.getPieceNum(WQ) && !pos.getPieceNum(BQ) &&
-        !pos.getPieceNum(WP) && !pos.getPieceNum(BP)) {
-        if (!pos.getPieceNum(BB) && !pos.getPieceNum(WB)) {
-            if (pos.getPieceNum(WN) < 3 && pos.getPieceNum(BN) < 3) {
+    if (!pos.getPieceNum(toInt(Piece::WR)) && !pos.getPieceNum(toInt(Piece::BR)) &&
+        !pos.getPieceNum(toInt(Piece::WQ)) && !pos.getPieceNum(toInt(Piece::BQ)) &&
+        !pos.getPieceNum(toInt(Piece::WP)) && !pos.getPieceNum(toInt(Piece::BP))) {
+        if (!pos.getPieceNum(toInt(Piece::BB)) && !pos.getPieceNum(toInt(Piece::WB))) {
+            if (pos.getPieceNum(toInt(Piece::WN)) < 3 && pos.getPieceNum(toInt(Piece::BN)) < 3) {
                 return true;
             }
         }
-        else if (!pos.getPieceNum(WN) && !pos.getPieceNum(BN)) {
-            if (abs(pos.getPieceNum(WB) - pos.getPieceNum(BB)) < 2) {
+        else if (!pos.getPieceNum(toInt(Piece::WN)) && !pos.getPieceNum(toInt(Piece::BN))) {
+            if (abs(pos.getPieceNum(toInt(Piece::WB)) - pos.getPieceNum(toInt(Piece::BB))) < 2) {
                 return true;
             }
         }
@@ -25,13 +26,13 @@ inline bool board::evaluate::materialDraw(Board& pos)
 
 inline bool board::evaluate::isEndGame(Board& pos, const int side)
 {
-    if (side == WHITE) {
-        if (!pos.getPieceNum(BQ) && pos.getMaterial(BLACK) < ENDGAME_MATERIAL) {
+    if (side == toInt(Color::WHITE)) {
+        if (!pos.getPieceNum(toInt(Piece::BQ)) && pos.getMaterial(toInt(Color::BLACK)) < ENDGAME_MATERIAL) {
             return true;
         }
     }
     else {
-        if (!pos.getPieceNum(WQ) && pos.getMaterial(WHITE) < ENDGAME_MATERIAL) {
+        if (!pos.getPieceNum(toInt(Piece::WQ)) && pos.getMaterial(toInt(Color::WHITE)) < ENDGAME_MATERIAL) {
             return true;
         }
     }
@@ -45,72 +46,77 @@ int board::evaluate::score(Board& pos)
     }
     int square;
     int side;
-    int score = pos.getMaterial(WHITE) - pos.getMaterial(BLACK);
-    if (pos.getPieceNum(WB) == 2) {
+    int score = pos.getMaterial(toInt(Color::WHITE)) - pos.getMaterial(toInt(Color::BLACK));
+    if (pos.getPieceNum(toInt(Piece::WB)) == 2) {
         score += BISHOP_PAIR;
     }
-    if (pos.getPieceNum(BB) == 2) {
+    if (pos.getPieceNum(toInt(Piece::BB)) == 2) {
         score -= BISHOP_PAIR;
     }
-    for (int piece = WP; piece <= BK; piece++) {
+    for (int piece = toInt(Piece::WP); piece <= toInt(Piece::BK); piece++) {
         for (int i = 0; i < pos.getPieceNum(piece); i++) {
-            square = pos.getPieceList(piece)[i];
-            side = Board::PIECE_COLOR[piece];
-            const auto sq64 = static_cast<size_t>(Board::SQ64[square]);
-            const auto pieceType = static_cast<size_t>(Board::PIECE_NO_TEAM[piece]);
-            
-            if (Board::PIECE_COLOR[piece] == WHITE) {
+            square = pos.getPieceList(piece)[idx(i)];
+            side = Board::PIECE_COLOR[idx(piece)];
+            const auto sq64 = static_cast<size_t>(Board::SQ64[idx(square)]);
+            const auto pieceType = static_cast<size_t>(Board::PIECE_NO_TEAM[idx(piece)]);
+
+            if (Board::PIECE_COLOR[idx(piece)] == toInt(Color::WHITE)) {
                 score += PIECE_SQUARE_TABLE[pieceType][sq64];
             }
             else {
                 const auto mirroredSq = static_cast<size_t>(MIRROR_PIECE_SQUARE_TABLE[sq64]);
                 score -= PIECE_SQUARE_TABLE[pieceType][mirroredSq];
             }
-            if (piece == WK) {
-                if (isEndGame(pos, WHITE)) {
+            if (piece == toInt(Piece::WK)) {
+                if (isEndGame(pos, toInt(Color::WHITE))) {
                     score += PIECE_SQUARE_TABLE_KING_END[sq64];
                 }
                 else {
                     score += PIECE_SQUARE_TABLE_KING_OPENING[sq64];
                 }
             }
-            else if (piece == BK) {
+            else if (piece == toInt(Piece::BK)) {
                 const auto mirroredSq = static_cast<size_t>(MIRROR_PIECE_SQUARE_TABLE[sq64]);
-                if (isEndGame(pos, BLACK)) {
+                if (isEndGame(pos, toInt(Color::BLACK))) {
                     score -= PIECE_SQUARE_TABLE_KING_END[mirroredSq];
                 }
                 else {
                     score -= PIECE_SQUARE_TABLE_KING_OPENING[mirroredSq];
                 }
             }
-            else if (Board::PIECE_NO_TEAM[piece] == WP) {
-                if (!(pos.getPawns()[side] & Board::ISOLATED_PAWN_MASK[Board::SQ64[square]])) {
-                    score += PAWN_ISOLATED * (side == WHITE ? 1 : -1);
+            else if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WP)) {
+                if (!(pos.getPawns()[idx(side)] & Board::ISOLATED_PAWN_MASK[idx(Board::SQ64[idx(square)])])) {
+                    score += PAWN_ISOLATED * (side == toInt(Color::WHITE) ? 1 : -1);
                 }
-                if (!(pos.getPawns()[side ^ 1] & Board::PASSED_PAWN_MASK[side][Board::SQ64[square]])) {
-                    const auto rank = static_cast<size_t>(Board::RANKS[Board::SQ64[square]]);
-                    score += PASSED_PAWN[rank] * (side == WHITE ? 1 : -1);
-                }
-            }
-            else if (Board::PIECE_NO_TEAM[piece] == WR) {
-                if (!(pos.getPawns()[BOTH] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
-                    score += ROOK_OPEN_FILE * (side == WHITE ? 1 : -1);
-                }
-                else if (!(pos.getPawns()[side] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
-                    score += ROOK_SEMI_OPEN_FILE * (side == WHITE ? 1 : -1);
+                if (!(pos.getPawns()[idx(side ^ 1)] &
+                      Board::PASSED_PAWN_MASK[idx(side)][idx(Board::SQ64[idx(square)])])) {
+                    const auto rank = static_cast<size_t>(Board::RANKS[idx(Board::SQ64[idx(square)])]);
+                    score += PASSED_PAWN[rank] * (side == toInt(Color::WHITE) ? 1 : -1);
                 }
             }
-            else if (Board::PIECE_NO_TEAM[piece] == WQ) {
-                if (!(pos.getPawns()[BOTH] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
-                    score += QUEEN_OPEN_FILE * (side == WHITE ? 1 : -1);
+            else if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WR)) {
+                if (!(pos.getPawns()[idx(toInt(Color::BOTH))] &
+                      Board::FILE_MASK[idx(Board::FILES[idx(Board::SQ64[idx(square)])])])) {
+                    score += ROOK_OPEN_FILE * (side == toInt(Color::WHITE) ? 1 : -1);
                 }
-                else if (!(pos.getPawns()[side] & Board::FILE_MASK[Board::FILES[Board::SQ64[square]]])) {
-                    score += QUEEN_SEMI_OPEN_FILE * (side == WHITE ? 1 : -1);
+                else if (!(pos.getPawns()[idx(side)] &
+                           Board::FILE_MASK[idx(Board::FILES[idx(Board::SQ64[idx(square)])])])) {
+                    score += ROOK_SEMI_OPEN_FILE * (side == toInt(Color::WHITE) ? 1 : -1);
+                }
+            }
+            else if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WQ)) {
+                if (!(pos.getPawns()[idx(toInt(Color::BOTH))] &
+                      Board::FILE_MASK[idx(Board::FILES[idx(Board::SQ64[idx(square)])])])) {
+                    score += QUEEN_OPEN_FILE * (side == toInt(Color::WHITE) ? 1 : -1);
+                }
+                else if (!(pos.getPawns()[idx(side)] &
+                           Board::FILE_MASK[idx(Board::FILES[idx(Board::SQ64[idx(square)])])])) {
+                    score += QUEEN_SEMI_OPEN_FILE * (side == toInt(Color::WHITE) ? 1 : -1);
                 }
             }
         }
     }
-    if (pos.getSide() == BLACK) {
+    if (pos.getSide() == toInt(Color::BLACK)) {
         score = -score;
     }
     return score;

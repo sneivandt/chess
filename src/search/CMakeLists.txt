@@ -15,16 +15,12 @@ add_library(ace::search ALIAS search)
 target_link_libraries(search
     PRIVATE
         project_options
-        project_warnings)
+        project_warnings
+        ace::board
+        ace::utils)
 
 target_include_directories(search
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR})
-
-target_link_libraries(search
-    PRIVATE
-        ace::board
-        ace::utils)

@@ -1,5 +1,4 @@
-#ifndef SEARCHINFO_H
-#define SEARCHINFO_H
+#pragma once
 
 #include "utils/utils.h"
 
@@ -130,5 +129,3 @@ inline void SearchInfo::setQuit(const bool q) noexcept
 }
 
 } // namespace search
-
-#endif

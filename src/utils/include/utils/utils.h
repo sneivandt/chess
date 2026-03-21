@@ -1,5 +1,4 @@
-#ifndef UTILS_H
-#define UTILS_H
+#pragma once
 
 #include <cstdint>
 #include <string>
@@ -16,5 +15,3 @@ int64_t getTime();
 bool inputWaiting();
 
 } // namespace utils
-
-#endif

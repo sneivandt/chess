@@ -1,5 +1,4 @@
-#ifndef MOVELIST_H
-#define MOVELIST_H
+#pragma once
 
 #include "board/move.h"
 
@@ -41,5 +40,3 @@ inline void MoveList::addMove(const board::Move move)
 }
 
 } // namespace search
-
-#endif

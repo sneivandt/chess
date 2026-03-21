@@ -13,66 +13,94 @@ const char* board::Board::DEFAULT_FEN = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQ
 
 const char* board::Board::PIECE_CHARS = ".PNBRQKpnbrqk";
 
-const int board::Board::PIECE_COLOR[13] = {BOTH,  WHITE, WHITE, WHITE, WHITE, WHITE, WHITE,
-                                           BLACK, BLACK, BLACK, BLACK, BLACK, BLACK};
+const std::array<int, 13> board::Board::PIECE_COLOR = {
+    toInt(Color::BOTH),  toInt(Color::WHITE), toInt(Color::WHITE), toInt(Color::WHITE), toInt(Color::WHITE),
+    toInt(Color::WHITE), toInt(Color::WHITE), toInt(Color::BLACK), toInt(Color::BLACK), toInt(Color::BLACK),
+    toInt(Color::BLACK), toInt(Color::BLACK), toInt(Color::BLACK)};
 
-const int board::Board::PIECE_NO_TEAM[13] = {EMPTY, WP, WN, WB, WR, WQ, WK, WP, WN, WB, WR, WQ, WK};
+const std::array<int, 13> board::Board::PIECE_NO_TEAM = {
+    toInt(Piece::EMPTY), toInt(Piece::WP), toInt(Piece::WN), toInt(Piece::WB), toInt(Piece::WR),
+    toInt(Piece::WQ),    toInt(Piece::WK), toInt(Piece::WP), toInt(Piece::WN), toInt(Piece::WB),
+    toInt(Piece::WR),    toInt(Piece::WQ), toInt(Piece::WK)};
 
-const int board::Board::PIECE_VAL[13] = {0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0};
+const std::array<int, 13> board::Board::PIECE_VAL = {0, 100, 300, 325, 500, 900, 0, 100, 300, 325, 500, 900, 0};
 
-const int board::Board::RANKS[64] = {
-    RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_1, RANK_2, RANK_2, RANK_2, RANK_2, RANK_2,
-    RANK_2, RANK_2, RANK_2, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_3, RANK_4, RANK_4,
-    RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_4, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5, RANK_5,
-    RANK_5, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_6, RANK_7, RANK_7, RANK_7, RANK_7,
-    RANK_7, RANK_7, RANK_7, RANK_7, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8, RANK_8};
+const std::array<int, 64> board::Board::RANKS = {
+    toInt(Rank::RANK_1), toInt(Rank::RANK_1), toInt(Rank::RANK_1), toInt(Rank::RANK_1), toInt(Rank::RANK_1),
+    toInt(Rank::RANK_1), toInt(Rank::RANK_1), toInt(Rank::RANK_1), toInt(Rank::RANK_2), toInt(Rank::RANK_2),
+    toInt(Rank::RANK_2), toInt(Rank::RANK_2), toInt(Rank::RANK_2), toInt(Rank::RANK_2), toInt(Rank::RANK_2),
+    toInt(Rank::RANK_2), toInt(Rank::RANK_3), toInt(Rank::RANK_3), toInt(Rank::RANK_3), toInt(Rank::RANK_3),
+    toInt(Rank::RANK_3), toInt(Rank::RANK_3), toInt(Rank::RANK_3), toInt(Rank::RANK_3), toInt(Rank::RANK_4),
+    toInt(Rank::RANK_4), toInt(Rank::RANK_4), toInt(Rank::RANK_4), toInt(Rank::RANK_4), toInt(Rank::RANK_4),
+    toInt(Rank::RANK_4), toInt(Rank::RANK_4), toInt(Rank::RANK_5), toInt(Rank::RANK_5), toInt(Rank::RANK_5),
+    toInt(Rank::RANK_5), toInt(Rank::RANK_5), toInt(Rank::RANK_5), toInt(Rank::RANK_5), toInt(Rank::RANK_5),
+    toInt(Rank::RANK_6), toInt(Rank::RANK_6), toInt(Rank::RANK_6), toInt(Rank::RANK_6), toInt(Rank::RANK_6),
+    toInt(Rank::RANK_6), toInt(Rank::RANK_6), toInt(Rank::RANK_6), toInt(Rank::RANK_7), toInt(Rank::RANK_7),
+    toInt(Rank::RANK_7), toInt(Rank::RANK_7), toInt(Rank::RANK_7), toInt(Rank::RANK_7), toInt(Rank::RANK_7),
+    toInt(Rank::RANK_7), toInt(Rank::RANK_8), toInt(Rank::RANK_8), toInt(Rank::RANK_8), toInt(Rank::RANK_8),
+    toInt(Rank::RANK_8), toInt(Rank::RANK_8), toInt(Rank::RANK_8), toInt(Rank::RANK_8)};
 
-const int board::Board::FILES[64] = {
-    FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_A, FILE_B, FILE_C, FILE_D, FILE_E,
-    FILE_F, FILE_G, FILE_H, FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_A, FILE_B,
-    FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G,
-    FILE_H, FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_A, FILE_B, FILE_C, FILE_D,
-    FILE_E, FILE_F, FILE_G, FILE_H, FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H};
+const std::array<int, 64> board::Board::FILES = {
+    toInt(File::FILE_A), toInt(File::FILE_B), toInt(File::FILE_C), toInt(File::FILE_D), toInt(File::FILE_E),
+    toInt(File::FILE_F), toInt(File::FILE_G), toInt(File::FILE_H), toInt(File::FILE_A), toInt(File::FILE_B),
+    toInt(File::FILE_C), toInt(File::FILE_D), toInt(File::FILE_E), toInt(File::FILE_F), toInt(File::FILE_G),
+    toInt(File::FILE_H), toInt(File::FILE_A), toInt(File::FILE_B), toInt(File::FILE_C), toInt(File::FILE_D),
+    toInt(File::FILE_E), toInt(File::FILE_F), toInt(File::FILE_G), toInt(File::FILE_H), toInt(File::FILE_A),
+    toInt(File::FILE_B), toInt(File::FILE_C), toInt(File::FILE_D), toInt(File::FILE_E), toInt(File::FILE_F),
+    toInt(File::FILE_G), toInt(File::FILE_H), toInt(File::FILE_A), toInt(File::FILE_B), toInt(File::FILE_C),
+    toInt(File::FILE_D), toInt(File::FILE_E), toInt(File::FILE_F), toInt(File::FILE_G), toInt(File::FILE_H),
+    toInt(File::FILE_A), toInt(File::FILE_B), toInt(File::FILE_C), toInt(File::FILE_D), toInt(File::FILE_E),
+    toInt(File::FILE_F), toInt(File::FILE_G), toInt(File::FILE_H), toInt(File::FILE_A), toInt(File::FILE_B),
+    toInt(File::FILE_C), toInt(File::FILE_D), toInt(File::FILE_E), toInt(File::FILE_F), toInt(File::FILE_G),
+    toInt(File::FILE_H), toInt(File::FILE_A), toInt(File::FILE_B), toInt(File::FILE_C), toInt(File::FILE_D),
+    toInt(File::FILE_E), toInt(File::FILE_F), toInt(File::FILE_G), toInt(File::FILE_H)};
 
-const int board::Board::SQ64[120] = {99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99,
-                                     99, 0,  1,  2,  3,  4,  5,  6,  7,  99, 99, 8,  9,  10, 11, 12, 13, 14, 15, 99,
-                                     99, 16, 17, 18, 19, 20, 21, 22, 23, 99, 99, 24, 25, 26, 27, 28, 29, 30, 31, 99,
-                                     99, 32, 33, 34, 35, 36, 37, 38, 39, 99, 99, 40, 41, 42, 43, 44, 45, 46, 47, 99,
-                                     99, 48, 49, 50, 51, 52, 53, 54, 55, 99, 99, 56, 57, 58, 59, 60, 61, 62, 63, 99,
-                                     99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
+const std::array<int, 120> board::Board::SQ64 = {
+    99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 0,  1,  2,
+    3,  4,  5,  6,  7,  99, 99, 8,  9,  10, 11, 12, 13, 14, 15, 99, 99, 16, 17, 18, 19, 20, 21, 22,
+    23, 99, 99, 24, 25, 26, 27, 28, 29, 30, 31, 99, 99, 32, 33, 34, 35, 36, 37, 38, 39, 99, 99, 40,
+    41, 42, 43, 44, 45, 46, 47, 99, 99, 48, 49, 50, 51, 52, 53, 54, 55, 99, 99, 56, 57, 58, 59, 60,
+    61, 62, 63, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99};
 
-const int board::Board::SQ120[64] = {21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38,
-                                     41, 42, 43, 44, 45, 46, 47, 48, 51, 52, 53, 54, 55, 56, 57, 58,
-                                     61, 62, 63, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78,
-                                     81, 82, 83, 84, 85, 86, 87, 88, 91, 92, 93, 94, 95, 96, 97, 98};
+const std::array<int, 64> board::Board::SQ120 = {21, 22, 23, 24, 25, 26, 27, 28, 31, 32, 33, 34, 35, 36, 37, 38,
+                                                 41, 42, 43, 44, 45, 46, 47, 48, 51, 52, 53, 54, 55, 56, 57, 58,
+                                                 61, 62, 63, 64, 65, 66, 67, 68, 71, 72, 73, 74, 75, 76, 77, 78,
+                                                 81, 82, 83, 84, 85, 86, 87, 88, 91, 92, 93, 94, 95, 96, 97, 98};
 
-const int board::Board::CASTLE_PERM_MASK[120] = {
+const std::array<int, 120> board::Board::CASTLE_PERM_MASK = {
     15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 13, 15, 15,
     15, 12, 15, 15, 14, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
     15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
     15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 7,  15, 15, 15, 3,
     15, 15, 11, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15};
 
-const int board::Board::MOVE_DIR[13][8] = {
-    {0, 0, 0, 0, 0, 0, 0, 0},         {0, 0, 0, 0, 0, 0, 0, 0},     {-8, -19, -21, -12, 8, 19, 21, 12},
-    {-9, -11, 11, 9, 0, 0, 0, 0},     {-1, -10, 1, 10, 0, 0, 0, 0}, {-9, -11, 11, 9, -1, -10, 1, 10},
-    {-9, -11, 11, 9, -1, -10, 1, 10}, {0, 0, 0, 0, 0, 0, 0, 0},     {-8, -19, -21, -12, 8, 19, 21, 12},
-    {-9, -11, 11, 9, 0, 0, 0, 0},     {-1, -10, 1, 10, 0, 0, 0, 0}, {-9, -11, 11, 9, -1, -10, 1, 10},
-    {-9, -11, 11, 9, -1, -10, 1, 10}};
+const std::array<std::array<int, 8>, 13> board::Board::MOVE_DIR = {{{0, 0, 0, 0, 0, 0, 0, 0},
+                                                                    {0, 0, 0, 0, 0, 0, 0, 0},
+                                                                    {-8, -19, -21, -12, 8, 19, 21, 12},
+                                                                    {-9, -11, 11, 9, 0, 0, 0, 0},
+                                                                    {-1, -10, 1, 10, 0, 0, 0, 0},
+                                                                    {-9, -11, 11, 9, -1, -10, 1, 10},
+                                                                    {-9, -11, 11, 9, -1, -10, 1, 10},
+                                                                    {0, 0, 0, 0, 0, 0, 0, 0},
+                                                                    {-8, -19, -21, -12, 8, 19, 21, 12},
+                                                                    {-9, -11, 11, 9, 0, 0, 0, 0},
+                                                                    {-1, -10, 1, 10, 0, 0, 0, 0},
+                                                                    {-9, -11, 11, 9, -1, -10, 1, 10},
+                                                                    {-9, -11, 11, 9, -1, -10, 1, 10}}};
 
-uint64_t board::Board::PIECE_KEYS[13][120];
+std::array<std::array<uint64_t, 120>, 13> board::Board::PIECE_KEYS;
 
-uint64_t board::Board::CASTLE_KEYS[16];
+std::array<uint64_t, 16> board::Board::CASTLE_KEYS;
 
 uint64_t board::Board::SIDE_KEY;
 
-uint64_t board::Board::FILE_MASK[8];
+std::array<uint64_t, 8> board::Board::FILE_MASK;
 
-uint64_t board::Board::RANK_MASK[8];
+std::array<uint64_t, 8> board::Board::RANK_MASK;
 
-uint64_t board::Board::PASSED_PAWN_MASK[2][64];
+std::array<std::array<uint64_t, 64>, 2> board::Board::PASSED_PAWN_MASK;
 
-uint64_t board::Board::ISOLATED_PAWN_MASK[64];
+std::array<uint64_t, 64> board::Board::ISOLATED_PAWN_MASK;
 
 void board::Board::INIT()
 {
@@ -91,55 +119,55 @@ void board::Board::INIT()
     int square;
     int tSquare;
     for (int i = 0; i < 8; i++) {
-        FILE_MASK[i] = 0ULL;
-        RANK_MASK[i] = 0ULL;
+        FILE_MASK[idx(i)] = 0ULL;
+        RANK_MASK[idx(i)] = 0ULL;
     }
     for (int i = 0; i < 64; i++) {
-        PASSED_PAWN_MASK[0][i] = 0ULL;
-        PASSED_PAWN_MASK[1][i] = 0ULL;
-        ISOLATED_PAWN_MASK[i] = 0ULL;
+        PASSED_PAWN_MASK[0][idx(i)] = 0ULL;
+        PASSED_PAWN_MASK[1][idx(i)] = 0ULL;
+        ISOLATED_PAWN_MASK[idx(i)] = 0ULL;
     }
-    for (int rank = RANK_1; rank <= RANK_8; rank++) {
-        for (int file = FILE_A; file <= FILE_H; file++) {
+    for (int rank = toInt(Rank::RANK_1); rank <= toInt(Rank::RANK_8); rank++) {
+        for (int file = toInt(File::FILE_A); file <= toInt(File::FILE_H); file++) {
             square = rank * 8 + file;
-            FILE_MASK[file] |= (1ULL << square);
-            RANK_MASK[rank] |= (1ULL << square);
+            FILE_MASK[idx(file)] |= (1ULL << square);
+            RANK_MASK[idx(rank)] |= (1ULL << square);
         }
     }
     for (square = 0; square < 64; square++) {
         tSquare = square + 8;
         while (tSquare < 64) {
-            PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
+            PASSED_PAWN_MASK[idx(toInt(Color::WHITE))][idx(square)] |= (1ULL << tSquare);
             tSquare += 8;
         }
         tSquare = square - 8;
         while (tSquare >= 0) {
-            PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
+            PASSED_PAWN_MASK[idx(toInt(Color::BLACK))][idx(square)] |= (1ULL << tSquare);
             tSquare -= 8;
         }
-        if (Board::FILES[square] > FILE_A) {
-            ISOLATED_PAWN_MASK[square] |= FILE_MASK[Board::FILES[square] - 1];
+        if (Board::FILES[idx(square)] > toInt(File::FILE_A)) {
+            ISOLATED_PAWN_MASK[idx(square)] |= FILE_MASK[idx(Board::FILES[idx(square)] - 1)];
             tSquare = square + 7;
             while (tSquare < 64) {
-                PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
+                PASSED_PAWN_MASK[idx(toInt(Color::WHITE))][idx(square)] |= (1ULL << tSquare);
                 tSquare += 8;
             }
             tSquare = square - 9;
             while (tSquare >= 0) {
-                PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
+                PASSED_PAWN_MASK[idx(toInt(Color::BLACK))][idx(square)] |= (1ULL << tSquare);
                 tSquare -= 8;
             }
         }
-        if (Board::FILES[square] < FILE_H) {
-            ISOLATED_PAWN_MASK[square] |= FILE_MASK[Board::FILES[square] + 1];
+        if (Board::FILES[idx(square)] < toInt(File::FILE_H)) {
+            ISOLATED_PAWN_MASK[idx(square)] |= FILE_MASK[idx(Board::FILES[idx(square)] + 1)];
             tSquare = square + 9;
             while (tSquare < 64) {
-                PASSED_PAWN_MASK[WHITE][square] |= (1ULL << tSquare);
+                PASSED_PAWN_MASK[idx(toInt(Color::WHITE))][idx(square)] |= (1ULL << tSquare);
                 tSquare += 8;
             }
             tSquare = square - 7;
             while (tSquare >= 0) {
-                PASSED_PAWN_MASK[BLACK][square] |= (1ULL << tSquare);
+                PASSED_PAWN_MASK[idx(toInt(Color::BLACK))][idx(square)] |= (1ULL << tSquare);
                 tSquare -= 8;
             }
         }
@@ -148,82 +176,78 @@ void board::Board::INIT()
 
 void board::Board::reset()
 {
-    std::fill(std::begin(board), std::end(board), NO_SQ);
+    board.fill(OFFBOARD);
     for (int i : SQ120) {
-        board[i] = EMPTY;
+        board[idx(i)] = toInt(Piece::EMPTY);
     }
-    std::fill(std::begin(pawns), std::end(pawns), 0ULL);
+    pawns.fill(0ULL);
     for (int i = 0; i < 13; i++) {
-        pNum[i] = 0;
-        for (int j = 0; j < 10; j++) {
-            pList[i][j] = 0;
-        }
+        pNum[idx(i)] = 0;
+        pList[idx(i)].fill(0);
     }
-    material[WHITE] = 0;
-    material[BLACK] = 0;
-    side = BOTH;
+    material[toInt(Color::WHITE)] = 0;
+    material[toInt(Color::BLACK)] = 0;
+    side = toInt(Color::BOTH);
     ply = 0;
     fiftyMove = 0;
-    enPas = NO_SQ;
+    enPas = toInt(Square::NO_SQ);
     castlePerm = 0;
     hashKey = 0ULL;
     history.clear();
-    clearSearchKillers();
-    clearSearchHistory();
 }
 
 bool board::Board::parseFen(const std::string& fen)
 {
     reset();
-    int piece = EMPTY;
+    int piece = toInt(Piece::EMPTY);
     int sq64 = 0;
     int sq120 = 0;
-    int rank = RANK_8;
-    int file = FILE_A;
+    int rank = toInt(Rank::RANK_8);
+    int file = toInt(File::FILE_A);
     size_t index = 0;
 
     // Parse piece placement
-    while (rank >= RANK_1 && index < fen.length()) {
+    while (rank >= toInt(Rank::RANK_1) && index < fen.length()) {
         int count = 1;
         char c = fen[index];
-        piece = EMPTY;
+        piece = toInt(Piece::EMPTY);
 
         switch (c) {
             case 'p':
-                piece = BP;
+                piece = toInt(Piece::BP);
                 break;
             case 'r':
-                piece = BR;
+                piece = toInt(Piece::BR);
                 break;
             case 'n':
-                piece = BN;
+                piece = toInt(Piece::BN);
                 break;
             case 'b':
-                piece = BB;
+                piece = toInt(Piece::BB);
                 break;
             case 'q':
-                piece = BQ;
+                piece = toInt(Piece::BQ);
                 break;
             case 'k':
-                piece = BK;
+                piece = toInt(Piece::BK);
                 break;
             case 'P':
-                piece = WP;
+                piece = toInt(Piece::WP);
                 break;
             case 'R':
-                piece = WR;
+                piece = toInt(Piece::WR);
                 break;
             case 'N':
-                piece = WN;
+                piece = toInt(Piece::WN);
                 break;
             case 'B':
-                piece = WB;
+                piece = toInt(Piece::WB);
                 break;
             case 'Q':
-                piece = WQ;
+                piece = toInt(Piece::WQ);
                 break;
             case 'K':
-                piece = WK;
+                piece = toInt(Piece::WK);
                 break;
             case '1':
             case '2':
@@ -233,13 +257,13 @@ bool board::Board::parseFen(const std::string& fen)
             case '6':
             case '7':
             case '8':
-                piece = EMPTY;
+                piece = toInt(Piece::EMPTY);
                 count = c - '0';
                 break;
             case '/':
             case ' ':
                 rank--;
-                file = FILE_A;
+                file = toInt(File::FILE_A);
                 index++;
                 continue;
             default:
@@ -247,14 +271,14 @@ bool board::Board::parseFen(const std::string& fen)
         }
 
         for (int i = 0; i < count; i++) {
-            if (file > FILE_H) {
+            if (file > toInt(File::FILE_H)) {
                 return false; // Too many files in this rank
             }
             sq64 = rank * 8 + file;
             if (sq64 >= 0 && sq64 < 64) {
-                sq120 = SQ120[sq64];
-                if (piece != EMPTY) {
-                    board[sq120] = piece;
+                sq120 = SQ120[idx(sq64)];
+                if (piece != toInt(Piece::EMPTY)) {
+                    board[idx(sq120)] = piece;
                 }
             }
             file++;
@@ -277,7 +301,7 @@ bool board::Board::parseFen(const std::string& fen)
     if (index >= fen.length())
         return false;
 
-    side = fen[index] == 'w' ? WHITE : BLACK;
+    side = fen[index] == 'w' ? toInt(Color::WHITE) : toInt(Color::BLACK);
     index += 2;
 
     for (int i = 0; i < 4; i++) {
@@ -286,16 +310,16 @@ bool board::Board::parseFen(const std::string& fen)
         }
         switch (fen[index]) {
             case 'K':
-                castlePerm |= WKCA;
+                castlePerm |= CastlePerm::WKCA;
                 break;
             case 'Q':
-                castlePerm |= WQCA;
+                castlePerm |= CastlePerm::WQCA;
                 break;
             case 'k':
-                castlePerm |= BKCA;
+                castlePerm |= CastlePerm::BKCA;
                 break;
             case 'q':
-                castlePerm |= BQCA;
+                castlePerm |= CastlePerm::BQCA;
                 break;
         }
         index++;
@@ -307,7 +331,8 @@ bool board::Board::parseFen(const std::string& fen)
             file = fen[index] - 'a';
             rank = fen[index + 1] - '1';
             // Validate en passant square is within valid range
-            if (file < FILE_A || file > FILE_H || rank < RANK_1 || rank > RANK_8) {
+            if (file < toInt(File::FILE_A) || file > toInt(File::FILE_H) || rank < toInt(Rank::RANK_1) ||
+                rank > toInt(Rank::RANK_8)) {
                 return false; // Invalid en passant square
             }
             enPas = FR2SQ(file, rank);
@@ -348,17 +373,17 @@ void board::Board::print() const
 {
     int square;
     int piece;
-    if (side == WHITE) {
+    if (side == toInt(Color::WHITE)) {
         std::cout << "     white" << std::endl;
     }
     else {
         std::cout << "     black" << std::endl;
     }
-    for (int rank = RANK_8; rank >= RANK_1; rank--) {
-        for (int file = FILE_A; file <= FILE_H; file++) {
+    for (int rank = toInt(Rank::RANK_8); rank >= toInt(Rank::RANK_1); rank--) {
+        for (int file = toInt(File::FILE_A); file <= toInt(File::FILE_H); file++) {
             square = FR2SQ(file, rank);
-            piece = board[square];
-            std::cout << PIECE_CHARS[piece] << " ";
+            piece = board[idx(square)];
+            std::cout << PIECE_CHARS[idx(piece)] << " ";
         }
         std::cout << std::endl;
     }
@@ -366,72 +391,78 @@ void board::Board::print() const
 
 bool board::Board::sqAttacked(const int square, const int side_in) const
 {
+    // Guard against off-board squares (e.g. when no king exists)
+    if (square < 21 || square > 98 || board[idx(square)] == OFFBOARD) {
+        return false;
+    }
+
     int targetSquare;
     int piece;
 
     // Pawn attacks
-    if (side_in == WHITE) {
-        if (board[square - 11] == WP || board[square - 9] == WP)
+    if (side_in == toInt(Color::WHITE)) {
+        if (board[idx(square - 11)] == toInt(Piece::WP) || board[idx(square - 9)] == toInt(Piece::WP))
             return true;
     }
     else {
-        if (board[square + 11] == BP || board[square + 9] == BP)
+        if (board[idx(square + 11)] == toInt(Piece::BP) || board[idx(square + 9)] == toInt(Piece::BP))
             return true;
     }
 
     // Knight attacks
     for (int i = 0; i < 8; i++) {
-        piece = board[square + MOVE_DIR[WN][i]];
-        if (side_in == WHITE && piece == WN) {
+        piece = board[idx(square + MOVE_DIR[idx(toInt(Piece::WN))][idx(i)])];
+        if (side_in == toInt(Color::WHITE) && piece == toInt(Piece::WN)) {
             return true;
         }
-        if (side_in == BLACK && piece == BN) {
+        if (side_in == toInt(Color::BLACK) && piece == toInt(Piece::BN)) {
             return true;
         }
     }
 
     // Rook / Queen attacks
     for (int i = 0; i < 4; i++) {
-        targetSquare = square + MOVE_DIR[WR][i];
-        piece = board[targetSquare];
-        while (piece != NO_SQ) {
-            if (piece != EMPTY) {
-                if (side_in == WHITE && (piece == WR || piece == WQ)) {
+        targetSquare = square + MOVE_DIR[idx(toInt(Piece::WR))][idx(i)];
+        piece = board[idx(targetSquare)];
+        while (piece != OFFBOARD) {
+            if (piece != toInt(Piece::EMPTY)) {
+                if (side_in == toInt(Color::WHITE) && (piece == toInt(Piece::WR) || piece == toInt(Piece::WQ))) {
                     return true;
                 }
-                if (side_in == BLACK && (piece == BR || piece == BQ)) {
+                if (side_in == toInt(Color::BLACK) && (piece == toInt(Piece::BR) || piece == toInt(Piece::BQ))) {
                     return true;
                 }
                 break;
             }
-            targetSquare += MOVE_DIR[WR][i];
-            piece = board[targetSquare];
+            targetSquare += MOVE_DIR[idx(toInt(Piece::WR))][idx(i)];
+            piece = board[idx(targetSquare)];
         }
     }
 
     // Bishop / Queen attacks
     for (int i = 0; i < 4; i++) {
-        targetSquare = square + MOVE_DIR[WB][i];
-        piece = board[targetSquare];
-        while (piece != NO_SQ) {
-            if (piece != EMPTY) {
-                if (side_in == WHITE && (piece == WB || piece == WQ)) {
+        targetSquare = square + MOVE_DIR[idx(toInt(Piece::WB))][idx(i)];
+        piece = board[idx(targetSquare)];
+        while (piece != OFFBOARD) {
+            if (piece != toInt(Piece::EMPTY)) {
+                if (side_in == toInt(Color::WHITE) && (piece == toInt(Piece::WB) || piece == toInt(Piece::WQ))) {
                     return true;
                 }
-                if (side_in == BLACK && (piece == BB || piece == BQ)) {
+                if (side_in == toInt(Color::BLACK) && (piece == toInt(Piece::BB) || piece == toInt(Piece::BQ))) {
                     return true;
                 }
                 break;
             }
-            targetSquare += MOVE_DIR[WB][i];
-            piece = board[targetSquare];
+            targetSquare += MOVE_DIR[idx(toInt(Piece::WB))][idx(i)];
+            piece = board[idx(targetSquare)];
         }
     }
 
     // King attacks
     for (int i = 0; i < 8; i++) {
-        piece = board[square + MOVE_DIR[WK][i]];
-        if ((side_in == WHITE && piece == WK) || (side_in == BLACK && piece == BK)) {
+        piece = board[idx(square + MOVE_DIR[idx(toInt(Piece::WK))][idx(i)])];
+        if ((side_in == toInt(Color::WHITE) && piece == toInt(Piece::WK)) ||
+            (side_in == toInt(Color::BLACK) && piece == toInt(Piece::BK))) {
             return true;
         }
     }
@@ -442,22 +473,22 @@ bool board::Board::updateListMaterial()
 {
     int piece;
     for (int i = 0; i < 120; i++) {
-        piece = board[i];
-        if (piece != NO_SQ && piece != EMPTY) {
+        piece = board[idx(i)];
+        if (piece != OFFBOARD && piece != toInt(Piece::EMPTY)) {
             // Check bounds before adding to piece list
-            if (pNum[piece] >= 10) {
+            if (pNum[idx(piece)] >= 10) {
                 return false; // Return false to indicate overflow
             }
-            pList[piece][pNum[piece]] = i;
-            pNum[piece]++;
-            material[PIECE_COLOR[piece]] += PIECE_VAL[piece];
-            if (piece == WP) {
-                board::bitboard::setBit(pawns[WHITE], SQ64[i]);
-                board::bitboard::setBit(pawns[BOTH], SQ64[i]);
+            pList[idx(piece)][idx(pNum[idx(piece)])] = i;
+            pNum[idx(piece)]++;
+            material[idx(PIECE_COLOR[idx(piece)])] += PIECE_VAL[idx(piece)];
+            if (piece == toInt(Piece::WP)) {
+                board::bitboard::setBit(pawns[idx(toInt(Color::WHITE))], SQ64[idx(i)]);
+                board::bitboard::setBit(pawns[idx(toInt(Color::BOTH))], SQ64[idx(i)]);
             }
-            else if (piece == BP) {
-                board::bitboard::setBit(pawns[BLACK], SQ64[i]);
-                board::bitboard::setBit(pawns[BOTH], SQ64[i]);
+            else if (piece == toInt(Piece::BP)) {
+                board::bitboard::setBit(pawns[idx(toInt(Color::BLACK))], SQ64[idx(i)]);
+                board::bitboard::setBit(pawns[idx(toInt(Color::BOTH))], SQ64[idx(i)]);
             }
         }
     }
@@ -469,15 +500,15 @@ void board::Board::generateHash()
     uint64_t key = 0;
     int piece;
     for (int square = 0; square < 120; square++) {
-        piece = board[square];
-        if (piece != NO_SQ && piece != EMPTY) {
-            key ^= PIECE_KEYS[piece][square];
+        piece = board[idx(square)];
+        if (piece != OFFBOARD && piece != toInt(Piece::EMPTY)) {
+            key ^= PIECE_KEYS[idx(piece)][idx(square)];
         }
     }
-    if (enPas != NO_SQ) {
-        key ^= PIECE_KEYS[EMPTY][enPas];
+    if (enPas != toInt(Square::NO_SQ)) {
+        key ^= PIECE_KEYS[idx(toInt(Piece::EMPTY))][idx(enPas)];
     }
-    if (side == WHITE) {
+    if (side == toInt(Color::WHITE)) {
         key ^= SIDE_KEY;
     }
     hashKey = key;

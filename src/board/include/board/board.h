@@ -1,31 +1,64 @@
-#ifndef BOARD_H
-#define BOARD_H
+#pragma once
 
 #include "board/undo.h"
 
+#include <array>
 #include <cstdint>
 #include <string>
+#include <type_traits>
 #include <vector>
 
 namespace board {
 
+// Generic conversion to underlying integer type (equivalent to C++23 std::to_underlying)
+template<typename E>
+constexpr auto toInt(E e) noexcept -> std::underlying_type_t<E>
+{
+    return static_cast<std::underlying_type_t<E>>(e);
+}
+
+// Safe array index from int (suppresses sign-conversion warnings for non-negative indices)
+constexpr std::size_t idx(int i) noexcept
+{
+    return static_cast<std::size_t>(i);
+}
+
 // Piece colors
-enum Color { WHITE, BLACK, BOTH };
+enum class Color : int { WHITE = 0, BLACK = 1, BOTH = 2 };
 
 // Pieces
-enum Piece { EMPTY, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK };
+enum class Piece : int { EMPTY = 0, WP, WN, WB, WR, WQ, WK, BP, BN, BB, BR, BQ, BK };
 
 // Ranks
-enum Rank { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
+enum class Rank : int { RANK_1 = 0, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 
 // Files
-enum File { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
+enum class File : int { FILE_A = 0, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
 
-// Castling permissions
-enum CastlePerm { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
+// Castling permissions (bitmask flags)
+enum class CastlePerm : int { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 
-// Squares
-enum Square {
+// CastlePerm bitwise operators
+constexpr int operator|(CastlePerm a, CastlePerm b) noexcept
+{
+    return toInt(a) | toInt(b);
+}
+constexpr int operator|(int a, CastlePerm b) noexcept
+{
+    return a | toInt(b);
+}
+constexpr int operator&(int a, CastlePerm b) noexcept
+{
+    return a & toInt(b);
+}
+constexpr int& operator|=(int& a, CastlePerm b) noexcept
+{
+    a |= toInt(b);
+    return a;
+}
+
+// Squares (120-square indexing)
+enum class Square : int {
     A1 = 21,
     B1,
     C1,
@@ -90,55 +123,28 @@ enum Square {
     F8,
     G8,
     H8,
-    NO_SQ
+    NO_SQ = 99
 };
+
+// Off-board sentinel value for the 120-square board array
+constexpr int OFFBOARD = toInt(Square::NO_SQ);
 
 // Board representation
 class Board
 {
   private:
-    // Board array
-    int board[120];
-
-    // Side to move
+    std::array<int, 120> board;
     int side;
-
-    // Search ply
     int ply;
-
-    // Fifty move rule count
     int fiftyMove;
-
-    // En passant square
     int enPas;
-
-    // Castling permutation
     int castlePerm;
-
-    // Position key
     uint64_t hashKey;
-
-    // Pawn bitboard
-    uint64_t pawns[3];
-
-    // Piece list
-    int pList[13][10];
-
-    // Piece list counter
-    int pNum[13];
-
-    // Material count
-    int material[2];
-
-    // Game history
+    std::array<uint64_t, 3> pawns;
+    std::array<std::array<int, 10>, 13> pList;
+    std::array<int, 13> pNum;
+    std::array<int, 2> material;
     std::vector<Undo> history;
-
-    // Moves that beat alpha
-    int searchHistory[13][120];
-
-    // Non capture beta cutoffs
-    // Increased from 64 to 128 to handle deeper searches
-    int searchKillers[2][128];
 
   public:
     Board()
@@ -157,42 +163,42 @@ class Board
     static const char* PIECE_CHARS;
 
     // Piece colors
-    static const int PIECE_COLOR[13];
+    static const std::array<int, 13> PIECE_COLOR;
 
     // Piece without team
-    static const int PIECE_NO_TEAM[13];
+    static const std::array<int, 13> PIECE_NO_TEAM;
 
     // Piece values
-    static const int PIECE_VAL[13];
+    static const std::array<int, 13> PIECE_VAL;
 
     // Ranks
-    static const int RANKS[64];
+    static const std::array<int, 64> RANKS;
 
     // Files
-    static const int FILES[64];
+    static const std::array<int, 64> FILES;
 
     // Convert from a 120 to 64 board index
-    static const int SQ64[120];
+    static const std::array<int, 120> SQ64;
 
     // Convert from a 64 to 120 board index
-    static const int SQ120[64];
+    static const std::array<int, 64> SQ120;
 
     // Castle perm mask
-    static const int CASTLE_PERM_MASK[120];
+    static const std::array<int, 120> CASTLE_PERM_MASK;
 
     // Move directions
-    static const int MOVE_DIR[13][8];
+    static const std::array<std::array<int, 8>, 13> MOVE_DIR;
 
     // Zobrist hash keys
-    static uint64_t PIECE_KEYS[13][120];
-    static uint64_t CASTLE_KEYS[16];
+    static std::array<std::array<uint64_t, 120>, 13> PIECE_KEYS;
+    static std::array<uint64_t, 16> CASTLE_KEYS;
     static uint64_t SIDE_KEY;
 
     // Bitmasks
-    static uint64_t RANK_MASK[8];
-    static uint64_t FILE_MASK[8];
-    static uint64_t PASSED_PAWN_MASK[2][64];
-    static uint64_t ISOLATED_PAWN_MASK[64];
+    static std::array<uint64_t, 8> RANK_MASK;
+    static std::array<uint64_t, 8> FILE_MASK;
+    static std::array<std::array<uint64_t, 64>, 2> PASSED_PAWN_MASK;
+    static std::array<uint64_t, 64> ISOLATED_PAWN_MASK;
 
     // Init
     static void INIT();
@@ -220,13 +226,13 @@ class Board
     void setSquare(const int, const int);
 
     // Bitboards
-    uint64_t* getPawns();
+    std::array<uint64_t, 3>& getPawns();
 
     // Piece lists
     void incrementPieceNum(const int);
     void decrementPieceNum(const int);
     int getPieceNum(const int) const;
-    int* getPieceList(const int);
+    std::array<int, 10>& getPieceList(const int);
 
     // Side to move
     void updateSide();
@@ -270,14 +276,6 @@ class Board
     void incrementPly();
     void decrementPly();
     void resetPly();
-
-    // Search history
-    int getSearchKiller(const int) const;
-    void addSearchKiller(const int);
-    void clearSearchKillers();
-    int getSearchHistory(const int, const int) const;
-    void incrementSearchHistory(const int, const int, const int);
-    void clearSearchHistory();
 };
 
 inline int Board::FR2SQ(const int file, const int rank)
@@ -287,37 +285,37 @@ inline int Board::FR2SQ(const int file, const int rank)
 
 inline int Board::getSquare(const int square) const
 {
-    return board[square];
+    return board[idx(square)];
 }
 
 inline void Board::setSquare(const int square, const int value)
 {
-    board[square] = value;
+    board[idx(square)] = value;
 }
 
-inline uint64_t* Board::getPawns()
+inline std::array<uint64_t, 3>& Board::getPawns()
 {
     return pawns;
 }
 
 inline void Board::incrementPieceNum(const int piece)
 {
-    pNum[piece]++;
+    pNum[idx(piece)]++;
 }
 
 inline void Board::decrementPieceNum(const int piece)
 {
-    pNum[piece]--;
+    pNum[idx(piece)]--;
 }
 
 inline int Board::getPieceNum(const int piece) const
 {
-    return pNum[piece];
+    return pNum[idx(piece)];
 }
 
-inline int* Board::getPieceList(const int piece)
+inline std::array<int, 10>& Board::getPieceList(const int piece)
 {
-    return pList[piece];
+    return pList[idx(piece)];
 }
 
 inline void Board::updateSide()
@@ -342,7 +340,7 @@ inline void Board::setEnPas(const int s)
 
 inline void Board::clearEnPas()
 {
-    enPas = NO_SQ;
+    enPas = toInt(Square::NO_SQ);
 }
 
 inline int Board::getCastlePerm() const
@@ -357,7 +355,7 @@ inline void Board::setCastlePerm(const int p)
 
 inline void Board::updateCastlePerm(const int to, const int from)
 {
-    castlePerm &= CASTLE_PERM_MASK[to] & CASTLE_PERM_MASK[from];
+    castlePerm &= CASTLE_PERM_MASK[idx(to)] & CASTLE_PERM_MASK[idx(from)];
 }
 
 inline int Board::getFiftyMove() const
@@ -392,27 +390,27 @@ inline void Board::hashSide()
 
 inline void Board::hashPiece(const int piece, const int square)
 {
-    hashKey ^= PIECE_KEYS[piece][square];
+    hashKey ^= PIECE_KEYS[idx(piece)][idx(square)];
 }
 
 inline void Board::hashCastle()
 {
-    hashKey ^= CASTLE_KEYS[castlePerm];
+    hashKey ^= CASTLE_KEYS[idx(castlePerm)];
 }
 
 inline void Board::hashEnPas()
 {
-    hashKey ^= PIECE_KEYS[EMPTY][enPas];
+    hashKey ^= PIECE_KEYS[idx(toInt(Piece::EMPTY))][idx(enPas)];
 }
 
 inline int Board::getMaterial(const int s) const
 {
-    return material[s];
+    return material[idx(s)];
 }
 
 inline void Board::addMaterial(const int s, const int value)
 {
-    material[s] += value;
+    material[idx(s)] += value;
 }
 
 inline const std::vector<Undo>& Board::getHistory() const
@@ -452,54 +450,4 @@ inline void Board::resetPly()
     ply = 0;
 }
 
-inline int Board::getSearchKiller(const int num) const
-{
-    if (ply >= 0 && ply < 128 && num >= 0 && num < 2) {
-        return searchKillers[num][ply];
-    }
-    return 0;
-}
-
-inline void Board::addSearchKiller(const int move)
-{
-    if (ply >= 0 && ply < 128) {
-        searchKillers[1][ply] = searchKillers[0][ply];
-        searchKillers[0][ply] = move;
-    }
-}
-
-inline void Board::clearSearchKillers()
-{
-    for (int i = 0; i < 128; i++) {
-        searchKillers[0][i] = 0;
-        searchKillers[1][i] = 0;
-    }
-}
-
-inline int Board::getSearchHistory(const int piece, const int square) const
-{
-    return searchHistory[piece][square];
-}
-
-inline void Board::incrementSearchHistory(const int to, const int from, const int depth)
-{
-    if (from >= 0 && from < 120 && to >= 0 && to < 120) {
-        int piece = getSquare(from);
-        if (piece >= 0 && piece < 13) {
-            searchHistory[piece][to] += depth;
-        }
-    }
-}
-
-inline void Board::clearSearchHistory()
-{
-    for (int i = 0; i < 13; i++) {
-        for (int j = 0; j < 120; j++) {
-            searchHistory[i][j] = 0;
-        }
-    }
-}
-
 } // namespace board
-
-#endif

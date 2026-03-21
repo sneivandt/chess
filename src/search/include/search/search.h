@@ -1,5 +1,4 @@
-#ifndef SEARCH_H
-#define SEARCH_H
+#pragma once
 
 #include <limits>
 
@@ -11,6 +10,7 @@ namespace search {
 
 class SearchInfo;
 class PVTable;
+struct SearchState;
 
 // Positive infinity
 const int POS_INFINITY = std::numeric_limits<int>::max() - 1;
@@ -25,14 +25,12 @@ void checkup(SearchInfo&);
 bool isRepetition(board::Board&);
 
 // Reset search data
-void reset(board::Board&, SearchInfo&);
+void reset(board::Board&, SearchInfo&, SearchState&);
 
 // Negamax
-int negamax(int, int, int, board::Board&, SearchInfo&, PVTable&);
+int negamax(int, int, int, board::Board&, SearchInfo&, PVTable&, SearchState&);
 
 // Iterative deepening
 void go(board::Board&, SearchInfo&);
 
 } // namespace search
-
-#endif

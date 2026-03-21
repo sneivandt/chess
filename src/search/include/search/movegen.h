@@ -1,38 +1,46 @@
-#ifndef MOVEGEN_H
-#define MOVEGEN_H
+#pragma once
 
 #include "board/board.h"
 #include "search/movelist.h"
 
-namespace search { namespace movegen {
+#include <array>
+
+namespace search {
+
+struct SearchState;
+
+namespace movegen {
 
 // Sliding pieces
-const int SLIDERS[6] = {board::WQ, board::WR, board::WB, board::BQ, board::BR, board::BB};
+const std::array<int, 6> SLIDERS = {toInt(board::Piece::WQ), toInt(board::Piece::WR), toInt(board::Piece::WB),
+                                    toInt(board::Piece::BQ), toInt(board::Piece::BR), toInt(board::Piece::BB)};
 
 // Non-sliding pieces
-const int NON_SLIDERS[4] = {board::WN, board::WK, board::BN, board::BK};
+const std::array<int, 4> NON_SLIDERS = {toInt(board::Piece::WN), toInt(board::Piece::WK), toInt(board::Piece::BN),
+                                        toInt(board::Piece::BK)};
 
 // Pawn ranks for promotion
-const int PAWN_RANK[2] = {board::RANK_7, board::RANK_2};
+const std::array<int, 2> PAWN_RANK = {toInt(board::Rank::RANK_7), toInt(board::Rank::RANK_2)};
 
 // Pawn starting ranks for double moves
-const int PAWN_START_RANK[2] = {board::RANK_2, board::RANK_7};
+const std::array<int, 2> PAWN_START_RANK = {toInt(board::Rank::RANK_2), toInt(board::Rank::RANK_7)};
 
 // Promotion pieces
-const int PROMOTION_PIECES[2][4] = {{board::WQ, board::WR, board::WB, board::WN},
-                                    {board::BQ, board::BR, board::BB, board::BN}};
+const std::array<std::array<int, 4>, 2> PROMOTION_PIECES = {
+    {{toInt(board::Piece::WQ), toInt(board::Piece::WR), toInt(board::Piece::WB), toInt(board::Piece::WN)},
+     {toInt(board::Piece::BQ), toInt(board::Piece::BR), toInt(board::Piece::BB), toInt(board::Piece::BN)}}};
 
 // MVVLVA victum scores
-const int VICTUM_SCORES[13] = {0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
+const std::array<int, 13> VICTUM_SCORES = {0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
 
 // Most valuable victum least valuable attacker scores
-extern int MVVLVA_SCORES[13][13];
+extern std::array<std::array<int, 13>, 13> MVVLVA_SCORES;
 
 // Init
 void INIT();
 
 // Add a quiet move
-inline void addQuietMove(const int, MoveList&, board::Board&);
+inline void addQuietMove(const int, MoveList&, board::Board&, const SearchState*);
 
 // Add a capture move
 inline void addCaptureMove(const int, MoveList&, board::Board&);
@@ -41,23 +49,22 @@ inline void addCaptureMove(const int, MoveList&, board::Board&);
 inline void addEnPasMove(const int, MoveList&);
 
 // Add pawn move
-inline void addPawnMove(const int, const int, const int, const int, MoveList&, board::Board&);
+inline void addPawnMove(const int, const int, const int, const int, MoveList&, board::Board&, const SearchState*);
 
 // Generate pawn moves
-void generatePawnMoves(board::Board&, MoveList&, const bool);
+void generatePawnMoves(board::Board&, MoveList&, const bool, const SearchState*);
 
 // Generate sliding piece moves
-void generateSliderMoves(board::Board&, MoveList&, const bool);
+void generateSliderMoves(board::Board&, MoveList&, const bool, const SearchState*);
 
 // Generate non-sliding piece moves
-void generateNonSliderMoves(board::Board&, MoveList&, const bool);
+void generateNonSliderMoves(board::Board&, MoveList&, const bool, const SearchState*);
 
 // Generate castling moves
-void generateCastlingMoves(board::Board&, MoveList&);
+void generateCastlingMoves(board::Board&, MoveList&, const SearchState*);
 
 // Generate all moves
-MoveList generateAll(board::Board&, const bool);
+MoveList generateAll(board::Board&, const bool, const SearchState* = nullptr);
 
-}} // namespace search::movegen
-
-#endif
+} // namespace movegen
+} // namespace search

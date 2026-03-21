@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.25)
 
 # Project
 
@@ -8,6 +8,7 @@ project(chess VERSION 1.0.0)
 
 option(CLANG_TIDY "Build with Clang-Tidy" OFF)
 option(INCLUDE_WHAT_YOU_USE "Build with Include What You Use" OFF)
+option(ACE_BUILD_TESTS "Build tests" ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
@@ -37,19 +38,23 @@ add_subdirectory(src)
 
 # Test
 
-enable_testing()
+if(ACE_BUILD_TESTS)
+    enable_testing()
 
-include(FetchContent)
-FetchContent_Declare(
-    googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        v1.17.0
-)
-set(INSTALL_GTEST OFF CACHE INTERNAL "Do not install gtest")
-set(BUILD_GMOCK OFF CACHE INTERNAL "Do not build gmock")
-FetchContent_MakeAvailable(googletest)
+    include(FetchContent)
+    FetchContent_Declare(
+        googletest
+        GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_TAG        v1.17.0
+        SYSTEM
+        FIND_PACKAGE_ARGS NAMES GTest
+    )
+    set(INSTALL_GTEST OFF CACHE INTERNAL "Do not install gtest")
+    set(BUILD_GMOCK OFF CACHE INTERNAL "Do not build gmock")
+    FetchContent_MakeAvailable(googletest)
 
-add_subdirectory(test)
+    add_subdirectory(test)
+endif()
 
 # Tools
 

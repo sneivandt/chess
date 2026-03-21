@@ -19,7 +19,7 @@ TEST_F(UciTest, parsePositionStartPos)
                  {
 
                  },
-                 board::WHITE, board::NO_SQ, 0);
+                 board::Color::WHITE, board::Square::NO_SQ, 0);
 }
 
 TEST_F(UciTest, parseFenRuyLopez)
@@ -28,13 +28,13 @@ TEST_F(UciTest, parseFenRuyLopez)
 
     ASSERT_BOARD(pos,
                  {
-                     {board::E4, board::WP},
-                     {board::E5, board::BP},
-                     {board::F3, board::WN},
-                     {board::C6, board::BN},
-                     {board::B5, board::WB},
+                     {board::Square::E4, board::Piece::WP},
+                     {board::Square::E5, board::Piece::BP},
+                     {board::Square::F3, board::Piece::WN},
+                     {board::Square::C6, board::Piece::BN},
+                     {board::Square::B5, board::Piece::WB},
                  },
-                 board::BLACK, board::NO_SQ, 3);
+                 board::Color::BLACK, board::Square::NO_SQ, 3);
 }
 
 TEST_F(UciTest, parseMovesA2A3A7A6)
@@ -43,18 +43,18 @@ TEST_F(UciTest, parseMovesA2A3A7A6)
 
     ASSERT_BOARD(pos,
                  {
-                     {board::A3, board::WP},
+                     {board::Square::A3, board::Piece::WP},
                  },
-                 board::BLACK, board::NO_SQ, 0);
+                 board::Color::BLACK, board::Square::NO_SQ, 0);
 
     io::uci::parsePosition("moves a7a6", pos);
 
     ASSERT_BOARD(pos,
                  {
-                     {board::A3, board::WP},
-                     {board::A6, board::BP},
+                     {board::Square::A3, board::Piece::WP},
+                     {board::Square::A6, board::Piece::BP},
                  },
-                 board::WHITE, board::NO_SQ, 0);
+                 board::Color::WHITE, board::Square::NO_SQ, 0);
 }
 
 TEST_F(UciTest, parseFenWithMoves)
@@ -65,10 +65,10 @@ TEST_F(UciTest, parseFenWithMoves)
 
     ASSERT_BOARD(pos,
                  {
-                     {board::E4, board::WP},
-                     {board::E5, board::BP},
+                     {board::Square::E4, board::Piece::WP},
+                     {board::Square::E5, board::Piece::BP},
                  },
-                 board::WHITE, board::E6, 0);  // En passant is E6 after black's e7e5
+                 board::Color::WHITE, board::Square::E6, 0);  // En passant is E6 after black's e7e5
 }
 
 TEST_F(UciTest, parseFenWithMovesComplexPosition)
@@ -78,13 +78,13 @@ TEST_F(UciTest, parseFenWithMovesComplexPosition)
 
     ASSERT_BOARD(pos,
                  {
-                     {board::E4, board::WP},
-                     {board::E5, board::BP},
-                     {board::F3, board::WN},
-                     {board::C6, board::BN},
-                     {board::B5, board::WB},
+                     {board::Square::E4, board::Piece::WP},
+                     {board::Square::E5, board::Piece::BP},
+                     {board::Square::F3, board::Piece::WN},
+                     {board::Square::C6, board::Piece::BN},
+                     {board::Square::B5, board::Piece::WB},
                  },
-                 board::BLACK, board::NO_SQ, 3);
+                 board::Color::BLACK, board::Square::NO_SQ, 3);
 }
 
 // Test for Bug Fix 6: Bounds check in UCI position parsing
@@ -94,7 +94,7 @@ TEST_F(UciTest, parsePositionShortInput)
     // This should not crash with the bounds check in place
     // Note: In real UCI loop, this wouldn't happen, but we test the bounds check
     io::uci::parsePosition("startpos", pos);
-    
+
     // Should parse successfully to start position
-    ASSERT_EQ(pos.getSide(), board::WHITE);
+    ASSERT_EQ(pos.getSide(), board::toInt(board::Color::WHITE));
 }
