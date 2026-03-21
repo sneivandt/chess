@@ -1,5 +1,4 @@
-#ifndef UNDO_H
-#define UNDO_H
+#pragma once
 
 #include "board/move.h"
 
@@ -66,5 +65,3 @@ class Undo
 };
 
 } // namespace board
-
-#endif

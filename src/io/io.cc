@@ -8,7 +8,7 @@
 
 #include <vector>
 
-board::Move io::parseMove(const std::string& input, board::Board& pos)
+std::optional<board::Move> io::tryParseMove(const std::string& input, board::Board& pos)
 {
     if (input.length() > 3) {
         int from = board::Board::FR2SQ(input.at(0) - 'a', input.at(1) - '1');
@@ -18,25 +18,38 @@ board::Move io::parseMove(const std::string& input, board::Board& pos)
         for (board::Move move : movelist.getMoves()) {
             if (board::Move::FROMSQ(move.getValue()) == from && board::Move::TOSQ(move.getValue()) == to) {
                 promoted = board::Move::PROMOTED(move.getValue());
-                if (promoted == board::EMPTY) {
+                if (promoted == board::toInt(board::Piece::EMPTY)) {
                     return move;
                 }
                 if (input.length() > 4) {
-                    if (board::Board::PIECE_NO_TEAM[promoted] == board::WR && input.at(4) == 'r') {
+                    if (board::Board::PIECE_NO_TEAM[board::idx(promoted)] == board::toInt(board::Piece::WR) &&
+                        input.at(4) == 'r') {
                         return move;
                     }
-                    if (board::Board::PIECE_NO_TEAM[promoted] == board::WB && input.at(4) == 'b') {
+                    if (board::Board::PIECE_NO_TEAM[board::idx(promoted)] == board::toInt(board::Piece::WB) &&
+                        input.at(4) == 'b') {
                         return move;
                     }
-                    if (board::Board::PIECE_NO_TEAM[promoted] == board::WQ && input.at(4) == 'q') {
+                    if (board::Board::PIECE_NO_TEAM[board::idx(promoted)] == board::toInt(board::Piece::WQ) &&
+                        input.at(4) == 'q') {
                         return move;
                     }
-                    if (board::Board::PIECE_NO_TEAM[promoted] == board::WN && input.at(4) == 'n') {
+                    if (board::Board::PIECE_NO_TEAM[board::idx(promoted)] == board::toInt(board::Piece::WN) &&
+                        input.at(4) == 'n') {
                         return move;
                     }
                 }
             }
         }
+    }
+    return std::nullopt;
+}
+
+board::Move io::parseMove(const std::string& input, board::Board& pos)
+{
+    auto result = tryParseMove(input, pos);
+    if (result) {
+        return *result;
     }
     throw utils::AceException("Invalid move");
 }

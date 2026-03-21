@@ -9,29 +9,30 @@ TEST_F(BoardTest, MakeMoveQuiet)
 {
     // Start pos
     // e2e4
-    int from = board::E2;
-    int to = board::E4;
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::EMPTY, board::Move::MFLAGPS);
+    int from = board::toInt(board::Square::E2);
+    int to = board::toInt(board::Square::E4);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
+                                    board::Move::MFLAGPS);
     // MFLAGPS because double pawn push
 
     board::Move move(moveVal, 0);
 
-    EXPECT_EQ(pos.getSquare(from), board::WP);
-    EXPECT_EQ(pos.getSquare(to), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(from), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSquare(to), board::toInt(board::Piece::EMPTY));
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(from), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(to), board::WP);
-    EXPECT_EQ(pos.getSide(), board::BLACK);
-    EXPECT_EQ(pos.getEnPas(), board::E3); // En passant square should be E3
+    EXPECT_EQ(pos.getSquare(from), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(to), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSide(), board::toInt(board::Color::BLACK));
+    EXPECT_EQ(pos.getEnPas(), board::toInt(board::Square::E3)); // En passant square should be E3
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(from), board::WP);
-    EXPECT_EQ(pos.getSquare(to), board::EMPTY);
-    EXPECT_EQ(pos.getSide(), board::WHITE);
-    EXPECT_EQ(pos.getEnPas(), board::NO_SQ);
+    EXPECT_EQ(pos.getSquare(from), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSquare(to), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSide(), board::toInt(board::Color::WHITE));
+    EXPECT_EQ(pos.getEnPas(), board::toInt(board::Square::NO_SQ));
 }
 
 TEST_F(BoardTest, MakeMoveCapture)
@@ -39,24 +40,24 @@ TEST_F(BoardTest, MakeMoveCapture)
     // White to move. N on f3 captures p on e5.
     pos.parseFen("rnbqkbnr/pppp1ppp/8/4p3/4P3/5N2/PPPP1PPP/RNBQKB1R w KQkq - 1 2");
 
-    int from = board::F3;
-    int to = board::E5;
-    int capture = board::BP;
-    int moveVal = board::Move::MOVE(from, to, capture, board::EMPTY, 0);
+    int from = board::toInt(board::Square::F3);
+    int to = board::toInt(board::Square::E5);
+    int capture = board::toInt(board::Piece::BP);
+    int moveVal = board::Move::MOVE(from, to, capture, board::toInt(board::Piece::EMPTY), 0);
     board::Move move(moveVal, 0);
 
-    ASSERT_EQ(pos.getSquare(from), board::WN);
-    ASSERT_EQ(pos.getSquare(to), board::BP);
+    ASSERT_EQ(pos.getSquare(from), board::toInt(board::Piece::WN));
+    ASSERT_EQ(pos.getSquare(to), board::toInt(board::Piece::BP));
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(from), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(to), board::WN);
+    EXPECT_EQ(pos.getSquare(from), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(to), board::toInt(board::Piece::WN));
     // captured piece is gone
 
     board::makemove::undo(pos);
-    EXPECT_EQ(pos.getSquare(from), board::WN);
-    EXPECT_EQ(pos.getSquare(to), board::BP);
+    EXPECT_EQ(pos.getSquare(from), board::toInt(board::Piece::WN));
+    EXPECT_EQ(pos.getSquare(to), board::toInt(board::Piece::BP));
 }
 
 TEST_F(BoardTest, MakeMoveCastlingKingsideWhite)
@@ -69,29 +70,31 @@ TEST_F(BoardTest, MakeMoveCastlingKingsideWhite)
     // "RNBQK2R" -> R,N,B,Q,K,empty,empty,R.
     // Yes.
 
-    ASSERT_EQ(pos.getSquare(board::E1), board::WK);
-    ASSERT_EQ(pos.getSquare(board::H1), board::WR);
-    ASSERT_EQ(pos.getSquare(board::F1), board::EMPTY);
-    ASSERT_EQ(pos.getSquare(board::G1), board::EMPTY);
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E1)), board::toInt(board::Piece::WK));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::H1)), board::toInt(board::Piece::WR));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::F1)), board::toInt(board::Piece::EMPTY));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::G1)), board::toInt(board::Piece::EMPTY));
 
-    int from = board::E1;
-    int to = board::G1;
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::EMPTY, board::Move::MFLAGCA);
+    int from = board::toInt(board::Square::E1);
+    int to = board::toInt(board::Square::G1);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
+                                    board::Move::MFLAGCA);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E1), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::G1), board::WK);
-    EXPECT_EQ(pos.getSquare(board::F1), board::WR); // Rook moved from H1 to F1
-    EXPECT_EQ(pos.getSquare(board::H1), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E1)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::G1)), board::toInt(board::Piece::WK));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::F1)),
+              board::toInt(board::Piece::WR)); // Rook moved from H1 to F1
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::H1)), board::toInt(board::Piece::EMPTY));
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(board::E1), board::WK);
-    EXPECT_EQ(pos.getSquare(board::H1), board::WR);
-    EXPECT_EQ(pos.getSquare(board::F1), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::G1), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E1)), board::toInt(board::Piece::WK));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::H1)), board::toInt(board::Piece::WR));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::F1)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::G1)), board::toInt(board::Piece::EMPTY));
 }
 
 TEST_F(BoardTest, MakeMoveCastlingQueensideWhite)
@@ -99,30 +102,32 @@ TEST_F(BoardTest, MakeMoveCastlingQueensideWhite)
     // White queenside castling
     pos.parseFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/R3KBNR w KQkq - 0 1");
 
-    ASSERT_EQ(pos.getSquare(board::E1), board::WK);
-    ASSERT_EQ(pos.getSquare(board::A1), board::WR);
-    ASSERT_EQ(pos.getSquare(board::B1), board::EMPTY);
-    ASSERT_EQ(pos.getSquare(board::C1), board::EMPTY);
-    ASSERT_EQ(pos.getSquare(board::D1), board::EMPTY);
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E1)), board::toInt(board::Piece::WK));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::A1)), board::toInt(board::Piece::WR));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::B1)), board::toInt(board::Piece::EMPTY));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::C1)), board::toInt(board::Piece::EMPTY));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::D1)), board::toInt(board::Piece::EMPTY));
 
-    int from = board::E1;
-    int to = board::C1;
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::EMPTY, board::Move::MFLAGCA);
+    int from = board::toInt(board::Square::E1);
+    int to = board::toInt(board::Square::C1);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
+                                    board::Move::MFLAGCA);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E1), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::C1), board::WK);
-    EXPECT_EQ(pos.getSquare(board::D1), board::WR); // Rook moved from A1 to D1
-    EXPECT_EQ(pos.getSquare(board::A1), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E1)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::C1)), board::toInt(board::Piece::WK));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::D1)),
+              board::toInt(board::Piece::WR)); // Rook moved from A1 to D1
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::A1)), board::toInt(board::Piece::EMPTY));
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(board::E1), board::WK);
-    EXPECT_EQ(pos.getSquare(board::A1), board::WR);
-    EXPECT_EQ(pos.getSquare(board::C1), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::D1), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E1)), board::toInt(board::Piece::WK));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::A1)), board::toInt(board::Piece::WR));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::C1)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::D1)), board::toInt(board::Piece::EMPTY));
 }
 
 TEST_F(BoardTest, MakeMoveCastlingKingsideBlack)
@@ -130,25 +135,26 @@ TEST_F(BoardTest, MakeMoveCastlingKingsideBlack)
     // Black kingside castling
     pos.parseFen("rnbqk2r/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1");
 
-    ASSERT_EQ(pos.getSquare(board::E8), board::BK);
-    ASSERT_EQ(pos.getSquare(board::H8), board::BR);
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::BK));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::H8)), board::toInt(board::Piece::BR));
 
-    int from = board::E8;
-    int to = board::G8;
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::EMPTY, board::Move::MFLAGCA);
+    int from = board::toInt(board::Square::E8);
+    int to = board::toInt(board::Square::G8);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
+                                    board::Move::MFLAGCA);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E8), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::G8), board::BK);
-    EXPECT_EQ(pos.getSquare(board::F8), board::BR);
-    EXPECT_EQ(pos.getSquare(board::H8), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::G8)), board::toInt(board::Piece::BK));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::F8)), board::toInt(board::Piece::BR));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::H8)), board::toInt(board::Piece::EMPTY));
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(board::E8), board::BK);
-    EXPECT_EQ(pos.getSquare(board::H8), board::BR);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::BK));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::H8)), board::toInt(board::Piece::BR));
 }
 
 TEST_F(BoardTest, MakeMoveEnPassant)
@@ -156,27 +162,29 @@ TEST_F(BoardTest, MakeMoveEnPassant)
     // White pawn on e5, black pawn advances from d7 to d5, white can capture en passant
     pos.parseFen("rnbqkbnr/ppp1pppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 1");
 
-    ASSERT_EQ(pos.getSquare(board::E5), board::WP);
-    ASSERT_EQ(pos.getSquare(board::D5), board::BP);
-    ASSERT_EQ(pos.getEnPas(), board::D6);
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E5)), board::toInt(board::Piece::WP));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::D5)), board::toInt(board::Piece::BP));
+    ASSERT_EQ(pos.getEnPas(), board::toInt(board::Square::D6));
 
-    int from = board::E5;
-    int to = board::D6;
+    int from = board::toInt(board::Square::E5);
+    int to = board::toInt(board::Square::D6);
     // En passant moves should have captured = EMPTY, as the capture is handled separately
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::EMPTY, board::Move::MFLAGEP);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
+                                    board::Move::MFLAGEP);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E5), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::D6), board::WP);
-    EXPECT_EQ(pos.getSquare(board::D5), board::EMPTY); // Captured pawn removed
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E5)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::D6)), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::D5)),
+              board::toInt(board::Piece::EMPTY)); // Captured pawn removed
 
     // Test undo
     board::makemove::undo(pos);
-    EXPECT_EQ(pos.getSquare(board::E5), board::WP);
-    EXPECT_EQ(pos.getSquare(board::D5), board::BP);
-    EXPECT_EQ(pos.getSquare(board::D6), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E5)), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::D5)), board::toInt(board::Piece::BP));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::D6)), board::toInt(board::Piece::EMPTY));
 }
 
 TEST_F(BoardTest, MakeMovePromotionQueen)
@@ -184,22 +192,22 @@ TEST_F(BoardTest, MakeMovePromotionQueen)
     // White pawn promotes to queen
     pos.parseFen("8/4P3/8/8/8/8/8/8 w - - 0 1");
 
-    ASSERT_EQ(pos.getSquare(board::E7), board::WP);
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::WP));
 
-    int from = board::E7;
-    int to = board::E8;
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::WQ, 0);
+    int from = board::toInt(board::Square::E7);
+    int to = board::toInt(board::Square::E8);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::WQ), 0);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E7), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::E8), board::WQ);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::WQ));
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(board::E7), board::WP);
-    EXPECT_EQ(pos.getSquare(board::E8), board::EMPTY);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::EMPTY));
 }
 
 TEST_F(BoardTest, MakeMovePromotionKnight)
@@ -207,18 +215,18 @@ TEST_F(BoardTest, MakeMovePromotionKnight)
     // White pawn promotes to knight
     pos.parseFen("8/4P3/8/8/8/8/8/8 w - - 0 1");
 
-    int from = board::E7;
-    int to = board::E8;
-    int moveVal = board::Move::MOVE(from, to, board::EMPTY, board::WN, 0);
+    int from = board::toInt(board::Square::E7);
+    int to = board::toInt(board::Square::E8);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::WN), 0);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E8), board::WN);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::WN));
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(board::E7), board::WP);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::WP));
 }
 
 TEST_F(BoardTest, MakeMovePromotionCapture)
@@ -226,21 +234,21 @@ TEST_F(BoardTest, MakeMovePromotionCapture)
     // White pawn captures and promotes
     pos.parseFen("4r3/4P3/8/8/8/8/8/8 w - - 0 1");
 
-    ASSERT_EQ(pos.getSquare(board::E7), board::WP);
-    ASSERT_EQ(pos.getSquare(board::E8), board::BR);
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::WP));
+    ASSERT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::BR));
 
-    int from = board::E7;
-    int to = board::E8;
-    int moveVal = board::Move::MOVE(from, to, board::BR, board::WQ, 0);
+    int from = board::toInt(board::Square::E7);
+    int to = board::toInt(board::Square::E8);
+    int moveVal = board::Move::MOVE(from, to, board::toInt(board::Piece::BR), board::toInt(board::Piece::WQ), 0);
     board::Move move(moveVal, 0);
 
     board::makemove::move(move, pos);
 
-    EXPECT_EQ(pos.getSquare(board::E7), board::EMPTY);
-    EXPECT_EQ(pos.getSquare(board::E8), board::WQ);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::EMPTY));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::WQ));
 
     board::makemove::undo(pos);
 
-    EXPECT_EQ(pos.getSquare(board::E7), board::WP);
-    EXPECT_EQ(pos.getSquare(board::E8), board::BR);
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E7)), board::toInt(board::Piece::WP));
+    EXPECT_EQ(pos.getSquare(board::toInt(board::Square::E8)), board::toInt(board::Piece::BR));
 }

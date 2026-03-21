@@ -5,22 +5,16 @@ add_executable(perfttest
 target_link_libraries(perfttest
     PRIVATE
         project_options
-        project_warnings)
-
-target_include_directories(perfttest
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR})
-
-target_link_libraries(perfttest
-    PRIVATE
-        gtest
-        gtest_main
+        project_warnings
+        GTest::gtest
+        GTest::gtest_main
         ace::board
         ace::search
         ace::utils)
+
+target_include_directories(perfttest
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR})
 
 file(COPY perft.txt
     DESTINATION ${CMAKE_CURRENT_BINARY_DIR})

@@ -1,5 +1,4 @@
-#ifndef MAKEMOVE_H
-#define MAKEMOVE_H
+#pragma once
 
 namespace board {
 
@@ -25,5 +24,3 @@ void undo(Board&);
 
 } // namespace makemove
 } // namespace board
-
-#endif

@@ -9,17 +9,13 @@ add_library(ace::io ALIAS io)
 target_link_libraries(io
     PRIVATE
         project_options
-        project_warnings)
+        project_warnings
+        ace::board
+        ace::search
+        ace::utils)
 
 target_include_directories(io
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR})
-
-target_link_libraries(io
-    PRIVATE
-        ace::board
-        ace::search
-        ace::utils)

@@ -27,7 +27,8 @@ class BoardTest : public test::UnitTest
     }
 
     void ASSERT_BOARD(const board::Board&, std::map<board::Square, board::Piece>, board::Color, board::Square, int,
-                      int = board::WKCA | board::WQCA | board::BKCA | board::BQCA);
+                      int = board::CastlePerm::WKCA | board::CastlePerm::WQCA | board::CastlePerm::BKCA |
+                            board::CastlePerm::BQCA);
 };
 
 } // namespace test

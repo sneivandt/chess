@@ -1,5 +1,4 @@
-#ifndef BITBOARD_H
-#define BITBOARD_H
+#pragma once
 
 #include <cstdint>
 
@@ -21,5 +20,3 @@ void setBit(uint64_t&, int);
 void print(uint64_t);
 
 }} // namespace board::bitboard
-
-#endif

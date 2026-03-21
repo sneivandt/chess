@@ -1,5 +1,4 @@
-#ifndef UCI_H
-#define UCI_H
+#pragma once
 
 #include <string>
 
@@ -23,5 +22,3 @@ void parsePosition(const std::string&, board::Board&);
 void loop();
 
 }} // namespace io::uci
-
-#endif

@@ -15,23 +15,17 @@ add_executable(unittest
 target_link_libraries(unittest
     PRIVATE
         project_options
-        project_warnings)
-
-target_include_directories(unittest
-    PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-    PRIVATE
-        ${CMAKE_CURRENT_SOURCE_DIR})
-
-target_link_libraries(unittest
-    PRIVATE
-        gtest
-        gtest_main
+        project_warnings
+        GTest::gtest
+        GTest::gtest_main
         ace::board
         ace::search
         ace::io
         ace::utils)
+
+target_include_directories(unittest
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR})
 
 add_test(NAME unittest
     COMMAND unittest)

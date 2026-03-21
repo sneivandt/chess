@@ -12,17 +12,17 @@
 inline void board::makemove::clearPiece(const int square, Board& pos)
 {
     int piece = pos.getSquare(square);
-    int color = Board::PIECE_COLOR[piece];
+    int color = Board::PIECE_COLOR[idx(piece)];
     int targetPNum = -1;
-    pos.addMaterial(color, -1 * Board::PIECE_VAL[piece]);
+    pos.addMaterial(color, -1 * Board::PIECE_VAL[idx(piece)]);
     pos.hashPiece(piece, square);
-    pos.setSquare(square, EMPTY);
-    if (Board::PIECE_NO_TEAM[piece] == WP) {
-        bitboard::clearBit(pos.getPawns()[color], Board::SQ64[square]);
-        bitboard::clearBit(pos.getPawns()[BOTH], Board::SQ64[square]);
+    pos.setSquare(square, toInt(Piece::EMPTY));
+    if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WP)) {
+        bitboard::clearBit(pos.getPawns()[idx(color)], Board::SQ64[idx(square)]);
+        bitboard::clearBit(pos.getPawns()[idx(toInt(Color::BOTH))], Board::SQ64[idx(square)]);
     }
     for (int i = 0; i < pos.getPieceNum(piece); i++) {
-        if (pos.getPieceList(piece)[i] == square) {
+        if (pos.getPieceList(piece)[idx(i)] == square) {
             targetPNum = i;
             break;
         }
@@ -32,44 +32,44 @@ inline void board::makemove::clearPiece(const int square, Board& pos)
         throw std::runtime_error("Piece not found in piece list - corrupted board state");
     }
     pos.decrementPieceNum(piece);
-    pos.getPieceList(piece)[targetPNum] = pos.getPieceList(piece)[pos.getPieceNum(piece)];
+    pos.getPieceList(piece)[idx(targetPNum)] = pos.getPieceList(piece)[idx(pos.getPieceNum(piece))];
 }
 
 inline void board::makemove::addPiece(const int piece, const int square, Board& pos)
 {
-    int color = Board::PIECE_COLOR[piece];
-    pos.addMaterial(color, Board::PIECE_VAL[piece]);
+    int color = Board::PIECE_COLOR[idx(piece)];
+    pos.addMaterial(color, Board::PIECE_VAL[idx(piece)]);
     pos.setSquare(square, piece);
     pos.hashPiece(piece, square);
-    if (Board::PIECE_NO_TEAM[piece] == WP) {
-        bitboard::setBit(pos.getPawns()[color], Board::SQ64[square]);
-        bitboard::setBit(pos.getPawns()[BOTH], Board::SQ64[square]);
+    if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WP)) {
+        bitboard::setBit(pos.getPawns()[idx(color)], Board::SQ64[idx(square)]);
+        bitboard::setBit(pos.getPawns()[idx(toInt(Color::BOTH))], Board::SQ64[idx(square)]);
     }
     // Check bounds before adding to piece list
     if (pos.getPieceNum(piece) >= 10) {
         throw std::runtime_error("Piece list overflow - maximum number of pieces exceeded");
     }
-    pos.getPieceList(piece)[pos.getPieceNum(piece)] = square;
+    pos.getPieceList(piece)[idx(pos.getPieceNum(piece))] = square;
     pos.incrementPieceNum(piece);
 }
 
 inline void board::makemove::movePiece(const int from, const int to, Board& pos)
 {
     int piece = pos.getSquare(from);
-    int color = Board::PIECE_COLOR[piece];
+    int color = Board::PIECE_COLOR[idx(piece)];
     pos.hashPiece(piece, to);
     pos.hashPiece(piece, from);
-    pos.setSquare(from, EMPTY);
+    pos.setSquare(from, toInt(Piece::EMPTY));
     pos.setSquare(to, piece);
-    if (Board::PIECE_NO_TEAM[piece] == WP) {
-        bitboard::clearBit(pos.getPawns()[color], Board::SQ64[from]);
-        bitboard::clearBit(pos.getPawns()[BOTH], Board::SQ64[from]);
-        bitboard::setBit(pos.getPawns()[color], Board::SQ64[to]);
-        bitboard::setBit(pos.getPawns()[BOTH], Board::SQ64[to]);
+    if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WP)) {
+        bitboard::clearBit(pos.getPawns()[idx(color)], Board::SQ64[idx(from)]);
+        bitboard::clearBit(pos.getPawns()[idx(toInt(Color::BOTH))], Board::SQ64[idx(from)]);
+        bitboard::setBit(pos.getPawns()[idx(color)], Board::SQ64[idx(to)]);
+        bitboard::setBit(pos.getPawns()[idx(toInt(Color::BOTH))], Board::SQ64[idx(to)]);
     }
     for (int i = 0; i < pos.getPieceNum(piece); i++) {
-        if (pos.getPieceList(piece)[i] == from) {
-            pos.getPieceList(piece)[i] = to;
+        if (pos.getPieceList(piece)[idx(i)] == from) {
+            pos.getPieceList(piece)[idx(i)] = to;
             break;
         }
     }
@@ -89,7 +89,7 @@ bool board::makemove::move(Move& move, Board& pos)
     uint64_t hash = pos.getHashKey();
     Undo current = Undo(castle, enPas, fiftyMove, move.getValue(), hash);
     if (move.getValue() & Move::MFLAGEP) {
-        if (side == WHITE) {
+        if (side == toInt(Color::WHITE)) {
             clearPiece(to - 10, pos);
         }
         else {
@@ -97,20 +97,20 @@ bool board::makemove::move(Move& move, Board& pos)
         }
     }
     else if (move.getValue() & Move::MFLAGCA) {
-        if (to == C1) {
-            movePiece(A1, D1, pos);
+        if (to == toInt(Square::C1)) {
+            movePiece(toInt(Square::A1), toInt(Square::D1), pos);
         }
-        else if (to == C8) {
-            movePiece(A8, D8, pos);
+        else if (to == toInt(Square::C8)) {
+            movePiece(toInt(Square::A8), toInt(Square::D8), pos);
         }
-        else if (to == G1) {
-            movePiece(H1, F1, pos);
+        else if (to == toInt(Square::G1)) {
+            movePiece(toInt(Square::H1), toInt(Square::F1), pos);
         }
-        else if (to == G8) {
-            movePiece(H8, F8, pos);
+        else if (to == toInt(Square::G8)) {
+            movePiece(toInt(Square::H8), toInt(Square::F8), pos);
         }
     }
-    if (pos.getEnPas() != NO_SQ) {
+    if (pos.getEnPas() != toInt(Square::NO_SQ)) {
         pos.hashEnPas();
     }
     pos.hashCastle();
@@ -119,15 +119,15 @@ bool board::makemove::move(Move& move, Board& pos)
     pos.hashCastle();
     pos.clearEnPas();
     pos.incrementFiftyMove();
-    if (captured != EMPTY) {
+    if (captured != toInt(Piece::EMPTY)) {
         clearPiece(to, pos);
         pos.resetFiftyMove();
     }
     pos.incrementPly();
-    if (Board::PIECE_NO_TEAM[piece] == WP) {
+    if (Board::PIECE_NO_TEAM[idx(piece)] == toInt(Piece::WP)) {
         pos.resetFiftyMove();
         if (move.getValue() & Move::MFLAGPS) {
-            if (side == WHITE) {
+            if (side == toInt(Color::WHITE)) {
                 pos.setEnPas(from + 10);
             }
             else {
@@ -137,17 +137,19 @@ bool board::makemove::move(Move& move, Board& pos)
         }
     }
     movePiece(from, to, pos);
-    if (promoted != EMPTY) {
+    if (promoted != toInt(Piece::EMPTY)) {
         clearPiece(to, pos);
         addPiece(promoted, to, pos);
     }
     pos.updateSide();
     pos.hashSide();
-    if (pos.getSide() == BLACK && pos.sqAttacked(pos.getPieceList(WK)[0], BLACK)) {
+    if (pos.getSide() == toInt(Color::BLACK) &&
+        pos.sqAttacked(pos.getPieceList(toInt(Piece::WK))[idx(0)], toInt(Color::BLACK))) {
         undo(pos);
         return false;
     }
-    if (pos.getSide() == WHITE && pos.sqAttacked(pos.getPieceList(BK)[0], WHITE)) {
+    if (pos.getSide() == toInt(Color::WHITE) &&
+        pos.sqAttacked(pos.getPieceList(toInt(Piece::BK))[idx(0)], toInt(Color::WHITE))) {
         undo(pos);
         return false;
     }
@@ -164,11 +166,11 @@ void board::makemove::undo(Board& pos)
     int captured = Move::CAPTURED(move);
     int promoted = Move::PROMOTED(move);
     pos.setFiftyMove(undo.getFiftyMove());
-    if (pos.getEnPas() != NO_SQ) {
+    if (pos.getEnPas() != toInt(Square::NO_SQ)) {
         pos.hashEnPas();
     }
     pos.setEnPas(undo.getEnPas());
-    if (pos.getEnPas() != NO_SQ) {
+    if (pos.getEnPas() != toInt(Square::NO_SQ)) {
         pos.hashEnPas();
     }
     pos.hashCastle();
@@ -177,33 +179,34 @@ void board::makemove::undo(Board& pos)
     pos.updateSide();
     pos.hashSide();
     if (Move::MFLAGEP & move) {
-        if (pos.getSide() == WHITE) {
-            addPiece(BP, to - 10, pos);
+        if (pos.getSide() == toInt(Color::WHITE)) {
+            addPiece(toInt(Piece::BP), to - 10, pos);
         }
         else {
-            addPiece(WP, to + 10, pos);
+            addPiece(toInt(Piece::WP), to + 10, pos);
         }
     }
     else if (Move::MFLAGCA & move) {
-        if (to == C1) {
-            movePiece(D1, A1, pos);
+        if (to == toInt(Square::C1)) {
+            movePiece(toInt(Square::D1), toInt(Square::A1), pos);
         }
-        else if (to == C8) {
-            movePiece(D8, A8, pos);
+        else if (to == toInt(Square::C8)) {
+            movePiece(toInt(Square::D8), toInt(Square::A8), pos);
         }
-        else if (to == G1) {
-            movePiece(F1, H1, pos);
+        else if (to == toInt(Square::G1)) {
+            movePiece(toInt(Square::F1), toInt(Square::H1), pos);
         }
-        else if (to == G8) {
-            movePiece(F8, H8, pos);
+        else if (to == toInt(Square::G8)) {
+            movePiece(toInt(Square::F8), toInt(Square::H8), pos);
         }
     }
     movePiece(to, from, pos);
-    if (captured != EMPTY && !(Move::MFLAGEP & move)) {
+    if (captured != toInt(Piece::EMPTY) && !(Move::MFLAGEP & move)) {
         addPiece(captured, to, pos);
     }
-    if (promoted != EMPTY) {
+    if (promoted != toInt(Piece::EMPTY)) {
         clearPiece(from, pos);
-        addPiece(Board::PIECE_COLOR[promoted] == WHITE ? WP : BP, from, pos);
+        addPiece(Board::PIECE_COLOR[idx(promoted)] == toInt(Color::WHITE) ? toInt(Piece::WP) : toInt(Piece::BP), from,
+                 pos);
     }
 }

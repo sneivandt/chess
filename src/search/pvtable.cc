@@ -1,4 +1,4 @@
-#include "pvtable.h"
+#include "search/pvtable.h"
 
 #include "board/board.h"
 #include "board/makemove.h"
@@ -12,15 +12,14 @@ void search::PVTable::addMove(board::Board& pos, board::Move& move)
     map[hash] = move;
 }
 
-board::Move search::PVTable::getMove(board::Board& pos) const
+std::optional<board::Move> search::PVTable::getMove(board::Board& pos) const
 {
     uint64_t hash = pos.getHashKey();
     auto element = map.find(hash);
-    board::Move move;
     if (element != map.end()) {
-        move = element->second;
+        return element->second;
     }
-    return move;
+    return std::nullopt;
 }
 
 std::vector<board::Move> search::PVTable::getPV(board::Board& pos)
@@ -28,9 +27,9 @@ std::vector<board::Move> search::PVTable::getPV(board::Board& pos)
     int originalPly = pos.getPly();
     std::vector<board::Move> pv;
     for (int i = 0; i < 64; i++) {
-        board::Move move = getMove(pos);
-        if (move.getValue() != 0 && board::makemove::move(move, pos)) {
-            pv.push_back(move);
+        auto move = getMove(pos);
+        if (move && board::makemove::move(*move, pos)) {
+            pv.push_back(*move);
         }
         else {
             break;

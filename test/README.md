@@ -72,7 +72,7 @@ class MyTest : public test::UnitTest
 {
 protected:
     board::Board pos;
-    
+
     virtual void SetUp()
     {
         UnitTest::SetUp();
@@ -84,10 +84,10 @@ TEST_F(MyTest, TestName)
 {
     // Arrange
     pos.parseFen("fen string here");
-    
+
     // Act
     int result = someFunction(pos);
-    
+
     // Assert
     EXPECT_EQ(result, expectedValue);
 }
