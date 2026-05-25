@@ -5,7 +5,7 @@
 
 using board::idx;
 
-std::array<std::array<int, 13>, 13> search::movegen::MVVLVA_SCORES;
+std::array<std::array<int, board::PIECE_TYPE_NUM>, board::PIECE_TYPE_NUM> search::movegen::MVVLVA_SCORES;
 
 void search::movegen::INIT()
 {
@@ -22,10 +22,10 @@ inline void search::movegen::addQuietMove(const int move, MoveList& list, board:
     int score = 0;
     if (ss) {
         if (ss->getKiller(0, pos.getPly()) == move) {
-            score = 900000;
+            score = PRIMARY_KILLER_SCORE;
         }
         else if (ss->getKiller(1, pos.getPly()) == move) {
-            score = 800000;
+            score = SECONDARY_KILLER_SCORE;
         }
         else {
             score = ss->getHistory(pos.getSquare(board::Move::FROMSQ(move)), board::Move::TOSQ(move));
@@ -37,14 +37,15 @@ inline void search::movegen::addQuietMove(const int move, MoveList& list, board:
 inline void search::movegen::addCaptureMove(const int move, MoveList& list, board::Board& pos)
 {
     list.addMove(board::Move(
-        move,
-        MVVLVA_SCORES[idx(board::Move::CAPTURED(move))][idx(pos.getSquare(board::Move::FROMSQ(move)))] + 1000000));
+        move, MVVLVA_SCORES[idx(board::Move::CAPTURED(move))][idx(pos.getSquare(board::Move::FROMSQ(move)))] +
+                  CAPTURE_SCORE_OFFSET));
 }
 
 inline void search::movegen::addEnPasMove(const int move, MoveList& list)
 {
-    list.addMove(board::Move(
-        move, MVVLVA_SCORES[idx(board::toInt(board::Piece::WP))][idx(board::toInt(board::Piece::WP))] + 1000000));
+    list.addMove(
+        board::Move(move, MVVLVA_SCORES[idx(board::toInt(board::Piece::WP))][idx(board::toInt(board::Piece::WP))] +
+                              CAPTURE_SCORE_OFFSET));
 }
 
 inline void search::movegen::addPawnMove(const int from, const int to, const int cap, const int side, MoveList& list,
@@ -78,13 +79,15 @@ void search::movegen::generatePawnMoves(board::Board& pos, MoveList& moves, cons
     for (int pceNum = 0; pceNum < pos.getPieceNum(piece); pceNum++) {
         square = pos.getPieceList(piece)[idx(pceNum)];
         if (!onlyCaps) {
-            if (pos.getSquare(square + offset * 10) == board::toInt(board::Piece::EMPTY)) {
-                addPawnMove(square, square + offset * 10, board::toInt(board::Piece::EMPTY), pos.getSide(), moves, pos,
-                            ss);
+            if (pos.getSquare(square + offset * board::MAILBOX_RANK_STRIDE) == board::toInt(board::Piece::EMPTY)) {
+                addPawnMove(square, square + offset * board::MAILBOX_RANK_STRIDE, board::toInt(board::Piece::EMPTY),
+                            pos.getSide(), moves, pos, ss);
                 if (board::Board::RANKS[idx(board::Board::SQ64[idx(square)])] == PAWN_START_RANK[idx(pos.getSide())] &&
-                    pos.getSquare(square + offset * 20) == board::toInt(board::Piece::EMPTY)) {
-                    addQuietMove(board::Move::MOVE(square, square + offset * 20, board::toInt(board::Piece::EMPTY),
-                                                   board::toInt(board::Piece::EMPTY), board::Move::MFLAGPS),
+                    pos.getSquare(square + offset * board::MAILBOX_RANK_STRIDE * 2) ==
+                        board::toInt(board::Piece::EMPTY)) {
+                    addQuietMove(board::Move::MOVE(square, square + offset * board::MAILBOX_RANK_STRIDE * 2,
+                                                   board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
+                                                   board::Move::MFLAGPS),
                                  moves, pos, ss);
                 }
             }
@@ -127,7 +130,7 @@ void search::movegen::generateSliderMoves(board::Board& pos, MoveList& moves, co
         piece = SLIDERS[idx(index + offset)];
         for (int pceNum = 0; pceNum < pos.getPieceNum(piece); pceNum++) {
             square = pos.getPieceList(piece)[idx(pceNum)];
-            for (int i = 0; i < 8 && board::Board::MOVE_DIR[idx(piece)][idx(i)] != 0; i++) {
+            for (int i = 0; i < board::MOVE_DIRECTION_NUM && board::Board::MOVE_DIR[idx(piece)][idx(i)] != 0; i++) {
                 direction = board::Board::MOVE_DIR[idx(piece)][idx(i)];
                 targetSquare = square + direction;
                 while (pos.getSquare(targetSquare) != board::OFFBOARD) {
@@ -165,7 +168,7 @@ void search::movegen::generateNonSliderMoves(board::Board& pos, MoveList& moves,
         piece = NON_SLIDERS[idx(index + offset)];
         for (int pceNum = 0; pceNum < pos.getPieceNum(piece); pceNum++) {
             square = pos.getPieceList(piece)[idx(pceNum)];
-            for (int i = 0; i < 8 && board::Board::MOVE_DIR[idx(piece)][idx(i)] != 0; i++) {
+            for (int i = 0; i < board::MOVE_DIRECTION_NUM && board::Board::MOVE_DIR[idx(piece)][idx(i)] != 0; i++) {
                 direction = board::Board::MOVE_DIR[idx(piece)][idx(i)];
                 targetSquare = square + direction;
                 if (pos.getSquare(targetSquare) == board::OFFBOARD) {

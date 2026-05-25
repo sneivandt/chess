@@ -11,6 +11,10 @@ struct SearchState;
 
 namespace movegen {
 
+inline constexpr int PRIMARY_KILLER_SCORE = 900000;
+inline constexpr int SECONDARY_KILLER_SCORE = 800000;
+inline constexpr int CAPTURE_SCORE_OFFSET = 1000000;
+
 // Sliding pieces
 const std::array<int, 6> SLIDERS = {toInt(board::Piece::WQ), toInt(board::Piece::WR), toInt(board::Piece::WB),
                                     toInt(board::Piece::BQ), toInt(board::Piece::BR), toInt(board::Piece::BB)};
@@ -31,10 +35,11 @@ const std::array<std::array<int, 4>, 2> PROMOTION_PIECES = {
      {toInt(board::Piece::BQ), toInt(board::Piece::BR), toInt(board::Piece::BB), toInt(board::Piece::BN)}}};
 
 // MVVLVA victum scores
-const std::array<int, 13> VICTUM_SCORES = {0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600};
+const std::array<int, board::PIECE_TYPE_NUM> VICTUM_SCORES = {0,   100, 200, 300, 400, 500, 600,
+                                                              100, 200, 300, 400, 500, 600};
 
 // Most valuable victum least valuable attacker scores
-extern std::array<std::array<int, 13>, 13> MVVLVA_SCORES;
+extern std::array<std::array<int, board::PIECE_TYPE_NUM>, board::PIECE_TYPE_NUM> MVVLVA_SCORES;
 
 // Init
 void INIT();

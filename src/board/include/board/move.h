@@ -4,18 +4,49 @@
 
 namespace board {
 
+class MoveValue
+{
+  private:
+    int encoded;
+
+  public:
+    constexpr MoveValue() noexcept : encoded(0) {};
+    constexpr explicit MoveValue(const int value) noexcept : encoded(value) {};
+
+    constexpr int raw() const noexcept
+    {
+        return encoded;
+    }
+
+    constexpr operator int() const noexcept
+    {
+        return encoded;
+    }
+};
+
+constexpr bool operator==(const MoveValue lhs, const MoveValue rhs) noexcept
+{
+    return lhs.raw() == rhs.raw();
+}
+
+constexpr bool operator!=(const MoveValue lhs, const MoveValue rhs) noexcept
+{
+    return !(lhs == rhs);
+}
+
 class Move
 {
   private:
     // Value
-    int value;
+    MoveValue value;
 
     // Score
     int score;
 
   public:
     Move() : value(0), score(0) {};
-    Move(const int v, const int s) : value(v), score(s) {};
+    Move(const MoveValue v, const int s) : value(v), score(s) {};
+    Move(const int v, const int s) : Move(MoveValue(v), s) {};
 
     // Copy semantics (explicitly defaulted)
     Move(const Move&) = default;
@@ -35,31 +66,35 @@ class Move
     static constexpr int PROMOTED_SHIFT = 20;
 
     // From square
+    static int FROMSQ(const MoveValue) noexcept;
     static int FROMSQ(const int) noexcept;
 
     // Get the to square
+    static int TOSQ(const MoveValue) noexcept;
     static int TOSQ(const int) noexcept;
 
     // Get the captured piece
+    static int CAPTURED(const MoveValue) noexcept;
     static int CAPTURED(const int) noexcept;
 
     // Get the promoted piece
+    static int PROMOTED(const MoveValue) noexcept;
     static int PROMOTED(const int) noexcept;
 
     // En passant flag
-    const static int MFLAGEP = 0x40000;
+    static constexpr int MFLAGEP = 0x40000;
 
     // Pawn start flag
-    const static int MFLAGPS = 0x80000;
+    static constexpr int MFLAGPS = 0x80000;
 
     // Castle flag
-    const static int MFLAGCA = 0x1000000;
+    static constexpr int MFLAGCA = 0x1000000;
 
     // Capture flag
-    const static int MFLAGCAP = 0x7c000;
+    static constexpr int MFLAGCAP = 0x7c000;
 
     // Promotion flag
-    const static int MFLAGPROM = 0xf00000;
+    static constexpr int MFLAGPROM = 0xf00000;
 
     // Less than operator
     bool operator<(const Move&) const noexcept;
@@ -72,10 +107,10 @@ class Move
     void addScore(const int) noexcept;
 
     // Value
-    int getValue() const noexcept;
+    MoveValue getValue() const noexcept;
 
     // Construct a move value
-    static int MOVE(const int, const int, const int, const int, const int) noexcept;
+    static MoveValue MOVE(const int, const int, const int, const int, const int) noexcept;
 };
 
 /*
@@ -93,30 +128,51 @@ class Move
  * Promoted Piece limits: 0-15 (4 bits)
  */
 
-inline int Move::MOVE(const int from, const int to, const int capture, const int promoted, const int flag) noexcept
+inline MoveValue Move::MOVE(const int from, const int to, const int capture, const int promoted,
+                            const int flag) noexcept
 {
-    return (from & FROM_MASK) | ((to & TO_MASK) << TO_SHIFT) | ((capture & CAPTURE_MASK) << CAPTURE_SHIFT) |
-           ((promoted & PROMOTED_MASK) << PROMOTED_SHIFT) | flag;
+    return MoveValue((from & FROM_MASK) | ((to & TO_MASK) << TO_SHIFT) | ((capture & CAPTURE_MASK) << CAPTURE_SHIFT) |
+                     ((promoted & PROMOTED_MASK) << PROMOTED_SHIFT) | flag);
+}
+
+inline int Move::FROMSQ(const MoveValue move) noexcept
+{
+    return move.raw() & FROM_MASK;
 }
 
 inline int Move::FROMSQ(const int move) noexcept
 {
-    return move & FROM_MASK;
+    return FROMSQ(MoveValue(move));
+}
+
+inline int Move::TOSQ(const MoveValue move) noexcept
+{
+    return (move.raw() >> TO_SHIFT) & TO_MASK;
 }
 
 inline int Move::TOSQ(const int move) noexcept
 {
-    return (move >> TO_SHIFT) & TO_MASK;
+    return TOSQ(MoveValue(move));
+}
+
+inline int Move::CAPTURED(const MoveValue move) noexcept
+{
+    return (move.raw() >> CAPTURE_SHIFT) & CAPTURE_MASK;
 }
 
 inline int Move::CAPTURED(const int move) noexcept
 {
-    return (move >> CAPTURE_SHIFT) & CAPTURE_MASK;
+    return CAPTURED(MoveValue(move));
+}
+
+inline int Move::PROMOTED(const MoveValue move) noexcept
+{
+    return (move.raw() >> PROMOTED_SHIFT) & PROMOTED_MASK;
 }
 
 inline int Move::PROMOTED(const int move) noexcept
 {
-    return (move >> PROMOTED_SHIFT) & PROMOTED_MASK;
+    return PROMOTED(MoveValue(move));
 }
 
 inline bool Move::operator<(const Move& rhs) const noexcept
@@ -134,7 +190,7 @@ inline void Move::addScore(const int s) noexcept
     score += s;
 }
 
-inline int Move::getValue() const noexcept
+inline MoveValue Move::getValue() const noexcept
 {
     return value;
 }

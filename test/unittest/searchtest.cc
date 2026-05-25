@@ -10,6 +10,7 @@
 #include "unittest.h"
 
 #include "gtest/gtest.h"
+#include <sstream>
 
 using namespace test;
 
@@ -188,6 +189,18 @@ TEST_F(SearchTest, SearchValidPosition)
     EXPECT_NO_THROW({ search::go(pos, info); });
 }
 
+TEST_F(SearchTest, SearchWritesToProvidedStream)
+{
+    pos.parseFen(board::Board::DEFAULT_FEN);
+    search::SearchInfo info;
+    info.setDepth(1);
+    std::ostringstream output;
+
+    search::go(pos, info, output, false);
+
+    EXPECT_NE(output.str().find("info score cp "), std::string::npos);
+}
+
 // ==============================================================
 // PVTable tests
 // ==============================================================
@@ -207,9 +220,9 @@ TEST_F(SearchTest, PVTableStoreAndProbe)
     pos.parseFen(board::Board::DEFAULT_FEN);
 
     // Create a move (e2e4)
-    int moveVal = board::Move::MOVE(board::toInt(board::Square::E2), board::toInt(board::Square::E4),
-                                    board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY),
-                                    board::Move::MFLAGPS);
+    int moveVal =
+        board::Move::MOVE(board::toInt(board::Square::E2), board::toInt(board::Square::E4),
+                          board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY), board::Move::MFLAGPS);
     board::Move m(moveVal, 0);
 
     pvtable.addMove(pos, m);

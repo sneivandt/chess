@@ -46,7 +46,7 @@ inline void board::makemove::addPiece(const int piece, const int square, Board& 
         bitboard::setBit(pos.getPawns()[idx(toInt(Color::BOTH))], Board::SQ64[idx(square)]);
     }
     // Check bounds before adding to piece list
-    if (pos.getPieceNum(piece) >= 10) {
+    if (pos.getPieceNum(piece) >= PIECE_LIST_CAPACITY) {
         throw std::runtime_error("Piece list overflow - maximum number of pieces exceeded");
     }
     pos.getPieceList(piece)[idx(pos.getPieceNum(piece))] = square;
@@ -90,10 +90,10 @@ bool board::makemove::move(Move& move, Board& pos)
     Undo current = Undo(castle, enPas, fiftyMove, move.getValue(), hash);
     if (move.getValue() & Move::MFLAGEP) {
         if (side == toInt(Color::WHITE)) {
-            clearPiece(to - 10, pos);
+            clearPiece(to - MAILBOX_RANK_STRIDE, pos);
         }
         else {
-            clearPiece(to + 10, pos);
+            clearPiece(to + MAILBOX_RANK_STRIDE, pos);
         }
     }
     else if (move.getValue() & Move::MFLAGCA) {
@@ -128,10 +128,10 @@ bool board::makemove::move(Move& move, Board& pos)
         pos.resetFiftyMove();
         if (move.getValue() & Move::MFLAGPS) {
             if (side == toInt(Color::WHITE)) {
-                pos.setEnPas(from + 10);
+                pos.setEnPas(from + MAILBOX_RANK_STRIDE);
             }
             else {
-                pos.setEnPas(from - 10);
+                pos.setEnPas(from - MAILBOX_RANK_STRIDE);
             }
             pos.hashEnPas();
         }
@@ -160,7 +160,7 @@ void board::makemove::undo(Board& pos)
 {
     pos.decrementPly();
     Undo undo = pos.popHistory();
-    int move = undo.getMoveValue();
+    MoveValue move = undo.getMoveValue();
     int from = Move::FROMSQ(move);
     int to = Move::TOSQ(move);
     int captured = Move::CAPTURED(move);
@@ -180,10 +180,10 @@ void board::makemove::undo(Board& pos)
     pos.hashSide();
     if (Move::MFLAGEP & move) {
         if (pos.getSide() == toInt(Color::WHITE)) {
-            addPiece(toInt(Piece::BP), to - 10, pos);
+            addPiece(toInt(Piece::BP), to - MAILBOX_RANK_STRIDE, pos);
         }
         else {
-            addPiece(toInt(Piece::WP), to + 10, pos);
+            addPiece(toInt(Piece::WP), to + MAILBOX_RANK_STRIDE, pos);
         }
     }
     else if (Move::MFLAGCA & move) {

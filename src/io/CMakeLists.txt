@@ -7,10 +7,11 @@ add_library(io
 add_library(ace::io ALIAS io)
 
 target_link_libraries(io
+    PUBLIC
+        ace::board
     PRIVATE
         project_options
         project_warnings
-        ace::board
         ace::search
         ace::utils)
 

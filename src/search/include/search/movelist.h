@@ -3,6 +3,7 @@
 #include "board/move.h"
 
 #include <algorithm>
+#include <iosfwd>
 #include <vector>
 
 namespace search {
@@ -23,6 +24,7 @@ class MoveList
 
     // Print the move list
     void print() const;
+    void print(std::ostream&) const;
 
     // Moves - return const reference instead of copy
     const std::vector<board::Move>& getMoves() const noexcept;

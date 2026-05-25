@@ -51,6 +51,17 @@ TEST_F(BoardTest, parseFenInvalidEnPassantRank0)
     ASSERT_FALSE(pos.parseFen("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e0 0 1"));
 }
 
+TEST_F(BoardTest, parseFenRejectsMalformedFields)
+{
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8/8 x - - 0 1"));
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8/8 w KK - 0 1"));
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8/8 w KX - 0 1"));
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8/8 w - e4 0 1"));
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8/8 w - - -1 1"));
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8/8 w - - 0 0"));
+    ASSERT_FALSE(pos.parseFen("8/8/8/8/8/8/8 w - - 0 1"));
+}
+
 TEST_F(BoardTest, parseFenStartPos)
 {
     ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
@@ -60,6 +71,25 @@ TEST_F(BoardTest, parseFenStartPos)
 
                  },
                  board::Color::WHITE, board::Square::NO_SQ, 0);
+}
+
+TEST_F(BoardTest, HashKeyIncludesCastlingRights)
+{
+    ASSERT_TRUE(pos.parseFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1"));
+    const uint64_t allCastlingRightsHash = pos.getHashKey();
+
+    ASSERT_TRUE(pos.parseFen("r3k2r/8/8/8/8/8/8/R3K2R w - - 0 1"));
+    EXPECT_NE(pos.getHashKey(), allCastlingRightsHash);
+}
+
+TEST_F(BoardTest, HashKeyInitializationIsDeterministic)
+{
+    ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
+    const uint64_t firstHash = pos.getHashKey();
+
+    board::Board::INIT();
+    ASSERT_TRUE(pos.parseFen(board::Board::DEFAULT_FEN));
+    EXPECT_EQ(pos.getHashKey(), firstHash);
 }
 
 TEST_F(BoardTest, sqAttackedPawn)

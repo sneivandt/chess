@@ -1,0 +1,19 @@
+name: chess
+version: 1.0.0
+description: APM project for chess
+author: sneivandt
+target: copilot
+dependencies:
+  apm:
+  - github/awesome-copilot/skills/codeql#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/autoresearch#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/refactor-plan#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/breakdown-test#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/acquire-codebase-knowledge#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/architecture-blueprint-generator#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/create-github-action-workflow-specification#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/github-release#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  - github/awesome-copilot/skills/documentation-writer#5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  mcp: []
+includes: auto
+scripts: {}

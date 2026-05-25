@@ -58,16 +58,13 @@ bool utils::inputWaiting()
     }
 #elif __APPLE__
     fd_set fds;
-    struct timeval tv;
+    struct timeval tv{0, 1};
     FD_ZERO(&fds);
     FD_SET(fileno(stdin), &fds);
     return select(sizeof(fds) * 8, &fds, nullptr, nullptr, &tv);
 #else
     fd_set fds;
-    struct timeval tv
-    {
-        0, 1
-    };
+    struct timeval tv{0, 1};
     FD_ZERO(&fds);
     FD_SET(fileno(stdin), &fds);
     return select(sizeof(fds) * 8, &fds, nullptr, nullptr, &tv);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <iosfwd>
 
 namespace board { namespace bitboard {
 
@@ -18,5 +19,6 @@ void setBit(uint64_t&, int);
 
 // Print
 void print(uint64_t);
+void print(uint64_t, std::ostream&);
 
 }} // namespace board::bitboard

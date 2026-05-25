@@ -24,10 +24,10 @@ class PVTable
     PVTable() {};
 
     // Add a move to the hash table
-    void addMove(board::Board&, board::Move&);
+    void addMove(const board::Board&, const board::Move&);
 
     // Get a move from the hash table
-    std::optional<board::Move> getMove(board::Board&) const;
+    std::optional<board::Move> getMove(const board::Board&) const;
 
     // Get the principal variation
     std::vector<board::Move> getPV(board::Board&);

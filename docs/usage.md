@@ -1,54 +1,108 @@
 # ACE Usage Guide
 
-This document explains how to build and run the ACE chess engine.
+This guide explains how to build, test, and run ACE locally.
 
-## Building the Project
+## Build
 
-ACE uses CMake as its build system. To build the project:
-
-```bash
-# Create a build directory
-mkdir build
-cd build
-
-# Configure the project
-cmake ..
-
-# Build the executable
-cmake --build .
-```
-
-## Running the Executable
-
-After building, you can run the chess engine:
+The recommended path is CMake presets:
 
 ```bash
-./src/main/ace
+cmake --preset dev
+cmake --build --preset dev
 ```
 
-## Supported Commands
+The built executable is:
 
-When running ACE in interactive mode, the following commands are available:
+```bash
+./build-dev/src/main/ace
+```
 
-- **`uci`** - Switch to UCI mode for communication with chess GUIs
-- **`n`** - Start a new game with the default starting position
-- **`n <FEN>`** - Start a new game from a specific FEN position
-- **`u`** - Undo the last move
-- **`s`** - Search for the best move in the current position
-- **`e`** - Evaluate the current position and display the score
-- **`q`** - Quit the program
-- **`<move>`** - Make a move using algebraic notation (e.g., `e2e4`, `e7e8q` for promotion)
+For a release-style build:
 
-## Move Notation
+```bash
+cmake --preset prod
+cmake --build --preset prod
+```
 
-Moves should be entered in long algebraic notation:
-- Standard moves: `e2e4` (from square e2 to e4)
-- Promotions: `e7e8q` (pawn promotion to queen)
-  - `q` = queen
-  - `r` = rook
-  - `b` = bishop
-  - `n` = knight
+Manual builds also work:
 
-## UCI Mode
+```bash
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Debug
+cmake --build build
+./build/src/main/ace
+```
 
-To use ACE with a chess GUI that supports the UCI protocol, start the engine and enter the `uci` command. The engine will then communicate using standard UCI commands.
+## Test
+
+Run all tests for the development preset:
+
+```bash
+ctest --preset dev
+```
+
+Run only unit tests:
+
+```bash
+ctest --test-dir build-dev -R unittest --output-on-failure
+```
+
+Run only perft tests with a quicker local depth:
+
+```bash
+PERFT_MAX_DEPTH=4 ctest --test-dir build-dev -R perfttest --output-on-failure
+```
+
+If `PERFT_MAX_DEPTH` is not set, the perft runner defaults to depth 6.
+
+## Interactive CLI mode
+
+Start ACE directly:
+
+```bash
+./build-dev/src/main/ace
+```
+
+The interactive mode acts like a manual chessboard until you ask it to search.
+
+| Command | Description |
+| --- | --- |
+| `uci` | Switch to UCI protocol mode |
+| `n` | Start a new game from the default position |
+| `n <FEN>` | Start a new game from a specific FEN position |
+| `u` | Undo the last half-move |
+| `s` | Search the current position until Enter is pressed |
+| `e` | Print the static evaluation score |
+| `q` | Quit |
+| `<move>` | Make a move in coordinate notation, such as `e2e4` or `e7e8q` |
+
+Promotion suffixes are lowercase piece letters:
+
+| Suffix | Promotion |
+| --- | --- |
+| `q` | Queen |
+| `r` | Rook |
+| `b` | Bishop |
+| `n` | Knight |
+
+## UCI mode and GUIs
+
+ACE supports UCI so it can be launched by chess GUIs. Configure the GUI to start the built executable, for example:
+
+```bash
+xboard -fcp ./build-dev/src/main/ace -fUCI
+```
+
+You can also enter UCI mode manually from the CLI by running ACE and typing:
+
+```text
+uci
+```
+
+## Useful development commands
+
+```bash
+cmake --list-presets
+cmake --build --preset asan
+ctest --preset asan
+cmake --build --preset dev --target clang-format
+```

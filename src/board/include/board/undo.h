@@ -20,7 +20,7 @@ class Undo
     int fiftyMove;
 
     // Move value
-    int moveValue;
+    MoveValue moveValue;
 
     // Position key
     uint64_t hashKey;
@@ -30,11 +30,11 @@ class Undo
     Undo() {};
 
     // Create an undo with the given properties
-    Undo(const int c, const int ep, const int fm, const int mv, const uint64_t hash)
+    Undo(const int c, const int ep, const int fm, const MoveValue mv, const uint64_t hash)
         : castlePerm(c), enPas(ep), fiftyMove(fm), moveValue(mv), hashKey(hash) {};
 
     // Get the move value
-    int getMoveValue() const
+    MoveValue getMoveValue() const
     {
         return moveValue;
     };

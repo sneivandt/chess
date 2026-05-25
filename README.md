@@ -1,115 +1,132 @@
-# A Chess Engine (ACE)
+# ACE - A Chess Engine
 
-ACE is a robust, C++20 chess engine designed for performance and correct play. It implements the UCI (Universal Chess Interface) protocol, allowing it to be used with popular chess GUIs like Arena, Fritz, or XBoard/WinBoard (via PolyGlot).
+ACE is a C++20 chess engine with a command-line interface and UCI (Universal Chess Interface) support for chess GUIs. It is organized as a small, modular engine focused on correct board state handling, move generation, search, and testable behavior.
 
-## Project Structure
+## Highlights
 
-The project is organized into modular components:
+| Area | Status |
+| --- | --- |
+| Engine protocol | UCI plus an interactive CLI mode |
+| Board model | 120-square mailbox board with pawn bitboards |
+| Search | Alpha-beta search with iterative deepening support |
+| Tests | GoogleTest unit tests and perft move-generation checks |
+| Build | CMake presets for debug, release, and sanitizer builds |
+| AI assistance | Copilot instructions, AGENTS.md, and local agent skills |
 
-*   **`src/board`**: Core board representation, piece definitions, and evaluation logic. Uses a 120-square array approach for efficient move generation and off-board detection.
-*   **`src/search`**: Search algorithms (Alpha-Beta, Iterative Deepening) and move generation logic (`movegen.cc`).
-*   **`src/io`**: UCI protocol implementation and console I/O handling.
-*   **`src/main`**: Application entry point.
-*   **`src/utils`**: General utility functions.
-*   **`test/`**: Comprehensive unit tests and perft (performance) tests using GoogleTest.
+## Repository layout
 
-## Build
+| Path | Purpose |
+| --- | --- |
+| `src/board/` | Board representation, FEN parsing, move making/unmaking, move encoding, evaluation |
+| `src/search/` | Move generation, move lists, principal variation table, search state, search loop |
+| `src/io/` | UCI protocol handling and text I/O helpers |
+| `src/main/` | Executable entry point and interactive command loop |
+| `src/utils/` | Shared utilities and exception helpers |
+| `test/unittest/` | Fast component-level GoogleTest suites |
+| `test/perfttest/` | Perft positions used to validate legal move generation |
+| `docs/` | Usage and architecture notes |
+| `.github/skills/` | Repository-local AI agent skills for ACE workflows |
 
-### Standard
+## Prerequisites
+
+- A C++20 compiler: GCC, Clang, or MSVC
+- CMake 3.25 or newer
+- Git
+
+GoogleTest is resolved by CMake through `FetchContent` when tests are enabled.
+
+## Quick start
 
 ```bash
-mkdir build && cd build
-cmake ..
-cmake --build .
+cmake --preset dev
+cmake --build --preset dev
+ctest --preset dev
+./build-dev/src/main/ace
 ```
 
-### Using CMake Presets
+The `dev` preset creates a Debug build in `build-dev/` with warnings enabled but not promoted to errors.
 
-This project uses `CMakePresets.json` to provide common build configurations.
+## Build presets
 
-**List available presets:**
 ```bash
 cmake --list-presets
 ```
 
-**Common Presets:**
-*   `dev` - Debug build with warnings.
-*   `prod` - Release build with warnings as errors.
-*   `asan` - Debug build with Address Sanitizer and Undefined Behavior Sanitizer.
-*   `tsan` - Debug build with Thread Sanitizer.
+| Preset | Use |
+| --- | --- |
+| `dev` | Debug build for local development |
+| `prod` | Release build with warnings as errors |
+| `asan` | Debug build with AddressSanitizer and UndefinedBehaviorSanitizer |
+| `tsan` | Debug build with ThreadSanitizer |
 
-**Build using a preset:**
-```bash
-cmake --preset [preset_name]
-cmake --build --preset [preset_name]
-```
-
-## Test
-
-### Using CMake Presets
-
-If you built using a preset, run tests with:
-```bash
-ctest --preset [preset_name]
-```
-
-### Standard Testing
-
-After building, navigate to the build directory to run tests.
-
-**Unit Tests:**
-Run the suite of functional tests to ensure engine correctness.
+Build with any preset:
 
 ```bash
-cd build
-ctest -R unittest --output-on-failure
+cmake --preset prod
+cmake --build --preset prod
 ```
 
-**Performance (Perft) Tests:**
-Verify the move generator by counting leaf nodes at various depths.
+## Testing
+
+Run all tests for a configured preset:
 
 ```bash
-cd build
-ctest -R perfttest --verbose
+ctest --preset dev
 ```
 
-## Install
+Run targeted tests:
 
 ```bash
-cd build
-sudo cmake --build . --target install
+ctest --test-dir build-dev -R unittest --output-on-failure
+PERFT_MAX_DEPTH=4 ctest --test-dir build-dev -R perfttest --output-on-failure
 ```
 
-## Play
+`PERFT_MAX_DEPTH` limits perft depth for quick local and CI runs. If it is not set, perft defaults to depth 6.
 
-### Using a GUI (XBoard)
-Start a game using XBoard and the PolyGlot UCI adapter.
+## Running ACE
+
+Interactive CLI mode:
 
 ```bash
-xboard -fcp ./build/src/main/ace -fUCI
+./build-dev/src/main/ace
 ```
 
-### CLI Mode
-The engine can be run directly in the terminal for manual analysis or debugging. Note that **by default, the engine acts as a digital chessboard**. It will not make moves automatically; you must trigger the search command manually if you want the AI to calculate a move for the current side.
+Common commands:
+
+| Command | Action |
+| --- | --- |
+| `n` | Reset to the starting position |
+| `n <fen>` | Load a specific FEN position |
+| `e2e4` | Make a move in long algebraic coordinate notation |
+| `s` | Start searching the current position; press Enter to stop |
+| `u` | Undo the last half-move |
+| `e` | Print the static evaluation |
+| `uci` | Switch to UCI protocol mode |
+| `q` | Quit |
+
+To use a GUI, configure it to launch the built `ace` executable as a UCI engine. With XBoard:
 
 ```bash
-./build/src/main/ace
+xboard -fcp ./build-dev/src/main/ace -fUCI
 ```
 
-**Controls:**
-Enter moves in **Long Algebraic Notation** (e.g., `e2e4`, `e7e8q` for promotion).
+## Documentation
 
-| Command | Action | Details |
-|---------|--------|---------|
-| `s` | Search | Starts an infinite search for the best move. **Press Enter to stop.** *Note: The keypress stops the search but is consumed; if you typed a command to stop it, re-type it.* |
-| `n` | New Game | Resets the board to the starting position. |
-| `n [fen]`| Set FEN | Sets the board to a specific position defined by a FEN string. |
-| `u` | Undo | Undoes the last half-move. |
-| `e` | Evaluate | Prints the static evaluation score of the current position (centipawns). |
-| `uci` | UCI Mode | Switches to UCI protocol mode (for connecting to GUIs). |
-| `q` | Quit | Exits the application. |
+- [Usage guide](docs/usage.md)
+- [Architecture overview](docs/architecture.md)
+- [Test suite guide](test/README.md)
+- [Contributing guide](.github/CONTRIBUTING.md)
+
+## AI-assisted development
+
+This repository includes AI guidance for coding agents:
+
+- `.github/copilot-instructions.md` captures project conventions and validation expectations.
+- `AGENTS.md` provides a concise repository operating guide for AI agents and contributors.
+- `.github/skills/` contains local Agent Skills for ACE-specific workflows.
+
+When using an AI agent, ask it to avoid unrelated engine changes, preserve chess-rule correctness, and run the smallest relevant CMake/CTest validation.
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines on how to build, test, and submit changes to ACE.
-
+Contributions are welcome. Please read [.github/CONTRIBUTING.md](.github/CONTRIBUTING.md), keep changes scoped, and include tests or documentation updates when behavior or workflows change.

@@ -1,17 +1,13 @@
-find_program(include-what-you-use include-what-you-use)
+find_program(INCLUDE_WHAT_YOU_USE_EXE include-what-you-use)
 
-if(NOT include-what-you-use)
+if(NOT INCLUDE_WHAT_YOU_USE_EXE)
     message(STATUS "include-what-you-use not found.")
 else()
-    message(STATUS "include-what-you-use found: ${include-what-you-use}")
+    message(STATUS "include-what-you-use found: ${INCLUDE_WHAT_YOU_USE_EXE}")
 
-    set_target_properties(
-        ace
-        board
-        io
-        search
-        utils
-        unittest
-        perfttest
-        PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${include-what-you-use})
+    foreach(target IN LISTS ACE_TOOL_TARGETS)
+        if(TARGET ${target})
+            set_target_properties(${target} PROPERTIES CXX_INCLUDE_WHAT_YOU_USE "${INCLUDE_WHAT_YOU_USE_EXE}")
+        endif()
+    endforeach()
 endif()

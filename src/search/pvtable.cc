@@ -4,15 +4,14 @@
 #include "board/makemove.h"
 
 #include <cstdint>
-#include <utility>
 
-void search::PVTable::addMove(board::Board& pos, board::Move& move)
+void search::PVTable::addMove(const board::Board& pos, const board::Move& move)
 {
     uint64_t hash = pos.getHashKey();
     map[hash] = move;
 }
 
-std::optional<board::Move> search::PVTable::getMove(board::Board& pos) const
+std::optional<board::Move> search::PVTable::getMove(const board::Board& pos) const
 {
     uint64_t hash = pos.getHashKey();
     auto element = map.find(hash);
@@ -26,7 +25,7 @@ std::vector<board::Move> search::PVTable::getPV(board::Board& pos)
 {
     int originalPly = pos.getPly();
     std::vector<board::Move> pv;
-    for (int i = 0; i < 64; i++) {
+    for (int i = 0; i < board::BOARD64_SQUARE_NUM; i++) {
         auto move = getMove(pos);
         if (move && board::makemove::move(*move, pos)) {
             pv.push_back(*move);

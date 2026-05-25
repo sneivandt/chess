@@ -28,6 +28,19 @@ TEST_F(MoveTest, MoveConstruction)
     EXPECT_EQ(move.getScore(), 0);
 }
 
+TEST_F(MoveTest, MoveValuePreservesEncodedBits)
+{
+    const board::MoveValue moveVal =
+        board::Move::MOVE(board::toInt(board::Square::E2), board::toInt(board::Square::E4),
+                          board::toInt(board::Piece::EMPTY), board::toInt(board::Piece::EMPTY), board::Move::MFLAGPS);
+    const board::Move move(moveVal, 0);
+
+    EXPECT_EQ(move.getValue(), moveVal);
+    EXPECT_EQ(move.getValue().raw() & board::Move::MFLAGPS, board::Move::MFLAGPS);
+    EXPECT_EQ(board::Move::FROMSQ(move.getValue()), board::toInt(board::Square::E2));
+    EXPECT_EQ(board::Move::TOSQ(move.getValue()), board::toInt(board::Square::E4));
+}
+
 TEST_F(MoveTest, MoveFROMSQ)
 {
     int moveVal = board::Move::MOVE(board::toInt(board::Square::E2), board::toInt(board::Square::E4),

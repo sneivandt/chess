@@ -31,3 +31,9 @@ build-*/
 
 # CodeQL
 _codeql_*
+
+# APM dependencies
+apm_modules/
+
+# APM generated skill deployments
+.agents/skills/

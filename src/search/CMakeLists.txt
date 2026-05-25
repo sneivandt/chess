@@ -13,10 +13,11 @@ add_library(search
 add_library(ace::search ALIAS search)
 
 target_link_libraries(search
+    PUBLIC
+        ace::board
     PRIVATE
         project_options
         project_warnings
-        ace::board
         ace::utils)
 
 target_include_directories(search

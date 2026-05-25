@@ -4,9 +4,9 @@
 #include "board/evaluate.h"
 #include "board/makemove.h"
 #include "board/move.h"
-#include "search/pvtable.h"
 #include "search/movegen.h"
 #include "search/movelist.h"
+#include "search/pvtable.h"
 #include "search/searchinfo.h"
 #include "search/searchstate.h"
 #include "utils/utils.h"
@@ -24,9 +24,18 @@ void search::checkup(SearchInfo& info)
         info.setStopped(true);
     }
     if (utils::inputWaiting()) {
-        info.setStopped(true);
         std::string input;
-        std::getline(std::cin, input);
+        if (!std::getline(std::cin, input)) {
+            info.setStopped(true);
+            if (std::cin.eof()) {
+                info.setQuit(true);
+            }
+            return;
+        }
+        if (input.empty()) {
+            return;
+        }
+        info.setStopped(true);
         if (input == "quit") {
             info.setQuit(true);
         }
@@ -65,13 +74,13 @@ void search::reset(board::Board& pos, SearchInfo& info, SearchState& ss)
 }
 
 int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInfo& info, PVTable& pvtable,
-                    SearchState& ss)
+                    SearchState& ss, bool pollInput)
 {
-    if ((info.getNodes() & 2047) == 0) {
+    if (pollInput && (info.getNodes() & CHECKUP_NODE_MASK) == 0) {
         checkup(info);
     }
     info.incrementNodes();
-    if ((isRepetition(pos) || pos.getFiftyMove() >= 100) && pos.getPly() > 0) {
+    if ((isRepetition(pos) || pos.getFiftyMove() >= FIFTY_MOVE_DRAW_LIMIT) && pos.getPly() > 0) {
         return 0;
     }
     int kingPiece = pos.getSide() == board::toInt(board::Color::WHITE) ? board::toInt(board::Piece::WK)
@@ -96,9 +105,9 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
     std::vector<board::Move> moves = movegen::generateAll(pos, depth == 0, &ss).getMoves();
     auto pvMove = pvtable.getMove(pos);
     if (pvMove) {
-        for (board::Move move : moves) {
+        for (board::Move& move : moves) {
             if (pvMove->getValue() == move.getValue()) {
-                move.addScore(2000000);
+                move.addScore(PV_MOVE_SCORE);
                 break;
             }
         }
@@ -113,7 +122,7 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
             continue;
         }
         legal++;
-        score = -negamax(-beta, -alpha, depth > 0 ? depth - 1 : 0, pos, info, pvtable, ss);
+        score = -negamax(-beta, -alpha, depth > 0 ? depth - 1 : 0, pos, info, pvtable, ss, pollInput);
         board::makemove::undo(pos);
         if (info.getStopped()) {
             return 0;
@@ -150,7 +159,7 @@ int search::negamax(int alpha, int beta, int depth, board::Board& pos, SearchInf
     return alpha;
 }
 
-void search::go(board::Board& pos, SearchInfo& info)
+void search::go(board::Board& pos, SearchInfo& info, std::ostream& output, bool pollInput)
 {
     int score = NEG_INFINITY;
     PVTable pvtable;
@@ -158,22 +167,22 @@ void search::go(board::Board& pos, SearchInfo& info)
     std::vector<board::Move> pv;
     reset(pos, info, ss);
     for (int depth = 1; info.getDepth() == -1 || depth <= info.getDepth(); depth++) {
-        score = negamax(NEG_INFINITY, POS_INFINITY, depth, pos, info, pvtable, ss);
+        score = negamax(NEG_INFINITY, POS_INFINITY, depth, pos, info, pvtable, ss, pollInput);
         if (info.getStopped()) {
             break;
         }
         pv = pvtable.getPV(pos);
-        std::cout << "info score cp " << score;
-        std::cout << " depth " << depth;
-        std::cout << " nodes " << info.getNodes();
-        std::cout << " time " << (utils::getTime() - info.getStartTime());
-        std::cout << " pv";
+        output << "info score cp " << score;
+        output << " depth " << depth;
+        output << " nodes " << info.getNodes();
+        output << " time " << (utils::getTime() - info.getStartTime());
+        output << " pv";
         for (board::Move move : pv) {
-            std::cout << " " << move.getString();
+            output << " " << move.getString();
         }
-        std::cout << std::endl;
+        output << std::endl;
     }
     if (!pv.empty()) {
-        std::cout << "bestmove " << pv[0].getString() << std::endl;
+        output << "bestmove " << pv[0].getString() << std::endl;
     }
 }

@@ -1,0 +1,94 @@
+lockfile_version: '1'
+generated_at: '2026-05-24T23:59:18.784880+00:00'
+apm_version: 0.14.2
+dependencies:
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/acquire-codebase-knowledge
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/acquire-codebase-knowledge
+  content_hash: sha256:94a1da1b609e31d3ac4629f4670784c63675639955965b503d10928035b4f727
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/architecture-blueprint-generator
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/architecture-blueprint-generator
+  content_hash: sha256:9b20f13d1d96ba1c2550e1ce535f932e943c42939d3fae906a9e0d6c1bfb471a
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/autoresearch
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/autoresearch
+  content_hash: sha256:8bfae087ef27eb37092d94caf1da3406b500aa908756772bb1349a1ac70823dd
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/breakdown-test
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/breakdown-test
+  content_hash: sha256:aec76bd6b3246889ada4fecba3f78a6c5d0717d66a70af5791279556a3891759
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/codeql
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/codeql
+  content_hash: sha256:e30d50fc7a2591c7f9e08faf83c31e7a67625a27233da21fcd2dafc7055af87b
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/create-github-action-workflow-specification
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/create-github-action-workflow-specification
+  content_hash: sha256:527e6c77d921d58a9d0059aa95d0d14b441d2166f9c20518263048a56ca8fbbb
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/documentation-writer
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/documentation-writer
+  content_hash: sha256:ee53d65b163cd7eb953a930c95841cfe398cc2c0bd24c06508bbaa07c432be35
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/github-release
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/github-release
+  content_hash: sha256:da5a13eb856fdbf54459a5ba33de00fc62312b916a467657f4a53aac8dba8c97
+- repo_url: github/awesome-copilot
+  host: github.com
+  resolved_commit: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  resolved_ref: 5b049e4e196c10aab8ddfd9e492323d08cf985b0
+  virtual_path: skills/refactor-plan
+  is_virtual: true
+  package_type: claude_skill
+  deployed_files:
+  - .agents/skills/refactor-plan
+  content_hash: sha256:26f32d34d48e9a40e5dd91d877319c94c6b8537e204d95d187ba45b443276868

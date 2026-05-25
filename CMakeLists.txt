@@ -1,8 +1,12 @@
 cmake_minimum_required(VERSION 3.25)
 
+if(POLICY CMP0091)
+    cmake_policy(SET CMP0091 NEW)
+endif()
+
 # Project
 
-project(chess VERSION 1.0.0)
+project(chess VERSION 1.0.0 LANGUAGES CXX)
 
 # Options
 
@@ -12,14 +16,14 @@ option(ACE_BUILD_TESTS "Build tests" ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Global Flags
+# Language standard
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(MSVC)
-  include(cmake/msvc-runtime.cmake)
+    include(cmake/msvc-runtime.cmake)
 endif()
 
 # Compiler Warnings and Sanitizers
@@ -28,6 +32,8 @@ include(cmake/Sanitizers.cmake)
 
 add_library(project_options INTERFACE)
 add_library(project_warnings INTERFACE)
+
+target_compile_features(project_options INTERFACE cxx_std_20)
 
 set_project_warnings(project_warnings)
 enable_sanitizers(project_options)
@@ -57,6 +63,8 @@ if(ACE_BUILD_TESTS)
 endif()
 
 # Tools
+
+set(ACE_TOOL_TARGETS ace board io search utils unittest perfttest)
 
 include(cmake/clang-format.cmake)
 

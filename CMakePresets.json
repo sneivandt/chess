@@ -4,7 +4,6 @@
         {
             "name": "base",
             "hidden": true,
-            "generator": "Unix Makefiles",
             "binaryDir": "${sourceDir}/build-${presetName}",
             "cacheVariables": {
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
@@ -51,37 +50,68 @@
     "buildPresets": [
         {
             "name": "dev",
-            "configurePreset": "dev"
+            "configurePreset": "dev",
+            "configuration": "Debug"
         },
         {
             "name": "prod",
-            "configurePreset": "prod"
+            "configurePreset": "prod",
+            "configuration": "Release"
         },
         {
             "name": "asan",
-            "configurePreset": "asan"
+            "configurePreset": "asan",
+            "configuration": "Debug"
+        },
+        {
+            "name": "tsan",
+            "configurePreset": "tsan",
+            "configuration": "Debug"
         }
     ],
     "testPresets": [
         {
             "name": "dev",
             "configurePreset": "dev",
+            "configuration": "Debug",
             "output": {
                 "outputOnFailure": true
+            },
+            "environment": {
+                "PERFT_MAX_DEPTH": "4"
             }
         },
         {
             "name": "prod",
             "configurePreset": "prod",
+            "configuration": "Release",
             "output": {
                 "outputOnFailure": true
+            },
+            "environment": {
+                "PERFT_MAX_DEPTH": "4"
             }
         },
         {
             "name": "asan",
             "configurePreset": "asan",
+            "configuration": "Debug",
             "output": {
                 "outputOnFailure": true
+            },
+            "environment": {
+                "PERFT_MAX_DEPTH": "4"
+            }
+        },
+        {
+            "name": "tsan",
+            "configurePreset": "tsan",
+            "configuration": "Debug",
+            "output": {
+                "outputOnFailure": true
+            },
+            "environment": {
+                "PERFT_MAX_DEPTH": "4"
             }
         }
     ]

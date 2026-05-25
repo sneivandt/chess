@@ -1,132 +1,91 @@
 # ACE Test Suite
 
-This directory contains the comprehensive test suite for the ACE chess engine.
+The test suite uses GoogleTest and is split into fast unit tests plus perft tests for move-generation correctness.
 
-## Test Organization
+## Layout
 
-### Unit Tests (`unittest/`)
-Focused, fast tests for individual components:
-- **boardtest.cc**: Board representation, FEN parsing, square attacks
-- **makemovetest.cc**: Move execution and undo (quiet moves, captures, castling, en passant, promotions)
-- **movegentest.cc**: Move generation for all piece types and special moves
-- **movetest.cc**: Move encoding/decoding and string representation
-- **evaluatetest.cc**: Position evaluation, material, piece square tables
-- **searchtest.cc**: Search algorithms, repetition detection, search info management
-- **iotest.cc**: Move parsing and I/O operations
-- **ucitest.cc**: UCI protocol parsing
+| Path | Purpose |
+| --- | --- |
+| `unittest/` | Component-level tests for board state, move encoding, move making, move generation, search, evaluation, I/O, and UCI parsing |
+| `perfttest/` | Perft runner and known positions in `perft.txt` |
 
-### Performance Tests (`perfttest/`)
-Validate move generation correctness by counting leaf nodes at various depths.
+## Run tests
 
-## Running Tests
+Configure and build first:
 
-### All Unit Tests
 ```bash
-cd build
-ctest -R unittest --output-on-failure
+cmake --preset dev
+cmake --build --preset dev
 ```
 
-### Specific Test Suite
+Run all tests:
+
 ```bash
-cd build
-./test/unittest/unittest --gtest_filter=BoardTest.*
-./test/unittest/unittest --gtest_filter=EvaluateTest.*
+ctest --preset dev
 ```
 
-### Single Test Case
+Run unit tests only:
+
 ```bash
-cd build
-./test/unittest/unittest --gtest_filter=BoardTest.parseFenStartPos
+ctest --test-dir build-dev -R unittest --output-on-failure
 ```
 
-### Performance Tests
+Run perft tests only:
+
 ```bash
-cd build
-ctest -R perfttest --verbose
+PERFT_MAX_DEPTH=4 ctest --test-dir build-dev -R perfttest --output-on-failure
 ```
 
-## Test Coverage
+List GoogleTest cases:
 
-Current test coverage by module:
-- **Board**: 19 tests covering FEN parsing, square attacks, and move making/unmaking
-- **Move**: 12 tests for move encoding, decoding, and string representation
-- **Move Generation**: 9 tests for all move types including special moves
-- **Evaluation**: 11 tests for position scoring and heuristics
-- **Search**: 6 tests for search infrastructure
-- **I/O**: 3 tests for move parsing
-- **UCI**: 3 tests for UCI protocol handling
+```bash
+./build-dev/test/unittest/unittest --gtest_list_tests
+```
 
-**Total: 63 unit tests**
+Run a specific suite or case:
 
-## Writing Tests
+```bash
+./build-dev/test/unittest/unittest --gtest_filter=BoardTest.*
+./build-dev/test/unittest/unittest --gtest_filter=BoardTest.parseFenStartPos
+```
 
-### Test Structure
+## Perft depth
+
+`perfttest` reads `PERFT_MAX_DEPTH` from the environment. Use a lower value, such as `4`, for quick validation and CI. Leave it unset when you want the default deeper run.
+
+## Writing tests
+
+Use FEN strings to make position setup explicit:
+
 ```cpp
-#include "gtest/gtest.h"
 #include "board/board.h"
+#include "gtest/gtest.h"
 #include "unittest.h"
-
-using namespace test;
 
 class MyTest : public test::UnitTest
 {
 protected:
     board::Board pos;
 
-    virtual void SetUp()
+    void SetUp() override
     {
         UnitTest::SetUp();
         board::Board::INIT();
     }
 };
 
-TEST_F(MyTest, TestName)
+TEST_F(MyTest, HandlesPosition)
 {
-    // Arrange
-    pos.parseFen("fen string here");
+    pos.parseFen(board::Board::DEFAULT_FEN);
 
-    // Act
-    int result = someFunction(pos);
-
-    // Assert
-    EXPECT_EQ(result, expectedValue);
+    EXPECT_EQ(pos.getSide(), board::toInt(board::Color::WHITE));
 }
 ```
 
-### Best Practices
-1. **One logical behavior per test**: Each test should focus on a single scenario or behavior; multiple related assertions are fine if they verify different aspects of that same behavior
-2. **Descriptive names**: Test names should clearly describe what is being tested
-3. **Arrange-Act-Assert**: Structure tests with clear setup, execution, and verification
-4. **Independent tests**: Tests should not depend on each other
-5. **Use FEN strings**: Set up board positions using FEN for clarity and brevity
-6. **Test edge cases**: Cover boundary conditions, special moves, and error cases
+Guidelines:
 
-### FEN Position Examples
-```cpp
-// Start position
-pos.parseFen(board::Board::DEFAULT_FEN);
-
-// Custom position
-pos.parseFen("r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1");
-
-// En passant available
-pos.parseFen("rnbqkbnr/ppp2ppp/8/3pP3/8/8/PPPP1PPP/RNBQKBNR w KQkq d6 0 3");
-```
-
-## Continuous Integration
-
-Tests are automatically run on every pull request and commit to ensure code quality.
-
-## Adding New Tests
-
-When adding new functionality:
-1. Write tests first (TDD approach recommended)
-2. Ensure tests cover normal cases, edge cases, and error conditions
-3. Run all tests to ensure no regressions
-4. Update this README if adding a new test file
-
-## Test Dependencies
-
-- **GoogleTest**: Modern C++ testing framework
-- **CMake**: Build system integration
-- All tests link against the relevant library modules (board, search, io, utils)
+- Keep each test focused on one behavior.
+- Cover normal cases, edge cases, and chess-rule regressions.
+- Add perft positions for move-generation changes that affect legal move counts.
+- Keep tests independent; do not rely on execution order.
+- Update this README when adding new test workflows or targets.

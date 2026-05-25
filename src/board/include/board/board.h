@@ -4,11 +4,27 @@
 
 #include <array>
 #include <cstdint>
+#include <iosfwd>
 #include <string>
 #include <type_traits>
 #include <vector>
 
 namespace board {
+
+inline constexpr int BOARD_SQUARE_NUM = 120;
+inline constexpr int BOARD64_SQUARE_NUM = 64;
+inline constexpr int PIECE_TYPE_NUM = 13;
+inline constexpr int COLOR_NUM = 3;
+inline constexpr int SIDE_NUM = 2;
+inline constexpr int FILE_NUM = 8;
+inline constexpr int RANK_NUM = 8;
+inline constexpr int MOVE_DIRECTION_NUM = 8;
+inline constexpr int PIECE_LIST_CAPACITY = 10;
+inline constexpr int CASTLE_PERM_NUM = 16;
+inline constexpr int MAILBOX_FIRST_SQUARE = 21;
+inline constexpr int MAILBOX_RANK_STRIDE = 10;
+inline constexpr int MAX_FEN_HALFMOVE_CLOCK = 1000;
+inline constexpr uint64_t ZOBRIST_SEED = 0xACEACEACEACEACEULL;
 
 // Generic conversion to underlying integer type (equivalent to C++23 std::to_underlying)
 template<typename E>
@@ -133,17 +149,17 @@ constexpr int OFFBOARD = toInt(Square::NO_SQ);
 class Board
 {
   private:
-    std::array<int, 120> board;
+    std::array<int, BOARD_SQUARE_NUM> board;
     int side;
     int ply;
     int fiftyMove;
     int enPas;
     int castlePerm;
     uint64_t hashKey;
-    std::array<uint64_t, 3> pawns;
-    std::array<std::array<int, 10>, 13> pList;
-    std::array<int, 13> pNum;
-    std::array<int, 2> material;
+    std::array<uint64_t, COLOR_NUM> pawns;
+    std::array<std::array<int, PIECE_LIST_CAPACITY>, PIECE_TYPE_NUM> pList;
+    std::array<int, PIECE_TYPE_NUM> pNum;
+    std::array<int, SIDE_NUM> material;
     std::vector<Undo> history;
 
   public:
@@ -163,42 +179,42 @@ class Board
     static const char* PIECE_CHARS;
 
     // Piece colors
-    static const std::array<int, 13> PIECE_COLOR;
+    static const std::array<int, PIECE_TYPE_NUM> PIECE_COLOR;
 
     // Piece without team
-    static const std::array<int, 13> PIECE_NO_TEAM;
+    static const std::array<int, PIECE_TYPE_NUM> PIECE_NO_TEAM;
 
     // Piece values
-    static const std::array<int, 13> PIECE_VAL;
+    static const std::array<int, PIECE_TYPE_NUM> PIECE_VAL;
 
     // Ranks
-    static const std::array<int, 64> RANKS;
+    static const std::array<int, BOARD64_SQUARE_NUM> RANKS;
 
     // Files
-    static const std::array<int, 64> FILES;
+    static const std::array<int, BOARD64_SQUARE_NUM> FILES;
 
     // Convert from a 120 to 64 board index
-    static const std::array<int, 120> SQ64;
+    static const std::array<int, BOARD_SQUARE_NUM> SQ64;
 
     // Convert from a 64 to 120 board index
-    static const std::array<int, 64> SQ120;
+    static const std::array<int, BOARD64_SQUARE_NUM> SQ120;
 
     // Castle perm mask
-    static const std::array<int, 120> CASTLE_PERM_MASK;
+    static const std::array<int, BOARD_SQUARE_NUM> CASTLE_PERM_MASK;
 
     // Move directions
-    static const std::array<std::array<int, 8>, 13> MOVE_DIR;
+    static const std::array<std::array<int, MOVE_DIRECTION_NUM>, PIECE_TYPE_NUM> MOVE_DIR;
 
     // Zobrist hash keys
-    static std::array<std::array<uint64_t, 120>, 13> PIECE_KEYS;
-    static std::array<uint64_t, 16> CASTLE_KEYS;
+    static std::array<std::array<uint64_t, BOARD_SQUARE_NUM>, PIECE_TYPE_NUM> PIECE_KEYS;
+    static std::array<uint64_t, CASTLE_PERM_NUM> CASTLE_KEYS;
     static uint64_t SIDE_KEY;
 
     // Bitmasks
-    static std::array<uint64_t, 8> RANK_MASK;
-    static std::array<uint64_t, 8> FILE_MASK;
-    static std::array<std::array<uint64_t, 64>, 2> PASSED_PAWN_MASK;
-    static std::array<uint64_t, 64> ISOLATED_PAWN_MASK;
+    static std::array<uint64_t, RANK_NUM> RANK_MASK;
+    static std::array<uint64_t, FILE_NUM> FILE_MASK;
+    static std::array<std::array<uint64_t, BOARD64_SQUARE_NUM>, SIDE_NUM> PASSED_PAWN_MASK;
+    static std::array<uint64_t, BOARD64_SQUARE_NUM> ISOLATED_PAWN_MASK;
 
     // Init
     static void INIT();
@@ -214,6 +230,7 @@ class Board
 
     // Print the board
     void print() const;
+    void print(std::ostream&) const;
 
     // Check if a square is attacked
     bool sqAttacked(const int, const int) const;
@@ -226,13 +243,15 @@ class Board
     void setSquare(const int, const int);
 
     // Bitboards
-    std::array<uint64_t, 3>& getPawns();
+    const std::array<uint64_t, COLOR_NUM>& getPawns() const;
+    std::array<uint64_t, COLOR_NUM>& getPawns();
 
     // Piece lists
     void incrementPieceNum(const int);
     void decrementPieceNum(const int);
     int getPieceNum(const int) const;
-    std::array<int, 10>& getPieceList(const int);
+    const std::array<int, PIECE_LIST_CAPACITY>& getPieceList(const int) const;
+    std::array<int, PIECE_LIST_CAPACITY>& getPieceList(const int);
 
     // Side to move
     void updateSide();
@@ -268,7 +287,7 @@ class Board
 
     // Game history
     const std::vector<Undo>& getHistory() const;
-    void addHistory(Undo&);
+    void addHistory(const Undo&);
     Undo popHistory();
 
     // Search ply
@@ -280,7 +299,7 @@ class Board
 
 inline int Board::FR2SQ(const int file, const int rank)
 {
-    return (21 + file) + (rank * 10);
+    return (MAILBOX_FIRST_SQUARE + file) + (rank * MAILBOX_RANK_STRIDE);
 }
 
 inline int Board::getSquare(const int square) const
@@ -293,7 +312,12 @@ inline void Board::setSquare(const int square, const int value)
     board[idx(square)] = value;
 }
 
-inline std::array<uint64_t, 3>& Board::getPawns()
+inline const std::array<uint64_t, COLOR_NUM>& Board::getPawns() const
+{
+    return pawns;
+}
+
+inline std::array<uint64_t, COLOR_NUM>& Board::getPawns()
 {
     return pawns;
 }
@@ -313,7 +337,12 @@ inline int Board::getPieceNum(const int piece) const
     return pNum[idx(piece)];
 }
 
-inline std::array<int, 10>& Board::getPieceList(const int piece)
+inline const std::array<int, PIECE_LIST_CAPACITY>& Board::getPieceList(const int piece) const
+{
+    return pList[idx(piece)];
+}
+
+inline std::array<int, PIECE_LIST_CAPACITY>& Board::getPieceList(const int piece)
 {
     return pList[idx(piece)];
 }
@@ -418,7 +447,7 @@ inline const std::vector<Undo>& Board::getHistory() const
     return history;
 }
 
-inline void Board::addHistory(Undo& undo)
+inline void Board::addHistory(const Undo& undo)
 {
     history.push_back(undo);
 }

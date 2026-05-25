@@ -1,9 +1,11 @@
 add_executable(unittest
+    bitboardtest.cc
     boardtest.cc
     boardtest.h
     iotest.cc
     iotest.h
     makemovetest.cc
+    movelisttest.cc
     movegentest.cc
     movetest.cc
     evaluatetest.cc
